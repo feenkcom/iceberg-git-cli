@@ -8,12 +8,6 @@ Class {
 }
 
 { #category : #adding }
-IceGitCliIndex >> addLepiterDatabase: aDatabaseDefinition [
-	self addPath: (RelativePath 
-		withAll: aDatabaseDefinition localRootRelativePath)
-]
-
-{ #category : #adding }
 IceGitCliIndex >> addPackage: anIcePackageDefinition [
 	| pathSegments |
 	pathSegments := repository subdirectoryPath segments asOrderedCollection.

@@ -38,18 +38,6 @@ IceGitCliLocalBranch >> gitRef [
 	^ self name
 ]
 
-{ #category : #accessing }
-IceGitCliLocalBranch >> gtPullFrom: aRemote inWorkingCopy: aLepiterWorkingCopy [
-	"A copy of the #pullFrom: method to support a Lepiter-aware pull."
-
-	| remoteBranchCommitId remoteCommit|
-	repository fetchBranch: self fromRemote: aRemote.
-	remoteBranchCommitId := repository
-			lookupRemoteBranch: aRemote name , '/' , self name.
-	remoteCommit := repository commitFromGitCommit: remoteBranchCommitId.
-	aLepiterWorkingCopy mergeCommit: remoteCommit
-]
-
 { #category : #'API - remotes' }
 IceGitCliLocalBranch >> hasUpstream [
 	self upstreamIfNone: [ ^ false ].
