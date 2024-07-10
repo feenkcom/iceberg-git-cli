@@ -17,6 +17,6 @@ BaselineOfIcebergGitCli >> baseline: spec [
 			with: [ spec repository: 'github://pharo-vcs/Iceberg:v2.2.2' ]."
 
 		spec
-			package: 'Iceberg-Git-Cli'
+			package: 'Iceberg-Git-CLI'
 			with: [ spec requires: #("'Iceberg'" 'GToolkitExternalProcess') ] ]
 ]
