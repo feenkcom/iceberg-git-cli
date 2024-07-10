@@ -7,16 +7,12 @@ Class {
 { #category : #baseline }
 BaselineOfIcebergGitCli >> baseline: spec [
 	<baseline>
-	^ spec for: #common do: [ 
+	spec for: #'common' do: [
 		spec
-			baseline: 'GToolkitExternalProcess'
-			with: [ spec repository: 'github://feenkcom/gtoolkit-external-process:main/src' ].
-			
-		"spec
-			baseline: 'Iceberg'
-			with: [ spec repository: 'github://pharo-vcs/Iceberg:v2.2.2' ]."
+			baseline: 'GToolkitExternalProcess' with: [
+				spec repository: 'github://feenkcom/gtoolkit-external-process:v0.6.114/src' ].
 
-		spec
-			package: 'Iceberg-Git-CLI'
-			with: [ spec requires: #("'Iceberg'" 'GToolkitExternalProcess') ] ]
+		spec package: 'Iceberg-Git-CLI' with: [
+			spec requires: #('GToolkitExternalProcess') ].
+	]
 ]
