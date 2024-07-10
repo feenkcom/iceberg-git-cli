@@ -1,1 +1,1 @@
-Package { #name : #'Iceberg-Git-Cli' }
+Package { #name : #'Iceberg-Git-CLI' }
