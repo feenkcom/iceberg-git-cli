@@ -1,0 +1,1 @@
+## Installation```stMetacello new	repository: 'github://feenkcom/iceberg-git-cli:main/src';	baseline: 'IcebergGitCli';	load```
