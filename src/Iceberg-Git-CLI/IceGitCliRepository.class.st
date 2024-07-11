@@ -39,7 +39,13 @@ IceGitCliRepository class >> on: aFileReference [
 		initializeOn: aFileReference
 ]
 
-{ #category : #accessing }
+{ #category : #'API - files' }
+IceGitCliRepository >> addFileToIndex: aFile [
+	
+	self addFilesToIndex: { aFile }
+]
+
+{ #category : #'API - files' }
 IceGitCliRepository >> addFilesToIndex: aCollection [
 	| args |
 	args := { 'add' } asOrderedCollection.
