@@ -774,10 +774,8 @@ IceGitCliRepository >> revListForCommit: aCommit andPath: aPath [
 { #category : #'API - accessing' }
 IceGitCliRepository >> revparse: aName [
 	| id |
-	id := self
-			runGitWithArgs: {'rev-parse'.
-					aName} first.
-	^self commitFromGitCommit: id.
+	id := (self runGitWithArgs: { 'rev-parse'. aName }) first.
+	^ self commitFromGitCommit: id
 ]
 
 { #category : #private }
