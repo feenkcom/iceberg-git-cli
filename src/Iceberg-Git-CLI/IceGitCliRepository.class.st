@@ -372,7 +372,15 @@ IceGitCliRepository >> gitVersion [
 
 { #category : #accessing }
 IceGitCliRepository >> handleLibgitError: aBlock [
-	"Just evaluate the block since we aren't libgit"
+	"Just evaluate the block since we aren't libgit, but this should not happen"
+
+	| sender exceptions |
+	sender := thisContext sender method.
+	exceptions := { IceAbstractProject>>#packages }.
+
+	(exceptions includes: sender) 
+		ifFalse: [ IceGitCliCallsLibgitFFI signal ].
+
 	aBlock value
 ]
 
@@ -722,7 +730,11 @@ IceGitCliRepository >> repositoryDirectory [
 
 { #category : #accessing }
 IceGitCliRepository >> repositoryHandle [
-	^self
+	"This should not happen"
+	
+	IceGitCliCallsLibgitFFI signal.
+	
+	^ self
 ]
 
 { #category : #accessing }
