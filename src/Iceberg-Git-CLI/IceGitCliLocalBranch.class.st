@@ -53,6 +53,16 @@ IceGitCliLocalBranch >> incomingCommitsFrom: aRemote [
 		commits
 ]
 
+{ #category : #testing }
+IceGitCliLocalBranch >> isCurrentHead [
+	| gitDir |
+	
+	gitDir := repository location / '.git'.
+	^ (gitDir / 'HEAD') contents trimRight = ('ref: refs/heads/', name) and:
+		[ commit notNil and:
+		[ (gitDir / 'refs' / 'heads' / name) contents trimRight = commit id ] ]
+]
+
 { #category : #'API - remotes' }
 IceGitCliLocalBranch >> outgoingCommitsTo: aRemote [
 	| remoteBranch walk |
