@@ -388,7 +388,7 @@ IceGitCliRepository >> handleLibgitError: aBlock [
 IceGitCliRepository >> head [
 	| headRef lines ref |
 
-	(head notNil and: [ head isCurrent ]) ifTrue: [ ^ head ].
+	(head notNil and: [ head isCurrentHead ]) ifTrue: [ ^ head ].
 	lines := [ self runGitWithArgs: {
 		'show'.
 		'-s'.

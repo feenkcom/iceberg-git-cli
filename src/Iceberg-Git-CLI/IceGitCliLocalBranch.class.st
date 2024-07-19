@@ -53,8 +53,8 @@ IceGitCliLocalBranch >> incomingCommitsFrom: aRemote [
 		commits
 ]
 
-{ #category : #accessing }
-IceGitCliLocalBranch >> isCurrent [
+{ #category : #testing }
+IceGitCliLocalBranch >> isCurrentHead [
 	| gitDir |
 	
 	gitDir := repository location / '.git'.

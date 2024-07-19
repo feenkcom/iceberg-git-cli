@@ -29,6 +29,12 @@ IceGitCliCommit >> fileSystem [
 	^ filesystem root
 ]
 
+{ #category : #testing }
+IceGitCliCommit >> isCurrentHead [
+
+	^ (repository location / '.git' / 'HEAD') contents trimRight = id
+]
+
 { #category : #accessing }
 IceGitCliCommit >> numberOfParents [
 	^self ancestorIds size

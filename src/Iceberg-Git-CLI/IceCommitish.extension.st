@@ -1,7 +1,7 @@
 Extension { #name : #IceCommitish }
 
 { #category : #'*Iceberg-Git-CLI' }
-IceCommitish >> isCurrent [
+IceCommitish >> isCurrentHead [
 
 	^ true
 ]
