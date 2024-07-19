@@ -59,7 +59,8 @@ IceGitCliLocalBranch >> isCurrentHead [
 	
 	gitDir := repository location / '.git'.
 	^ (gitDir / 'HEAD') contents trimRight = ('ref: refs/heads/', name) and:
-		[ (gitDir / 'refs' / 'heads' / name) contents trimRight = commit id ]
+		[ commit notNil and:
+		[ (gitDir / 'refs' / 'heads' / name) contents trimRight = commit id ] ]
 ]
 
 { #category : #'API - remotes' }
