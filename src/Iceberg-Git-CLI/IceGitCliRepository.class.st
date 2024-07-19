@@ -387,7 +387,8 @@ IceGitCliRepository >> handleLibgitError: aBlock [
 { #category : #'API - accessing' }
 IceGitCliRepository >> head [
 	| headRef lines ref |
-	head notNil ifTrue: [ ^ head ].
+
+	(head notNil and: [ head isCurrent ]) ifTrue: [ ^ head ].
 	lines := [ self runGitWithArgs: {
 		'show'.
 		'-s'.
