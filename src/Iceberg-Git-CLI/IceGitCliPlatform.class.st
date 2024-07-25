@@ -31,6 +31,18 @@ IceGitCliPlatform class >> current [
 ]
 
 { #category : #accessing }
+IceGitCliPlatform >> config [
+	^ self dummyInstance config
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> dummyInstance [
+	^ self repositoryClass new
+		location: FileLocator home;
+		yourself
+]
+
+{ #category : #accessing }
 IceGitCliPlatform >> gitExecutable [
 	^ gitExecutable
 ]
@@ -42,9 +54,7 @@ IceGitCliPlatform >> gitExecutable: anExecutablePath [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitVersion [
-	^ self repositoryClass new
-		location: FileLocator home;
-		gitVersion
+	^ self dummyInstance gitVersion
 ]
 
 { #category : #initialization }
