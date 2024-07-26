@@ -17,7 +17,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'gitExecutable',
-		'signalClass'
+		'signalClass',
+		'signCommits'
 	],
 	#classVars : [
 		'current'
@@ -66,6 +67,16 @@ IceGitCliPlatform >> initialize [
 { #category : #accessing }
 IceGitCliPlatform >> repositoryClass [
 	^ IceGitCliRepository
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> signCommits [
+	^ signCommits ifNil: [ false ]
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> signCommits: aBoolean [
+	signCommits := aBoolean
 ]
 
 { #category : #accessing }

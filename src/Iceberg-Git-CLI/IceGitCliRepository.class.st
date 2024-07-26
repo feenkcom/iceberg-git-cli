@@ -897,23 +897,17 @@ IceGitCliRepository >> waitForProcessAsync: processBuilder [
 
 { #category : #'API - commit' }
 IceGitCliRepository >> writeCommit: indexTreeId message: message parents: parentCommits updateReference: ref author: author committer: committer [
-	| lines commitId parentArgs |
+	| lines commitId parentArgs args |
 	self clearCaches. 
-	parentArgs := (parentCommits
-			collect: [ :each | 
-				{ '-p'. each id } ]) flatten.
-	lines := self runGitWithArgs: 
-		{
-		'commit-tree'.
-		indexTreeId 
-		} 
-		, 
-		parentArgs
-		, 
-		{
-		'-m'.
-		message 
-		}.
+	args := OrderedCollection with: 'commit-tree'.
+	IceGitCliPlatform current signCommits 
+		ifTrue: [ args add: '-S' ].
+	parentArgs := (parentCommits collect: [ :each | { '-p'. each id } ]) flatten.
+	args 
+		add: indexTreeId; 
+		addAll: parentArgs; 
+		addAll:  { '-m'. message }.
+	lines := self runGitWithArgs: args.
 	commitId := lines first trimBoth.
 	self runGitWithArgs: {
 		'update-ref'.
