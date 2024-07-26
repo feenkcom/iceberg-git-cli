@@ -28,6 +28,8 @@ Class {
 
 { #category : #accessing }
 IceGitCliPlatform class >> current [
+	<gtExample>
+
 	^ current ifNil: [ current := self new ]
 ]
 
@@ -64,6 +66,16 @@ IceGitCliPlatform >> initialize [
 	self gitExecutable: 'git'
 ]
 
+{ #category : #operations }
+IceGitCliPlatform >> install [
+	IceRepository repositoryClass: self repositoryClass
+]
+
+{ #category : #testing }
+IceGitCliPlatform >> isInstalled [
+	^ IceRepository repositoryClass = self repositoryClass
+]
+
 { #category : #accessing }
 IceGitCliPlatform >> repositoryClass [
 	^ IceGitCliRepository
@@ -87,4 +99,54 @@ IceGitCliPlatform >> signalClass [
 { #category : #accessing }
 IceGitCliPlatform >> signalClass: aClass [
 	signalClass := aClass
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> validate [
+	self validateGit.
+	self validateGitSetup.
+	self validateInstallation.
+	^ true
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> validateGit [
+	| gitVersionString gitVersion major minor |
+	gitVersionString := [ self gitVersion ] on: Error do: [ nil ].
+	self 
+		assert: gitVersionString notNil 
+		description: ('{1} not found, please install' format: { self gitExecutable }).
+	gitVersion := (Character space split: gitVersionString) third.
+	major := ($. split: gitVersion) first asInteger.
+	minor := ($. split: gitVersion) second asInteger.
+	self
+		assert: (major > 2 or: [ major = 2 and: [ minor >= 26 ] ])
+		description: 'git version should be >= 2.26'.
+	^ true
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> validateGitSetup [
+	| config |
+	config := self config.
+	self
+		assert: (config includesKey: 'user.name')
+		description: 'git user.name not set'.
+	self
+		assert: (config includesKey: 'user.email')
+		description: 'git user.email not set'.
+	self signCommits
+		ifTrue: [
+			self
+				assert: (config includesKey: 'user.signingkey')
+				description: 'git user.signingkey not set' ].
+	^ true
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> validateInstallation [
+	self 
+		assert: self isInstalled 
+		description: 'Iceberg-Git-CLI not installed, please evaluate `IceGitCliPlatform current install`'.
+	^ true
 ]
