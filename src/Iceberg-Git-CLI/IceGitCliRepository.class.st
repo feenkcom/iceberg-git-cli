@@ -326,8 +326,15 @@ IceGitCliRepository >> fetchBranch: aBranch fromRemote: aRemote [
 
 { #category : #'API - accessing' }
 IceGitCliRepository >> getDeltasForFullDiff [
-	#TODO.
-	^ #()
+	"Return the deltas including untracked files.
+	This makes it possible to create a full diff of what changed."
+
+	| lines |
+	lines := self
+			runGitWithArgs: {'status'.
+					'--porcelain'.
+					'--untracked-files=all'}.
+	^ lines collect: [ :line | GtGitDelta fromStatusLine: line in: self ]
 ]
 
 { #category : #'API - accessing' }
