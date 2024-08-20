@@ -102,6 +102,11 @@ IceGitCliPlatform >> signalClass: aClass [
 ]
 
 { #category : #operations }
+IceGitCliPlatform >> uninstall [
+	IceRepository repositoryClass: nil
+]
+
+{ #category : #operations }
 IceGitCliPlatform >> validate [
 	self validateGit.
 	self validateGitSetup.
