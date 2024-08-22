@@ -290,6 +290,21 @@ IceGitCliRepository >> createBranch: branchName inCommit: anIceGitCommit [
 			yourself
 ]
 
+{ #category : #private }
+IceGitCliRepository >> deltaTypeEnumFrom: statusChar [
+	| flagMap |
+	flagMap := { 
+		$M -> 3.
+		$T -> 8.
+		$A -> 1.
+		$D -> 2.
+		$R -> 4.
+		$C -> 5.
+		$? -> 7.
+		$! -> 6 } asDictionary.
+	^ LGitDeltaTypeEnum basicNew value: (flagMap at: statusChar)
+]
+
 { #category : #accessing }
 IceGitCliRepository >> directoryNameForPackage: package [
 
