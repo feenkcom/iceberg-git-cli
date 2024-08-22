@@ -339,25 +339,18 @@ IceGitCliRepository >> getDeltasForFullDiff [
 
 { #category : #'API - accessing' }
 IceGitCliRepository >> getStatusByFile [
-	| res flagMap lines |
-	flagMap := { $M -> 2.
-			$T -> 16.
-			$A -> 1.
-			$D -> 4.
-			$R -> 8.
-			$? -> 128.
-			$! -> 16384 } asDictionary.
-	res := Dictionary new.
+	| result lines |
+	result := Dictionary new.
 	lines := self runGitWithArgs: {
 		'status'.
 		'--porcelain' }.
 	lines
 		do: [ :each | 
-			| status path |
-			status := each trimLeft first.
+			| statusChar path |
+			statusChar := each trimLeft first.
 			path := each copyFrom: 4 to: each size.
-			res at: path put: (LGitStatusEnum basicNew value: (flagMap at: status)) ].
-	^ res
+			result at: path put: (self statusEnumFrom: statusChar) ].
+	^ result
 ]
 
 { #category : #private }
@@ -839,6 +832,20 @@ IceGitCliRepository >> setHead: aGtIceGitLocalBranch [
 		'-f'.
 		aGtIceGitLocalBranch gitRef }.
 	head := nil
+]
+
+{ #category : #private }
+IceGitCliRepository >> statusEnumFrom: statusChar [
+	| flagMap |
+	flagMap := { 
+		$M -> 2.
+		$T -> 16.
+		$A -> 1.
+		$D -> 4.
+		$R -> 8.
+		$? -> 128.
+		$! -> 16384 } asDictionary.
+	^ LGitStatusEnum basicNew value: (flagMap at: statusChar)
 ]
 
 { #category : #'API - accessing' }
