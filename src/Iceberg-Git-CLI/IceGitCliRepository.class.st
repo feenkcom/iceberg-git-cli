@@ -20,23 +20,28 @@ IceGitCliRepository class >> creatorClass [
 ]
 
 { #category : #'instance creation' }
-IceGitCliRepository class >> fromLibGitRepository: aRepo [
-	| repo |
-	repo := self new
-			location: aRepo location;
-			name: aRepo name.
-	aRepo isMissing ifTrue: [ ^ repo ].
-	repo workingCopy
-		referenceCommit: (repo commitFromGitCommit: aRepo workingCopy referenceCommit id).
-	repo workingCopy initializePackagesFromRepository.
-	^ repo
+IceGitCliRepository class >> fromLibGitRepository: existingRepository [
+	"Create a new repository based on an existing repository
+	from which the location, name and reference commit are used"
+
+	| newRepository |
+	newRepository := self new
+			location: existingRepository location;
+			name: existingRepository name.
+	existingRepository isMissing ifTrue: [ ^ newRepository ].
+	newRepository workingCopy
+		referenceCommit: (newRepository commitFromGitCommit: existingRepository workingCopy referenceCommit id).
+	newRepository workingCopy initializePackagesFromRepository.
+	^ newRepository
 ]
 
 { #category : #'instance creation' }
 IceGitCliRepository class >> on: aFileReference [
-	^ self basicNew
-		initialize;
-		initializeOn: aFileReference
+	"Create a new repository on a directory location"
+
+	^ self new
+		location: aFileReference;
+		yourself
 ]
 
 { #category : #'API - files' }
@@ -452,11 +457,6 @@ IceGitCliRepository >> initialize [
 	remoteMap := Dictionary new.
 	revListMap := Dictionary new.
 	commitMap := Dictionary new
-]
-
-{ #category : #initialization }
-IceGitCliRepository >> initializeOn: aFileReference [
-	location := aFileReference
 ]
 
 { #category : #'private - commits' }
