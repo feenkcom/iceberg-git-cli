@@ -20,23 +20,28 @@ IceGitCliRepository class >> creatorClass [
 ]
 
 { #category : #'instance creation' }
-IceGitCliRepository class >> fromLibGitRepository: aRepo [
-	| repo |
-	repo := self new
-			location: aRepo location;
-			name: aRepo name.
-	aRepo isMissing ifTrue: [ ^ repo ].
-	repo workingCopy
-		referenceCommit: (repo commitFromGitCommit: aRepo workingCopy referenceCommit id).
-	repo workingCopy initializePackagesFromRepository.
-	^ repo
+IceGitCliRepository class >> fromLibGitRepository: existingRepository [
+	"Create a new repository based on an existing repository
+	from which the location, name and reference commit are used"
+
+	| newRepository |
+	newRepository := self new
+			location: existingRepository location;
+			name: existingRepository name.
+	existingRepository isMissing ifTrue: [ ^ newRepository ].
+	newRepository workingCopy
+		referenceCommit: (newRepository commitFromGitCommit: existingRepository workingCopy referenceCommit id).
+	newRepository workingCopy initializePackagesFromRepository.
+	^ newRepository
 ]
 
 { #category : #'instance creation' }
 IceGitCliRepository class >> on: aFileReference [
-	^ self basicNew
-		initialize;
-		initializeOn: aFileReference
+	"Create a new repository on a directory location"
+
+	^ self new
+		location: aFileReference;
+		yourself
 ]
 
 { #category : #'API - files' }
@@ -290,6 +295,21 @@ IceGitCliRepository >> createBranch: branchName inCommit: anIceGitCommit [
 			yourself
 ]
 
+{ #category : #private }
+IceGitCliRepository >> deltaTypeEnumFrom: statusChar [
+	| flagMap |
+	flagMap := { 
+		$M -> 3.
+		$T -> 8.
+		$A -> 1.
+		$D -> 2.
+		$R -> 4.
+		$C -> 5.
+		$? -> 7.
+		$! -> 6 } asDictionary.
+	^ LGitDeltaTypeEnum basicNew value: (flagMap at: statusChar)
+]
+
 { #category : #accessing }
 IceGitCliRepository >> directoryNameForPackage: package [
 
@@ -339,25 +359,18 @@ IceGitCliRepository >> getDeltasForFullDiff [
 
 { #category : #'API - accessing' }
 IceGitCliRepository >> getStatusByFile [
-	| res flagMap lines |
-	flagMap := { $M -> 2.
-			$T -> 16.
-			$A -> 1.
-			$D -> 4.
-			$R -> 8.
-			$? -> 128.
-			$! -> 16384 } asDictionary.
-	res := Dictionary new.
+	| result lines |
+	result := Dictionary new.
 	lines := self runGitWithArgs: {
 		'status'.
 		'--porcelain' }.
 	lines
 		do: [ :each | 
-			| status path |
-			status := each trimLeft first.
+			| statusChar path |
+			statusChar := each trimLeft first.
 			path := each copyFrom: 4 to: each size.
-			res at: path put: (LGitStatusEnum basicNew value: (flagMap at: status)) ].
-	^ res
+			result at: path put: (self statusEnumFrom: statusChar) ].
+	^ result
 ]
 
 { #category : #private }
@@ -444,11 +457,6 @@ IceGitCliRepository >> initialize [
 	remoteMap := Dictionary new.
 	revListMap := Dictionary new.
 	commitMap := Dictionary new
-]
-
-{ #category : #initialization }
-IceGitCliRepository >> initializeOn: aFileReference [
-	location := aFileReference
 ]
 
 { #category : #'private - commits' }
@@ -839,6 +847,20 @@ IceGitCliRepository >> setHead: aGtIceGitLocalBranch [
 		'-f'.
 		aGtIceGitLocalBranch gitRef }.
 	head := nil
+]
+
+{ #category : #private }
+IceGitCliRepository >> statusEnumFrom: statusChar [
+	| flagMap |
+	flagMap := { 
+		$M -> 2.
+		$T -> 16.
+		$A -> 1.
+		$D -> 4.
+		$R -> 8.
+		$? -> 128.
+		$! -> 16384 } asDictionary.
+	^ LGitStatusEnum basicNew value: (flagMap at: statusChar)
 ]
 
 { #category : #'API - accessing' }
