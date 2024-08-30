@@ -210,13 +210,11 @@ IceGitCliRepository >> commitishNamed: aName [
 
 	^ self
 		branchNamed: aName
-		ifAbsent: [  "If there is a single remote, we can look for the branch in this single remote."self
-				remotes size = 1
-				ifTrue: [ self remotes anyOne
-						remoteBranchNamed: aName
-						ifPresent: [ :found | ^ found ]
-						ifAbsent: [  "Continue with the revparse" ] ].
-			self revparse: aName ]
+		ifAbsent: [
+			self
+				remoteBranchNamed: aName
+				ifPresent: [ :found | ^ found ]
+				ifAbsent: [ self revparse: aName ] ]
 ]
 
 { #category : #'private - commits' }
