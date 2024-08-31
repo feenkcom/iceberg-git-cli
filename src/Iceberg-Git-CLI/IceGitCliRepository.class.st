@@ -371,21 +371,12 @@ IceGitCliRepository >> getStatusByFile [
 	^ result
 ]
 
-{ #category : #private }
-IceGitCliRepository >> git [
-	(location isNil or: [ location exists not ]) ifTrue:
-		[ GtGitRepositoryLocationDoesntExist new
-			fileReference: location;
-			repository: self;
-			signal ].
-	^ GtExternalProcessBuilder new
-		command: IceGitCliPlatform current gitExecutable;
-		workingDirectory: location
-]
-
 { #category : #accessing }
 IceGitCliRepository >> gitVersion [
-	^ (self runGitWithArgs: #('--version')) first
+	<gtExample>
+	<noTest>
+	
+	^ IceGitCliPlatform current executor gitVersion
 ]
 
 { #category : #accessing }
@@ -497,7 +488,7 @@ IceGitCliRepository >> location [
 	^ location
 ]
 
-{ #category : #actions }
+{ #category : #accessing }
 IceGitCliRepository >> location: aLocation [
 	location := aLocation 
 ]
@@ -512,29 +503,6 @@ IceGitCliRepository >> logClass [
 	^ (self properties at: #format) == #filetree
 		ifTrue: [ IceLibgitFiletreeLog ]
 		ifFalse: [ GitCliTonelLog ]
-]
-
-{ #category : #logging }
-IceGitCliRepository >> logEnded: operation args: args output: output [
-	self loggingEnabled
-		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
-				operation: operation;
-				markAsEndSignal;
-				emit ]
-]
-
-{ #category : #logging }
-IceGitCliRepository >> logStarted: operation args: args [
-	self loggingEnabled
-		ifTrue: [ (IceGitCliPlatform current signalClass args: args)
-				operation: operation;
-				markAsStartSignal;
-				emit ]
-]
-
-{ #category : #logging }
-IceGitCliRepository >> loggingEnabled [
-	^ IceGitCliPlatform current signalClass notNil
 ]
 
 { #category : #'API - commits' }
@@ -620,7 +588,7 @@ IceGitCliRepository >> newNoCommit [
 	^ IceNoCommit repository: self
 ]
 
-{ #category : #private }
+{ #category : #'API - accessing' }
 IceGitCliRepository >> obtainRepositoryName [
 	^ self location basename
 ]
@@ -809,23 +777,11 @@ IceGitCliRepository >> runGitWithArgs: args [
 	"Run CLI git with the passed arguments and return the lines from standard output.
 	Wait for the git command to complete. Signal an error when not successful."
 
-	| processBuilder lines output operation |
+	| operation executor |
 	operation := thisContext sender method selector.
-	self logStarted: operation args: args.
-	processBuilder := self git args: args.
-	output := self waitForProcessAsync: processBuilder.
-	output status isSuccess 
-		ifFalse: [
-			lines := output stderr lines.
-			self logEnded: operation args: args output: lines.
-			^ GtGitCliCommandError new
-				args: args;
-				stderr: lines;
-				exitCode: output status code;
-				signal ].
-	lines := output stdout lines.
-	self logEnded: operation args: args output: lines.
-	^ lines
+	executor := IceGitCliPlatform current executor.
+	executor workingDirectory: self validLocation.
+	^ executor runGitWithArgs: args for: operation
 ]
 
 { #category : #accessing }
@@ -899,27 +855,14 @@ IceGitCliRepository >> tagsFor: anId [
 	^ lines collect: [ :each | IceTag named: each inRepository: self ]
 ]
 
-{ #category : #private }
-IceGitCliRepository >> waitForProcess: processBuilder [
-	"Run the native process described in processBuilder and wait for it to complete and produce output.
-	The output, an instance of GtNativeExternalProcessOutput, can be queried for its status and stdout.
-	This wait will block the VM."
-	
-	^ processBuilder output
-]
-
-{ #category : #private }
-IceGitCliRepository >> waitForProcessAsync: processBuilder [
-	"Run the native process described in processBuilder and wait for it to complete and produce output.
-	The output, an instance of GtNativeExternalProcessOutput, can be queried for its status, stdout and stderr.
-	This wait will block the current process but not the VM"
-
-	| nativeProcess |
-	processBuilder 
-		pipeStdout; 
-		pipeStderr.
-	nativeProcess := processBuilder spawn.
-	^ nativeProcess waitAsyncWithOutput
+{ #category : #accessing }
+IceGitCliRepository >> validLocation [
+	(location isNil or: [ location exists not ])
+		ifTrue: [ GtGitRepositoryLocationDoesntExist new
+				fileReference: location;
+				repository: self;
+				signal ].
+	^ location
 ]
 
 { #category : #'API - commit' }
