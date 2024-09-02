@@ -49,6 +49,29 @@ IceGitCliExecutor >> loggingEnabled [
 ]
 
 { #category : #public }
+IceGitCliExecutor >> runGitRawWithArgs: args for: operation [
+	"Run CLI git with the passed arguments and return the raw bytes from standard output.
+	Wait for the git command to complete. Signal an error when not successful."
+
+	| processBuilder result output |
+	self logStarted: operation args: args.
+	processBuilder := self git args: args.
+	output := self waitForProcessAsync: processBuilder.
+	output status isSuccess 
+		ifFalse: [
+			result := output stderr lines.
+			self logEnded: operation args: args output: result.
+			^ GtGitCliCommandError new
+				args: args;
+				stderr: result;
+				exitCode: output status code;
+				signal ].
+	result := output stdoutBytes.
+	self logEnded: operation args: args output: { result size asString , ' bytes' }.
+	^ result
+]
+
+{ #category : #public }
 IceGitCliExecutor >> runGitWithArgs: args [
 	"Run CLI git with the passed arguments and return the lines from standard output.
 	Wait for the git command to complete. Signal an error when not successful."

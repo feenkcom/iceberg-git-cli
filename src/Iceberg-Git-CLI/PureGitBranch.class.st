@@ -1,5 +1,5 @@
 Class {
-	#name : #PureGitTag,
+	#name : #PureGitBranch,
 	#superclass : #PureGitCommitish,
 	#instVars : [
 		'name',
@@ -9,36 +9,41 @@ Class {
 }
 
 { #category : #accessing }
-PureGitTag >> commit [
+PureGitBranch >> branchType [
+	self subclassResponsibility
+]
+
+{ #category : #accessing }
+PureGitBranch >> commit [
 	^ commit isString
 		ifTrue: [ commit := repository resolveCommit: commit ]
 		ifFalse: [ commit ]
 ]
 
 { #category : #accessing }
-PureGitTag >> commit: aPureGitCommit [
-	commit := aPureGitCommit
+PureGitBranch >> commit: anObject [
+	commit := anObject
 ]
 
 { #category : #accessing }
-PureGitTag >> commitId [
+PureGitBranch >> commitId [
 	^ commit isString
 		ifTrue: [ commit ]
 		ifFalse: [ commit id ]
 ]
 
 { #category : #accessing }
-PureGitTag >> name [
+PureGitBranch >> name [
 	^ name
 ]
 
 { #category : #accessing }
-PureGitTag >> name: aString [
-	name := aString
+PureGitBranch >> name: anObject [
+	name := anObject
 ]
 
 { #category : #printing }
-PureGitTag >> printOn: stream [
+PureGitBranch >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
 	name ifNotNil: [ stream nextPutAll: name ].

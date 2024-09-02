@@ -25,6 +25,11 @@ PureGitCommitish >> commitId [
 ]
 
 { #category : #accessing }
+PureGitCommitish >> log [
+	^ self repository logFrom: self commitId
+]
+
+{ #category : #accessing }
 PureGitCommitish >> repository [
 	^ repository
 ]
@@ -32,4 +37,9 @@ PureGitCommitish >> repository [
 { #category : #accessing }
 PureGitCommitish >> repository: aRepository [
 	repository := aRepository
+]
+
+{ #category : #accessing }
+PureGitCommitish >> shortCommitId [
+	^ self commitId first: 7
 ]

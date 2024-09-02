@@ -14,6 +14,11 @@ PureGitRepository class >> on: aFileReference [
 		yourself
 ]
 
+{ #category : #accessing }
+PureGitRepository >> allBranches [
+	^ self localBranches , self remoteBranches
+]
+
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
 	| author timestamp message id parents |
@@ -30,7 +35,7 @@ PureGitRepository >> commitFromLines: lines [
 		id: id;
 		author: author;
 		timestamp: timestamp;
-		ancestorIds: parents;
+		parentIds: parents;
 		comment: message;
 		yourself
 ]
@@ -48,6 +53,27 @@ PureGitRepository >> exists [
 ]
 
 { #category : #accessing }
+PureGitRepository >> head [
+	^ self resolveCommit: 'HEAD'
+]
+
+{ #category : #accessing }
+PureGitRepository >> localBranches [
+	| output |
+	output := self runGitWithArgs: {
+		'branch'.
+		'--format=%(objectname) %(refname:short)' }.
+	^ output
+		collect: [ :each | 
+			| firstSpace |
+			firstSpace := each indexOf: Character space.
+			(PureGitLocalBranch inRepository: self)
+				commit: (each copyFrom: 1 to: firstSpace - 1);
+				name: (each copyFrom: firstSpace + 1 to: each size);
+				yourself ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> location [
 	^ location
 ]
@@ -59,10 +85,16 @@ PureGitRepository >> location: aFileReference [
 
 { #category : #accessing }
 PureGitRepository >> log [
+	^ self head log
+]
+
+{ #category : #accessing }
+PureGitRepository >> logFrom: start [
 	| output commitLines |
 	output := self runGitWithArgs: { 
 		'log'.
-		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@' }.
+		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		start }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
 	^ commitLines collect: [ :each | self commitFromLines: each ]
@@ -74,6 +106,23 @@ PureGitRepository >> printOn: stream [
 	stream nextPut: $(.
 	location ifNotNil: [ location printOn: stream ].
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitRepository >> remoteBranches [
+	| output |
+	output := self runGitWithArgs: {
+		'branch'.
+		'--remote'.
+		'--format=%(objectname) %(refname:short)' }.
+	^ output
+		collect: [ :each | 
+			| firstSpace |
+			firstSpace := each indexOf: Character space.
+			(PureGitRemoteBranch inRepository: self)
+				commit: (each copyFrom: 1 to: firstSpace - 1);
+				name: (each copyFrom: firstSpace + 1 to: each size);
+				yourself ]
 ]
 
 { #category : #accessing }

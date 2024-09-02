@@ -112,14 +112,9 @@ IceGitCliLocalBranch >> upstream [
 
 { #category : #accessing }
 IceGitCliLocalBranch >> upstreamIfNone: aBlock [
-	| upStreamName lines |
-	upstream notNil ifTrue: [^upstream].
-	lines := repository runGitWithArgs: {
-		'branch'.
-		'--list'.
-		'--format=%(upstream)'.
-		name }.
-	upStreamName := lines first.
+	| upStreamName |
+	upstream notNil ifTrue: [ ^ upstream ].
+	upStreamName := repository upstreamForBranch: name .
 	upStreamName isEmpty ifTrue: [ ^ aBlock value ].
 	^ upstream := IceGitCliRemoteBranch named: upStreamName inRepository: repository
 ]

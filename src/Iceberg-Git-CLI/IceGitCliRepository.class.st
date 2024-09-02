@@ -263,23 +263,12 @@ IceGitCliRepository >> configureUpstreamIfNecessary [
 
 { #category : #accessing }
 IceGitCliRepository >> contentsOfFile: aHash [
-	| processBuilder result output args |
-	args := { 'cat-file' . 'blob'. aHash }.
-	self logStarted: #contentsOfFile: args: args.
-	processBuilder := self git args: args.
-	output := self waitForProcessAsync: processBuilder.
-	output status isSuccess 
-		ifFalse: [
-			result := output stderr lines.
-			self logEnded: #contentsOfFile: args: args output: result.
-			^ GtGitCliCommandError new
-				args: args;
-				stderr: result;
-				exitCode: output status code;
-				signal ].
-	result := output stdoutBytes.
-	self logEnded: #contentsOfFile: args: args output: { result size asString , ' bytes' }.
-	^ result
+	| executor |
+	executor := IceGitCliPlatform current executor.
+	executor workingDirectory: self validLocation.
+	^ executor 
+		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
+		for: #contentsOfFile:
 ]
 
 { #category : #'API - branches' }
@@ -853,6 +842,15 @@ IceGitCliRepository >> tagsFor: anId [
 		'--points-at'.
 		anId }.
 	^ lines collect: [ :each | IceTag named: each inRepository: self ]
+]
+
+{ #category : #'API - branches' }
+IceGitCliRepository >> upstreamForBranch: localBranchName [
+	^ (self runGitWithArgs: {
+			'branch'.
+			'--list'.
+			'--format=%(upstream)'.
+			localBranchName }) first
 ]
 
 { #category : #accessing }
