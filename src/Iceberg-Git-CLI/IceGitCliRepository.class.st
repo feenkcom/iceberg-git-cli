@@ -857,11 +857,11 @@ IceGitCliRepository >> tagsFor: anId [
 
 { #category : #'API - branches' }
 IceGitCliRepository >> upstreamForBranch: localBranchName [
-	^ self runGitWithArgs: {
-		'branch'.
-		'--list'.
-		'--format=%(upstream)'.
-		localBranchName }.
+	^ (self runGitWithArgs: {
+			'branch'.
+			'--list'.
+			'--format=%(upstream)'.
+			localBranchName }) first
 ]
 
 { #category : #accessing }
