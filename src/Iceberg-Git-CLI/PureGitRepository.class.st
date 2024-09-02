@@ -85,10 +85,16 @@ PureGitRepository >> location: aFileReference [
 
 { #category : #accessing }
 PureGitRepository >> log [
+	^ self head log
+]
+
+{ #category : #accessing }
+PureGitRepository >> logFrom: start [
 	| output commitLines |
 	output := self runGitWithArgs: { 
 		'log'.
-		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@' }.
+		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		start }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
 	^ commitLines collect: [ :each | self commitFromLines: each ]

@@ -25,6 +25,11 @@ PureGitCommitish >> commitId [
 ]
 
 { #category : #accessing }
+PureGitCommitish >> log [
+	^ self repository logFrom: self commitId
+]
+
+{ #category : #accessing }
 PureGitCommitish >> repository [
 	^ repository
 ]
