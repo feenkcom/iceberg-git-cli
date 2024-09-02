@@ -14,6 +14,11 @@ PureGitRepository class >> on: aFileReference [
 		yourself
 ]
 
+{ #category : #accessing }
+PureGitRepository >> allBranches [
+	^ self localBranches , self remoteBranches
+]
+
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
 	| author timestamp message id parents |
@@ -48,6 +53,27 @@ PureGitRepository >> exists [
 ]
 
 { #category : #accessing }
+PureGitRepository >> head [
+	^ self resolveCommit: 'HEAD'
+]
+
+{ #category : #accessing }
+PureGitRepository >> localBranches [
+	| output |
+	output := self runGitWithArgs: {
+		'branch'.
+		'--format=%(objectname) %(refname:short)' }.
+	^ output
+		collect: [ :each | 
+			| firstSpace |
+			firstSpace := each indexOf: Character space.
+			(PureGitLocalBranch inRepository: self)
+				commit: (each copyFrom: 1 to: firstSpace - 1);
+				name: (each copyFrom: firstSpace + 1 to: each size);
+				yourself ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> location [
 	^ location
 ]
@@ -74,6 +100,23 @@ PureGitRepository >> printOn: stream [
 	stream nextPut: $(.
 	location ifNotNil: [ location printOn: stream ].
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitRepository >> remoteBranches [
+	| output |
+	output := self runGitWithArgs: {
+		'branch'.
+		'--remote'.
+		'--format=%(objectname) %(refname:short)' }.
+	^ output
+		collect: [ :each | 
+			| firstSpace |
+			firstSpace := each indexOf: Character space.
+			(PureGitRemoteBranch inRepository: self)
+				commit: (each copyFrom: 1 to: firstSpace - 1);
+				name: (each copyFrom: firstSpace + 1 to: each size);
+				yourself ]
 ]
 
 { #category : #accessing }
