@@ -855,6 +855,15 @@ IceGitCliRepository >> tagsFor: anId [
 	^ lines collect: [ :each | IceTag named: each inRepository: self ]
 ]
 
+{ #category : #'API - branches' }
+IceGitCliRepository >> upstreamForBranch: localBranchName [
+	^ self runGitWithArgs: {
+		'branch'.
+		'--list'.
+		'--format=%(upstream)'.
+		localBranchName }.
+]
+
 { #category : #accessing }
 IceGitCliRepository >> validLocation [
 	(location isNil or: [ location exists not ])
