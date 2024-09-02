@@ -38,3 +38,8 @@ PureGitCommitish >> repository [
 PureGitCommitish >> repository: aRepository [
 	repository := aRepository
 ]
+
+{ #category : #accessing }
+PureGitCommitish >> shortCommitId [
+	^ self commitId first: 7
+]

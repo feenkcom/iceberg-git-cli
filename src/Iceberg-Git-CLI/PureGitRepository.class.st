@@ -35,7 +35,7 @@ PureGitRepository >> commitFromLines: lines [
 		id: id;
 		author: author;
 		timestamp: timestamp;
-		ancestorIds: parents;
+		parentIds: parents;
 		comment: message;
 		yourself
 ]

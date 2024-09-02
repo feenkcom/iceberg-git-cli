@@ -4,22 +4,12 @@ Class {
 	#instVars : [
 		'id',
 		'author',
-		'ancestorIds',
 		'comment',
-		'timestamp'
+		'timestamp',
+		'parentIds'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
-
-{ #category : #accessing }
-PureGitCommit >> ancestorIds [
-	^ ancestorIds
-]
-
-{ #category : #accessing }
-PureGitCommit >> ancestorIds: aStringCollection [
-	ancestorIds := aStringCollection
-]
 
 { #category : #accessing }
 PureGitCommit >> author [
@@ -53,12 +43,12 @@ PureGitCommit >> commitId [
 
 { #category : #testing }
 PureGitCommit >> hasParents [
-	^ ancestorIds notEmpty
+	^ parentIds notEmpty
 ]
 
 { #category : #testing }
 PureGitCommit >> hasSingleParent [
-	^ ancestorIds size = 1
+	^ self numberOfParents = 1
 ]
 
 { #category : #accessing }
@@ -74,6 +64,21 @@ PureGitCommit >> id: aString [
 { #category : #testing }
 PureGitCommit >> isRoot [
 	^ self hasParents not
+]
+
+{ #category : #accessing }
+PureGitCommit >> numberOfParents [
+	^ parentIds size
+]
+
+{ #category : #accessing }
+PureGitCommit >> parentIds [
+	^ parentIds
+]
+
+{ #category : #accessing }
+PureGitCommit >> parentIds: aStringCollection [
+	parentIds := aStringCollection
 ]
 
 { #category : #printing }
