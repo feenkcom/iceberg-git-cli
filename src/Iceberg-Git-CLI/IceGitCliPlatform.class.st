@@ -46,6 +46,11 @@ IceGitCliPlatform >> dummyInstance [
 ]
 
 { #category : #accessing }
+IceGitCliPlatform >> executor [
+	^ IceGitCliExecutor new
+]
+
+{ #category : #accessing }
 IceGitCliPlatform >> gitExecutable [
 	^ gitExecutable
 ]
