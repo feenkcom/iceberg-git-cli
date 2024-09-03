@@ -208,3 +208,19 @@ PureGitRepository >> tags [
 				name: (each copyFrom: firstSpace + 1 to: each size);
 				yourself ]
 ]
+
+{ #category : #accessing }
+PureGitRepository >> treeEntriesFor: treeId [
+	| lines |
+	lines := self runGitWithArgs:  { 'ls-tree' . treeId }.
+	^ lines collect: [ :line | | firstTab meta name |
+		firstTab := line indexOf: Character tab.
+		meta := Character space split: (line copyFrom: 1 to: firstTab - 1).
+		name := line copyFrom: firstTab + 1 to: line size.
+		(PureGitTreeEntry inRepository: self)
+			name: name;
+			mode: meta first;
+			type: meta second asSymbol;
+			id: meta third;
+			yourself ]
+]
