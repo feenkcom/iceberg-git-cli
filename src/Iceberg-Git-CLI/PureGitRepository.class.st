@@ -157,6 +157,13 @@ PureGitRepository >> remoteBranches [
 ]
 
 { #category : #accessing }
+PureGitRepository >> resolveBlob: blobId [
+	^ (PureGitBlob inRepository: self)
+		id: blobId;
+		yourself
+]
+
+{ #category : #accessing }
 PureGitRepository >> resolveCommit: commitId [
 	| output |
 	output := self runGitWithArgs: {
@@ -165,6 +172,13 @@ PureGitRepository >> resolveCommit: commitId [
 		self commitLineFormat.
 		commitId }.
 	^ self commitFromLines: output
+]
+
+{ #category : #accessing }
+PureGitRepository >> resolveTree: treeId [
+	^ (PureGitTree inRepository: self)
+		id: treeId;
+		yourself
 ]
 
 { #category : #private }
