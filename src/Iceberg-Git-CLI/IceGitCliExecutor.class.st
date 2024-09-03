@@ -18,6 +18,20 @@ IceGitCliExecutor >> git [
 ]
 
 { #category : #accessing }
+IceGitCliExecutor >> gitHelpFor: command [
+	| output lines backspace |
+	output := self runGitWithArgs: { command . '--help' }.
+	backspace := Character backspace.
+	lines := output collect: [ :line | 
+		String streamContents: [ :out | 
+			line do: [ :each |
+				each = backspace
+					ifTrue: [ out skip: -1 ]
+					ifFalse: [ out nextPut: each ] ] ] ].
+	^ String cr join: lines
+]
+
+{ #category : #accessing }
 IceGitCliExecutor >> gitVersion [
 	<gtExample>
 	<noTest>
