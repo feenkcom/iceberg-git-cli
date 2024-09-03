@@ -19,6 +19,20 @@ PureGitRepository >> allBranches [
 	^ self localBranches , self remoteBranches
 ]
 
+{ #category : #accessing }
+PureGitRepository >> allCommits [
+	| output commitLines commits |
+	output := self runGitWithArgs: { 
+		'log'.
+		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		'--all'.
+		'--remotes' }.
+	commitLines := output splitOn: [ :each | each = '@@@' ].
+	commitLines removeLast.
+	commits := commitLines collect: [ :each | self commitFromLines: each ].
+	^ commits sort: #timestamp descending
+]
+
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
 	| author timestamp message id parents |
