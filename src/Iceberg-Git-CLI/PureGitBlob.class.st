@@ -43,10 +43,6 @@ PureGitBlob >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
 	self id ifNotNil: [
-		stream nextPutAll: id.
-		stream space.
-		stream print: self contents size.
-		stream space.
-		stream nextPut: $B ].
+		stream nextPutAll: id ].
 	stream nextPut: $)
 ]
