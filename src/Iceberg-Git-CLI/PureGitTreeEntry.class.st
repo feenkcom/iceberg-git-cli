@@ -31,6 +31,19 @@ PureGitTreeEntry >> mode: anObject [
 ]
 
 { #category : #accessing }
+PureGitTreeEntry >> modeDescription [
+	| map |
+	map := {
+		0 -> #new.
+		16384 -> #tree.
+		33188 -> #blob.
+		33261 -> #executable.
+		40960 -> #link.
+		57344 -> #commit } asDictionary.
+	^ map at: self mode ifAbsent: [ #unknown ]
+]
+
+{ #category : #accessing }
 PureGitTreeEntry >> name [
 	^ name
 ]
