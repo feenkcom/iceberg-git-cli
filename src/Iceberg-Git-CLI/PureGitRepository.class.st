@@ -54,6 +54,16 @@ PureGitRepository >> commitFromLines: lines [
 		yourself
 ]
 
+{ #category : #accessing }
+PureGitRepository >> contentsOfBlob: aHash [
+	| executor |
+	executor := IceGitCliPlatform current executor.
+	executor workingDirectory: self ensureLocation.
+	^ executor 
+		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
+		for: #contentsOfFile:
+]
+
 { #category : #private }
 PureGitRepository >> ensureLocation [
 	(location notNil and: [ location exists not ])
