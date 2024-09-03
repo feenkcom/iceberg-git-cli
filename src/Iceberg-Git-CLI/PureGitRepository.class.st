@@ -24,7 +24,7 @@ PureGitRepository >> allCommits [
 	| output commitLines commits |
 	output := self runGitWithArgs: { 
 		'log'.
-		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		self commitLineFormat , '%n@@@'.
 		'--all'.
 		'--remotes' }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
@@ -35,23 +35,40 @@ PureGitRepository >> allCommits [
 
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
-	| author timestamp message id parents |
-	id := lines at: 1.
-	author := lines at: 2.
-	timestamp := ZTimestamp fromUnixTime: (lines at: 3) asInteger.
-	parents := (lines at: 4) 
+	| author timestamp message id parents tree |
+	id := lines first.
+	author := lines second.
+	timestamp := ZTimestamp fromUnixTime: lines third asInteger.
+	parents := lines fourth 
 			ifEmpty: [ #() ] 
 			ifNotEmpty: [ :line | line splitOn: ' ' ].
+	tree := lines fifth.
 	message := String streamContents: [ :str | 
-			6 to: lines size do: [ :i | 
+			7 to: lines size do: [ :i | 
 				str nextPutAll: (lines at: i); cr ] ].
 	^ (PureGitCommit inRepository: self)
 		id: id;
 		author: author;
 		timestamp: timestamp;
 		parentIds: parents;
+		treeId: tree;
 		comment: message;
 		yourself
+]
+
+{ #category : #private }
+PureGitRepository >> commitLineFormat [
+	^ '--format=%H%n%an%n%at%n%P%n%T%n%n%B'
+]
+
+{ #category : #accessing }
+PureGitRepository >> contentsOfBlob: aHash [
+	| executor |
+	executor := IceGitCliPlatform current executor.
+	executor workingDirectory: self ensureLocation.
+	^ executor 
+		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
+		for: #contentsOfFile:
 ]
 
 { #category : #private }
@@ -107,7 +124,7 @@ PureGitRepository >> logFrom: start [
 	| output commitLines |
 	output := self runGitWithArgs: { 
 		'log'.
-		'--format=%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		self commitLineFormat , '%n@@@'.
 		start }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
@@ -145,7 +162,7 @@ PureGitRepository >> resolveCommit: commitId [
 	output := self runGitWithArgs: {
 		'show'.
 		'--no-patch'.
-		'--format=%H%n%an%n%at%n%P%n%n%B'.
+		self commitLineFormat.
 		commitId }.
 	^ self commitFromLines: output
 ]
