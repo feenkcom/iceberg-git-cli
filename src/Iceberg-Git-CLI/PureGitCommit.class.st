@@ -82,6 +82,11 @@ PureGitCommit >> parentIds: aStringCollection [
 	parentIds := aStringCollection
 ]
 
+{ #category : #accessing }
+PureGitCommit >> parents [
+	^ self parentIds collect: [ :each | self repository resolveCommit: each ]
+]
+
 { #category : #printing }
 PureGitCommit >> printOn: stream [
 	super printOn: stream.
@@ -98,6 +103,11 @@ PureGitCommit >> timestamp [
 { #category : #accessing }
 PureGitCommit >> timestamp: aZTimestamp [
 	timestamp := aZTimestamp
+]
+
+{ #category : #accessing }
+PureGitCommit >> tree [
+	^ self repository resolveTree: self treeId
 ]
 
 { #category : #accessing }
