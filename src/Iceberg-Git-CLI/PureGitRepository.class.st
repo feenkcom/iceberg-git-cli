@@ -219,7 +219,7 @@ PureGitRepository >> treeEntriesFor: treeId [
 		name := line copyFrom: firstTab + 1 to: line size.
 		(PureGitTreeEntry inRepository: self)
 			name: name;
-			mode: meta first;
+			mode: (Integer readFrom: meta first base: 8);
 			type: meta second asSymbol;
 			id: meta third;
 			yourself ]
