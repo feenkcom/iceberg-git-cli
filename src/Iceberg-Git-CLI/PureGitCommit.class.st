@@ -6,7 +6,8 @@ Class {
 		'author',
 		'comment',
 		'timestamp',
-		'parentIds'
+		'parentIds',
+		'treeId'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -97,4 +98,14 @@ PureGitCommit >> timestamp [
 { #category : #accessing }
 PureGitCommit >> timestamp: aZTimestamp [
 	timestamp := aZTimestamp
+]
+
+{ #category : #accessing }
+PureGitCommit >> treeId [
+	^ treeId
+]
+
+{ #category : #accessing }
+PureGitCommit >> treeId: aString [
+	treeId := aString
 ]
