@@ -20,6 +20,11 @@ PureGitTreeEntry >> id: anObject [
 	id := anObject
 ]
 
+{ #category : #testing }
+PureGitTreeEntry >> isTree [
+	^ self type = #tree
+]
+
 { #category : #accessing }
 PureGitTreeEntry >> mode [
 	^ mode
