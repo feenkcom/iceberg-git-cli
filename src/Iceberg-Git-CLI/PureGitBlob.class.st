@@ -9,6 +9,20 @@ Class {
 }
 
 { #category : #accessing }
+PureGitBlob class >> imageTypeUsingMagicHeaderFrom: bytes [
+	| stream |
+	stream := bytes readStream.
+	#( 
+		#[16r42 16r4D] bmp
+		#[16r89 16r50 16r4E 16r47 16r0D 16r0A 16r1A 16r0A] png
+		#[16rFF 16rD8 16rFF] jpg
+		#[16r47 16r49 16r46 16r38] gif ) pairsDo: [ :magic :type |
+			(stream reset; next: magic size) = magic
+				ifTrue: [ ^ type ] ].
+	^ nil
+]
+
+{ #category : #accessing }
 PureGitBlob >> contents [
 	^ contents ifNil: [ contents := self repository contentsOfBlob: self id ]
 ]
