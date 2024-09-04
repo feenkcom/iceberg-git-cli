@@ -35,7 +35,7 @@ PureGitRepository >> allCommits [
 
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
-	| author timestamp message id parents tree |
+	| author timestamp message id parents tree start stop |
 	id := lines first.
 	author := lines second.
 	timestamp := ZTimestamp fromUnixTime: lines third asInteger.
@@ -43,9 +43,13 @@ PureGitRepository >> commitFromLines: lines [
 			ifEmpty: [ #() ] 
 			ifNotEmpty: [ :line | line splitOn: ' ' ].
 	tree := lines fifth.
-	message := String streamContents: [ :str | 
-			7 to: lines size do: [ :i | 
-				str nextPutAll: (lines at: i); cr ] ].
+	start := 7.
+	stop := lines size.
+	[ (lines at: start) isEmpty and: [ start <= stop ] ]
+		whileTrue: [ start := start + 1 ].
+	[ (lines at: stop) isEmpty and: [ start <= stop ]]
+		whileTrue: [ stop := stop - 1 ].
+	message := String cr join: (lines copyFrom: start to: stop).
 	^ (PureGitCommit inRepository: self)
 		id: id;
 		author: author;
