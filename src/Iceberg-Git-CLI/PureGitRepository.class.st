@@ -15,6 +15,29 @@ PureGitRepository class >> on: aFileReference [
 ]
 
 { #category : #accessing }
+PureGitRepository >> allAnnotatedCommits [
+	| commitsMap annotatedCommits |
+	annotatedCommits := self allCommits collect: [ :each |
+		PureGitAnnotatedCommit new
+			commit: each;
+			yourself ].
+	commitsMap := Dictionary new: annotatedCommits size.
+	annotatedCommits do: [ :each | 
+		commitsMap at: each id put: each ].
+	annotatedCommits do: [ :annotatedCommit |
+		annotatedCommit parents: (annotatedCommit parentIds collect: [ :id | commitsMap at: id ]) ].
+	self tags do: [ :tag |
+		commitsMap 
+			at: tag commitId 
+			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: tag name ] ].
+	self allBranches do: [ :branch |
+		commitsMap 
+			at: branch commitId 
+			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: branch name ] ].
+	^ annotatedCommits
+]
+
+{ #category : #accessing }
 PureGitRepository >> allBranches [
 	^ self localBranches , self remoteBranches
 ]
