@@ -10,6 +10,21 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #enumerating }
+PureGitTreeEntry >> entriesDoRecursively: block [
+]
+
+{ #category : #enumerating }
+PureGitTreeEntry >> entriesDoRecursively: block parents: parents [
+	self isTree
+		ifTrue: [ | next |
+			next := parents copyWith: self.
+			self subEntries do: [ :entry |
+				entry entriesDoRecursively: block parents: next ] ]
+		ifFalse: [
+			block cull: self cull: parents ]
+]
+
 { #category : #accessing }
 PureGitTreeEntry >> id [
 	^ id
@@ -73,6 +88,13 @@ PureGitTreeEntry >> resolve [
 	self
 		assert: (#(blob tree) includes: type)
 		description: 'Unknow git tree entry type'
+]
+
+{ #category : #accessing }
+PureGitTreeEntry >> subEntries [
+	^ self isTree
+		ifTrue: [ self resolve entries ] 
+		ifFalse: [ #() ]
 ]
 
 { #category : #accessing }

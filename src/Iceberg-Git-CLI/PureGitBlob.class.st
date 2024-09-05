@@ -8,7 +8,19 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
-{ #category : #accessing }
+{ #category : #utilities }
+PureGitBlob class >> hashBytes: bytes [
+	| encoding |
+	encoding := ('blob {1}' format: { bytes size }) utf8Encoded , #[ 0 ], bytes.
+	^ SHA1 hashMessage: encoding
+]
+
+{ #category : #utilities }
+PureGitBlob class >> hashText: string [
+	^ self hashBytes: string utf8Encoded
+]
+
+{ #category : #utilities }
 PureGitBlob class >> imageTypeUsingMagicHeaderFrom: bytes [
 	| stream |
 	stream := bytes readStream.

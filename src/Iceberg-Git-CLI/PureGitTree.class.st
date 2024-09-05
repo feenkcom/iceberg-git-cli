@@ -18,6 +18,23 @@ PureGitTree >> entries: aCollection [
 	entries := aCollection
 ]
 
+{ #category : #enumerating }
+PureGitTree >> entriesDoRecursively: block [
+	| parents |
+	parents := Array new.
+	self entries do: [ :entry |
+		entry entriesDoRecursively: block parents: parents ]
+]
+
+{ #category : #enumerating }
+PureGitTree >> entriesRecursively [
+	| collection |
+	collection := OrderedCollection new.
+	self entriesDoRecursively: [ :entry :parents |
+		collection add: (parents -> entry) ].
+	^ collection
+]
+
 { #category : #accessing }
 PureGitTree >> id [
 	^ id
