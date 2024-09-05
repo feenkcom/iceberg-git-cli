@@ -56,6 +56,11 @@ PureGitRepository >> allCommits [
 	^ commits sort: #timestamp descending
 ]
 
+{ #category : #operations }
+PureGitRepository >> clone: gitUrl [
+	self runGitWithArgs: { 'clone' . gitUrl . '.' }
+]
+
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
 	| author timestamp message id parents tree start stop |
