@@ -401,16 +401,20 @@ IceGitCliRepository >> head [
 
 { #category : #'private - commits' }
 IceGitCliRepository >> iceGitCommitFromLines: lines [
-	| author datetime message id parents |
+	| author datetime message id parents start stop |
 	id := lines at: 1.
 	author := lines at: 2.
 	datetime := DateAndTime fromUnixTime: (lines at: 3) asInteger.
 	parents := (lines at: 4) 
 			ifEmpty: [ #() ] 
 			ifNotEmpty: [ :line | line splitOn: ' ' ].
-	message := String streamContents: [ :str | 
-			6 to: lines size do: [ :i | 
-				str nextPutAll: (lines at: i); cr ] ].
+	start := 6.
+	stop := lines size.
+	[ (lines at: start) isEmpty and: [ start <= stop ] ]
+		whileTrue: [ start := start + 1 ].
+	[ (lines at: stop) isEmpty and: [ start <= stop ]]
+		whileTrue: [ stop := stop - 1 ].
+	message := String cr join: (lines copyFrom: start to: stop).
 	^ IceGitCliCommit new
 		id: id;
 		author: author;

@@ -1,3 +1,14 @@
+"
+I am an actual git commit.
+
+A commit is a tree with meta data. 
+
+The meta data consists of the timestamp, author, parent ids and comment.
+
+A commit's hash (id) identifies it in the git object database.
+
+My tree describes the whole state of the repository at the moment the commit was created.
+"
 Class {
 	#name : #PureGitCommit,
 	#superclass : #PureGitCommitish,

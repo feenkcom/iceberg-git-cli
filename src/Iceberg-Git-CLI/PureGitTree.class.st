@@ -1,3 +1,10 @@
+"
+I represent a git tree with a list of entries.
+
+My entries are instances of PureGitTreeEntry.
+
+I am one level in a nested tree structure.
+"
 Class {
 	#name : #PureGitTree,
 	#superclass : #PureGitRepositoryObject,
@@ -45,6 +52,12 @@ PureGitTree >> entryNamed: name ifAbsent: block [
 	^ self entries 
 		detect: [ :each | each name = name ]
 		ifNone: block
+]
+
+{ #category : #accessing }
+PureGitTree >> flatPaths [
+	^ self entriesRecursively collect: [ :each |
+		($/ join: (each key collect: #name) , { each value name }) , ' ' ,  each value id ]
 ]
 
 { #category : #testing }

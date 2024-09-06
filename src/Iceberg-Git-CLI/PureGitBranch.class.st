@@ -1,3 +1,6 @@
+"
+I am a git branch, a name tracking commits.
+"
 Class {
 	#name : #PureGitBranch,
 	#superclass : #PureGitCommitish,
