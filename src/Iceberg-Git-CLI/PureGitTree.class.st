@@ -54,6 +54,12 @@ PureGitTree >> entryNamed: name ifAbsent: block [
 		ifNone: block
 ]
 
+{ #category : #accessing }
+PureGitTree >> flatPaths [
+	^ self entriesRecursively collect: [ :each |
+		($/ join: (each key collect: #name) , { each value name }) , ' ' ,  each value id ]
+]
+
 { #category : #testing }
 PureGitTree >> hasEntryNamed: name [
 	^ self entries anySatisfy: [ :each | each name = name ]
