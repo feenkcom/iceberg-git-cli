@@ -1,3 +1,12 @@
+"
+I represent the binary contents of a git blob.
+
+I am the lowest level of content addressable data in git.
+
+I know my hash (id).
+
+I hold no further meta data.
+"
 Class {
 	#name : #PureGitBlob,
 	#superclass : #PureGitRepositoryObject,

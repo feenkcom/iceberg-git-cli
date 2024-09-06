@@ -1,3 +1,8 @@
+"
+I represent one entry in a git tree.
+
+I hold some minimal meta data: a name, a mode, a type and the hash (id) of the object that I refer to.
+"
 Class {
 	#name : #PureGitTreeEntry,
 	#superclass : #PureGitRepositoryObject,

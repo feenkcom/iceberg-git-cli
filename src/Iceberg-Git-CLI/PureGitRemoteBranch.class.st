@@ -1,3 +1,6 @@
+"
+I am a remote git branch.
+"
 Class {
 	#name : #PureGitRemoteBranch,
 	#superclass : #PureGitBranch,

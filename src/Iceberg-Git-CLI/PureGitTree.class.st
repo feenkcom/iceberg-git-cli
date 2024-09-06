@@ -1,3 +1,10 @@
+"
+I represent a git tree with a list of entries.
+
+My entries are instances of PureGitTreeEntry.
+
+I am one level in a nested tree structure.
+"
 Class {
 	#name : #PureGitTree,
 	#superclass : #PureGitRepositoryObject,

@@ -1,3 +1,6 @@
+"
+I wrap a commit and hold resolved parents as well as branches and tags pointing to it.
+"
 Class {
 	#name : #PureGitAnnotatedCommit,
 	#superclass : #Object,

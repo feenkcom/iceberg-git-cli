@@ -1,3 +1,6 @@
+"
+I am a local git branch.
+"
 Class {
 	#name : #PureGitLocalBranch,
 	#superclass : #PureGitBranch,

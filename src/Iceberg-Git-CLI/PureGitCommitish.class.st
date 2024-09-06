@@ -1,3 +1,6 @@
+"
+I am an abstraction of things that can be considered a commit.
+"
 Class {
 	#name : #PureGitCommitish,
 	#superclass : #PureGitRepositoryObject,

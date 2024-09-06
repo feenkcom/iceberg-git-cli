@@ -1,3 +1,10 @@
+"
+I model a git repository that exists at a specific location.
+
+I use a git command line interface to interact with my on disk repository.
+
+I do not know anything about Iceberg or Pharo code, I only deal with files.
+"
 Class {
 	#name : #PureGitRepository,
 	#superclass : #Object,

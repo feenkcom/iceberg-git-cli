@@ -1,3 +1,6 @@
+"
+I exist in the context of a PureGitRepository
+"
 Class {
 	#name : #PureGitRepositoryObject,
 	#superclass : #Object,
