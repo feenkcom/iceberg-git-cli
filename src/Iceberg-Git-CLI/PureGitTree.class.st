@@ -36,6 +36,23 @@ PureGitTree >> entriesRecursively [
 ]
 
 { #category : #accessing }
+PureGitTree >> entryNamed: name [
+	^ self entries detect: [ :each | each name = name ]
+]
+
+{ #category : #accessing }
+PureGitTree >> entryNamed: name ifAbsent: block [
+	^ self entries 
+		detect: [ :each | each name = name ]
+		ifNone: block
+]
+
+{ #category : #testing }
+PureGitTree >> hasEntryNamed: name [
+	^ self entries anySatisfy: [ :each | each name = name ]
+]
+
+{ #category : #accessing }
 PureGitTree >> id [
 	^ id
 ]
@@ -43,4 +60,12 @@ PureGitTree >> id [
 { #category : #accessing }
 PureGitTree >> id: aString [
 	id := aString
+]
+
+{ #category : #printing }
+PureGitTree >> printOn: stream [
+	super printOn: stream.
+	stream nextPut: $(.
+	stream nextPutAll: self id.
+	stream nextPut: $)
 ]

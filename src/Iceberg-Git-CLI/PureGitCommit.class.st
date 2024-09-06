@@ -73,6 +73,11 @@ PureGitCommit >> numberOfParents [
 ]
 
 { #category : #accessing }
+PureGitCommit >> parent [
+	^ self repository resolveCommit: self parentIds first
+]
+
+{ #category : #accessing }
 PureGitCommit >> parentIds [
 	^ parentIds
 ]
