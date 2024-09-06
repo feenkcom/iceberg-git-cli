@@ -68,7 +68,11 @@ PureGitBlob >> id: aString [
 PureGitBlob >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	self id ifNotNil: [
-		stream nextPutAll: id ].
+	stream nextPutAll: self id.
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitBlob >> text [
+	^ self contents utf8Decoded
 ]
