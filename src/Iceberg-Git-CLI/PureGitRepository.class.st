@@ -9,7 +9,9 @@ Class {
 	#name : #PureGitRepository,
 	#superclass : #Object,
 	#instVars : [
-		'location'
+		'location',
+		'exists',
+		'hasHead'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -52,6 +54,7 @@ PureGitRepository >> allBranches [
 { #category : #accessing }
 PureGitRepository >> allCommits [
 	| output commitLines commits |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
@@ -82,7 +85,7 @@ PureGitRepository >> commitFromLines: lines [
 	stop := lines size.
 	[ (lines at: start) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ start := start + 1 ].
-	[ (lines at: stop) isEmpty and: [ start <= stop ]]
+	[ (lines at: stop) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ stop := stop - 1 ].
 	message := String cr join: (lines copyFrom: start to: stop).
 	^ (PureGitCommit inRepository: self)
@@ -119,7 +122,17 @@ PureGitRepository >> ensureLocation [
 
 { #category : #testing }
 PureGitRepository >> exists [
-	^ location notNil and: [ (location / '.git') exists ]
+	^ exists 
+		or: [ exists := location notNil and: [ (location / '.git') exists ] ]
+]
+
+{ #category : #testing }
+PureGitRepository >> hasHead [
+	^ hasHead
+		or: [ hasHead := self exists
+					and: [ [ (self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')) notEmpty ]
+							on: GtGitCliCommandError
+							do: [ false ] ] ]
 ]
 
 { #category : #accessing }
@@ -127,9 +140,41 @@ PureGitRepository >> head [
 	^ self resolveCommit: 'HEAD'
 ]
 
+{ #category : #operations }
+PureGitRepository >> init [
+	self runGitWithArgs: { 'init' }
+]
+
+{ #category : #initialization }
+PureGitRepository >> initialize [
+	super initialize.
+	exists := false.
+	hasHead := false.
+]
+
+{ #category : #accessing }
+PureGitRepository >> internals [
+	| config lines counts values |
+	lines := self runGitWithArgs: #('config' '--list').
+	values := lines collect: [ :line | $= split: line ].
+	values sort: #first ascending.
+	config := values
+			collect: [ :each | each first -> each second ]
+			as: OrderedDictionary.
+	lines := self runGitWithArgs: #('count-objects' '-v').
+	values := lines collect: [ :line | $: split: line ].
+	counts := values
+			collect: [ :each | each first -> each second trimBoth asNumber ]
+			as: OrderedDictionary.
+	^ {
+		#'git-config' -> config.
+		#'git-count-objects' -> counts } as: OrderedDictionary
+]
+
 { #category : #accessing }
 PureGitRepository >> localBranches [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'branch'.
 		'--format=%(objectname) %(refname:short)' }.
@@ -148,23 +193,24 @@ PureGitRepository >> location [
 	^ location
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 PureGitRepository >> location: aFileReference [
 	location := aFileReference
 ]
 
 { #category : #accessing }
 PureGitRepository >> log [
+	self hasHead ifFalse: [ ^ #() ].
 	^ self head log
 ]
 
 { #category : #accessing }
-PureGitRepository >> logFrom: start [
+PureGitRepository >> logFrom: startCommit [
 	| output commitLines |
 	output := self runGitWithArgs: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
-		start }.
+		startCommit }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
 	^ commitLines collect: [ :each | self commitFromLines: each ]
@@ -181,6 +227,7 @@ PureGitRepository >> printOn: stream [
 { #category : #accessing }
 PureGitRepository >> remoteBranches [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'branch'.
 		'--remote'.
@@ -233,8 +280,19 @@ PureGitRepository >> runGitWithArgs: args [
 ]
 
 { #category : #accessing }
+PureGitRepository >> status [
+	| lines |
+	self exists ifFalse: [ ^ #() ].
+	lines := self runGitWithArgs: { 'status' . '--porcelain' }.
+	^ lines collect: [ :each |
+		(PureGitFileStatus inRepository: self)
+			fromLine: each ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> tags [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'tag'.
 		'--format=%(objectname) %(refname:short)' }.
