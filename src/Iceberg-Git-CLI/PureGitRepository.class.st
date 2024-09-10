@@ -174,7 +174,7 @@ PureGitRepository >> location [
 	^ location
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 PureGitRepository >> location: aFileReference [
 	location := aFileReference
 ]
@@ -186,12 +186,12 @@ PureGitRepository >> log [
 ]
 
 { #category : #accessing }
-PureGitRepository >> logFrom: start [
+PureGitRepository >> logFrom: startCommit [
 	| output commitLines |
 	output := self runGitWithArgs: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
-		start }.
+		startCommit }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
 	^ commitLines collect: [ :each | self commitFromLines: each ]
