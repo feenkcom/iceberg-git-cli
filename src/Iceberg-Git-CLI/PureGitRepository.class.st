@@ -83,7 +83,7 @@ PureGitRepository >> commitFromLines: lines [
 	stop := lines size.
 	[ (lines at: start) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ start := start + 1 ].
-	[ (lines at: stop) isEmpty and: [ start <= stop ]]
+	[ (lines at: stop) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ stop := stop - 1 ].
 	message := String cr join: (lines copyFrom: start to: stop).
 	^ (PureGitCommit inRepository: self)
