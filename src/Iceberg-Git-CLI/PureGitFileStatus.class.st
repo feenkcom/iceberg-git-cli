@@ -10,8 +10,9 @@ Class {
 	#superclass : #PureGitRepositoryObject,
 	#instVars : [
 		'path',
-		'status',
-		'originalPath'
+		'statusInIndex',
+		'originalPath',
+		'statusInWorkTree'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -43,8 +44,9 @@ PureGitFileStatus >> fileStatusTable [
 PureGitFileStatus >> fromLine: line [
 	| statusChar |
 	statusChar := line trimLeft first.
-	status := self fileStatusTable at: statusChar.
-	(#(renamed copied) includes: status)
+	statusInIndex := self fileStatusTable at: line first.
+	statusInWorkTree := self fileStatusTable at: line second.
+	(#(renamed copied) includes: statusInIndex)
 		ifTrue: [ | parts |
 			parts := ' -> ' split: (line copyFrom: 4 to: line size).
 			originalPath := parts first.
@@ -58,7 +60,8 @@ PureGitFileStatus >> gtDetails [
 	^ super gtDetails , {
 		{ 'path' . self path . self fileReference }.
 		{ 'original path' . self originalPath ifNil: [ '' ] . self originalPath }.
-		{ 'status' . self status }
+		{ 'status in index' . self statusInIndex }.
+		{ 'status in work tree' . self statusInWorkTree }
 	}
 ]
 
@@ -86,18 +89,30 @@ PureGitFileStatus >> path: aPathString [
 PureGitFileStatus >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	stream nextPutAll: status.
+	stream nextPutAll: statusInIndex.
+	stream nextPut: $/.
+	stream nextPutAll: statusInWorkTree
 	stream space.
 	stream nextPutAll: path.
 	stream nextPut: $)
 ]
 
 { #category : #accessing }
-PureGitFileStatus >> status [
-	^ status
+PureGitFileStatus >> statusInIndex [
+	^ statusInIndex
 ]
 
 { #category : #accessing }
-PureGitFileStatus >> status: aStatusSymbol [
-	status := aStatusSymbol
+PureGitFileStatus >> statusInIndex: aStatusSymbol [
+	statusInIndex := aStatusSymbol
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> statusInWorkTree [
+	^ statusInWorkTree
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> statusInWorkTree: aStatusSymbol [
+	statusInWorkTree := aStatusSymbol
 ]

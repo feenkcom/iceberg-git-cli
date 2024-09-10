@@ -52,6 +52,7 @@ PureGitRepository >> allBranches [
 { #category : #accessing }
 PureGitRepository >> allCommits [
 	| output commitLines commits |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
@@ -122,14 +123,28 @@ PureGitRepository >> exists [
 	^ location notNil and: [ (location / '.git') exists ]
 ]
 
+{ #category : #testing }
+PureGitRepository >> hasHead [
+	^ self exists
+		and: [ [ (self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')) notEmpty ]
+				on: GtGitCliCommandError
+				do: [ false ] ]
+]
+
 { #category : #accessing }
 PureGitRepository >> head [
 	^ self resolveCommit: 'HEAD'
 ]
 
+{ #category : #operations }
+PureGitRepository >> init [
+	self runGitWithArgs: { 'init' }
+]
+
 { #category : #accessing }
 PureGitRepository >> localBranches [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'branch'.
 		'--format=%(objectname) %(refname:short)' }.
@@ -155,6 +170,7 @@ PureGitRepository >> location: aFileReference [
 
 { #category : #accessing }
 PureGitRepository >> log [
+	self hasHead ifFalse: [ ^ #() ].
 	^ self head log
 ]
 
@@ -181,6 +197,7 @@ PureGitRepository >> printOn: stream [
 { #category : #accessing }
 PureGitRepository >> remoteBranches [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'branch'.
 		'--remote'.
@@ -235,6 +252,7 @@ PureGitRepository >> runGitWithArgs: args [
 { #category : #accessing }
 PureGitRepository >> status [
 	| lines |
+	self exists ifFalse: [ ^ #() ].
 	lines := self runGitWithArgs: { 'status' . '--porcelain' }.
 	^ lines collect: [ :each |
 		(PureGitFileStatus inRepository: self)
@@ -244,6 +262,7 @@ PureGitRepository >> status [
 { #category : #accessing }
 PureGitRepository >> tags [
 	| output |
+	self exists ifFalse: [ ^ #() ].
 	output := self runGitWithArgs: {
 		'tag'.
 		'--format=%(objectname) %(refname:short)' }.
