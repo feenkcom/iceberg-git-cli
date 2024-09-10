@@ -51,6 +51,11 @@ IceGitCliPlatform >> executor [
 ]
 
 { #category : #accessing }
+IceGitCliPlatform >> gitExecPath [
+	^ (self dummyInstance runGitWithArgs: #('--exec-path')) first
+]
+
+{ #category : #accessing }
 IceGitCliPlatform >> gitExecutable [
 	^ gitExecutable
 ]
@@ -84,6 +89,30 @@ IceGitCliPlatform >> isInstalled [
 { #category : #accessing }
 IceGitCliPlatform >> repositoryClass [
 	^ IceGitCliRepository
+]
+
+{ #category : #'as yet unclassified' }
+IceGitCliPlatform >> resolveGitPath [
+	| builder output path |
+	builder := GtExternalProcessBuilder new
+			command: (Smalltalk os isWindows ifTrue: [ 'where' ] ifFalse: [ 'which' ]);
+			arg: self gitExecutable.
+	output := builder output.
+	output status isSuccess
+		ifFalse: [ ^ nil ].
+	path := output stdout trimBoth.
+	^ Smalltalk os isWindows
+		ifTrue: [ | lines | 
+			lines := path lines
+					collect: [ :line | line trimBoth asFileReference ]
+					thenSelect: [ :each | #(bat exe) includes: each extension asLowercase ].
+			lines
+				ifEmpty: [ nil ]
+				ifNotEmpty: [ :anArray | anArray first ] ]
+		ifFalse: [
+			path 
+				ifEmpty: [ nil ]
+				ifNotEmpty: [ path asFileReference ] ]
 ]
 
 { #category : #accessing }
