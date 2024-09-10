@@ -9,7 +9,9 @@ Class {
 	#name : #PureGitRepository,
 	#superclass : #Object,
 	#instVars : [
-		'location'
+		'location',
+		'exists',
+		'hasHead'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -120,15 +122,17 @@ PureGitRepository >> ensureLocation [
 
 { #category : #testing }
 PureGitRepository >> exists [
-	^ location notNil and: [ (location / '.git') exists ]
+	^ exists 
+		or: [ exists := location notNil and: [ (location / '.git') exists ] ]
 ]
 
 { #category : #testing }
 PureGitRepository >> hasHead [
-	^ self exists
-		and: [ [ (self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')) notEmpty ]
-				on: GtGitCliCommandError
-				do: [ false ] ]
+	^ hasHead
+		or: [ hasHead := self exists
+					and: [ [ (self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')) notEmpty ]
+							on: GtGitCliCommandError
+							do: [ false ] ] ]
 ]
 
 { #category : #accessing }
@@ -139,6 +143,13 @@ PureGitRepository >> head [
 { #category : #operations }
 PureGitRepository >> init [
 	self runGitWithArgs: { 'init' }
+]
+
+{ #category : #initialization }
+PureGitRepository >> initialize [
+	super initialize.
+	exists := false.
+	hasHead := false.
 ]
 
 { #category : #accessing }
