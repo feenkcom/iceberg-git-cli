@@ -233,6 +233,15 @@ PureGitRepository >> runGitWithArgs: args [
 ]
 
 { #category : #accessing }
+PureGitRepository >> status [
+	| lines |
+	lines := self runGitWithArgs: { 'status' . '--porcelain' }.
+	^ lines collect: [ :each |
+		(PureGitFileStatus inRepository: self)
+			fromLine: each ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> tags [
 	| output |
 	output := self runGitWithArgs: {
