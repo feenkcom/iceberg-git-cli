@@ -153,6 +153,25 @@ PureGitRepository >> initialize [
 ]
 
 { #category : #accessing }
+PureGitRepository >> internals [
+	| config lines counts values |
+	lines := self runGitWithArgs: #('config' '--list').
+	values := lines collect: [ :line | $= split: line ].
+	values sort: #first ascending.
+	config := values
+			collect: [ :each | each first -> each second ]
+			as: OrderedDictionary.
+	lines := self runGitWithArgs: #('count-objects' '-v').
+	values := lines collect: [ :line | $: split: line ].
+	counts := values
+			collect: [ :each | each first -> each second trimBoth asNumber ]
+			as: OrderedDictionary.
+	^ {
+		#'git-config' -> config.
+		#'git-count-objects' -> counts } as: OrderedDictionary
+]
+
+{ #category : #accessing }
 PureGitRepository >> localBranches [
 	| output |
 	self exists ifFalse: [ ^ #() ].
