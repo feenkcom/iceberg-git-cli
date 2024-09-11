@@ -32,7 +32,7 @@ PureGitFileStatus >> fileStatusTable [
 
 		$A -> #added.
 		$M -> #modified.
-		$T -> #typeChange.
+		$T -> #typeChanged.
 		$D -> #deleted.
 		$R -> #renamed.
 		$C -> #copied.
