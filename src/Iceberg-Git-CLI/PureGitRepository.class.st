@@ -71,6 +71,11 @@ PureGitRepository >> clone: gitUrl [
 	self runGitWithArgs: { 'clone' . gitUrl . '.' }
 ]
 
+{ #category : #operations }
+PureGitRepository >> commit: comment [
+	self runGitWithArgs: { 'commit' . '-m' . comment }
+]
+
 { #category : #private }
 PureGitRepository >> commitFromLines: lines [
 	| author timestamp message id parents tree start stop |
@@ -279,6 +284,11 @@ PureGitRepository >> runGitWithArgs: args [
 	^ executor runGitWithArgs: args for: operation
 ]
 
+{ #category : #operations }
+PureGitRepository >> stage: filePath [
+	self runGitWithArgs: { 'add' . filePath }
+]
+
 { #category : #accessing }
 PureGitRepository >> status [
 	| lines |
@@ -320,4 +330,9 @@ PureGitRepository >> treeEntriesFor: treeId [
 			type: meta second asSymbol;
 			id: meta third;
 			yourself ]
+]
+
+{ #category : #operations }
+PureGitRepository >> unstage: filePath [
+	self runGitWithArgs: { 'restore' . '--staged' . filePath }
 ]

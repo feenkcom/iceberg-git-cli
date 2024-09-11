@@ -91,7 +91,7 @@ PureGitFileStatus >> printOn: stream [
 	stream nextPut: $(.
 	stream nextPutAll: statusInIndex.
 	stream nextPut: $/.
-	stream nextPutAll: statusInWorkTree
+	stream nextPutAll: statusInWorkTree.
 	stream space.
 	stream nextPutAll: path.
 	stream nextPut: $)
