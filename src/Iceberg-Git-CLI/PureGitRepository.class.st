@@ -11,7 +11,8 @@ Class {
 	#instVars : [
 		'location',
 		'exists',
-		'hasHead'
+		'hasHead',
+		'announcer'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -66,9 +67,26 @@ PureGitRepository >> allCommits [
 	^ commits sort: #timestamp descending
 ]
 
+{ #category : #private }
+PureGitRepository >> announceRepositoryModified [
+	self announcer announce: PureGitRepositoryModified new
+]
+
+{ #category : #accessing }
+PureGitRepository >> announcer [
+	^ announcer
+]
+
 { #category : #operations }
 PureGitRepository >> clone: gitUrl [
-	self runGitWithArgs: { 'clone' . gitUrl . '.' }
+	self runGitWithArgs: { 'clone' . gitUrl . '.' }.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
+PureGitRepository >> commit: comment [
+	self runGitWithArgs: { 'commit' . '-m' . comment }.
+	self announceRepositoryModified
 ]
 
 { #category : #private }
@@ -142,7 +160,8 @@ PureGitRepository >> head [
 
 { #category : #operations }
 PureGitRepository >> init [
-	self runGitWithArgs: { 'init' }
+	self runGitWithArgs: { 'init' }.
+	self announceRepositoryModified
 ]
 
 { #category : #initialization }
@@ -150,6 +169,7 @@ PureGitRepository >> initialize [
 	super initialize.
 	exists := false.
 	hasHead := false.
+	announcer := Announcer new.
 ]
 
 { #category : #accessing }
@@ -279,6 +299,12 @@ PureGitRepository >> runGitWithArgs: args [
 	^ executor runGitWithArgs: args for: operation
 ]
 
+{ #category : #operations }
+PureGitRepository >> stage: filePath [
+	self runGitWithArgs: { 'add' . filePath }.
+	self announceRepositoryModified
+]
+
 { #category : #accessing }
 PureGitRepository >> status [
 	| lines |
@@ -320,4 +346,10 @@ PureGitRepository >> treeEntriesFor: treeId [
 			type: meta second asSymbol;
 			id: meta third;
 			yourself ]
+]
+
+{ #category : #operations }
+PureGitRepository >> unstage: filePath [
+	self runGitWithArgs: { 'restore' . '--staged' . filePath }.
+	self announceRepositoryModified
 ]

@@ -112,6 +112,16 @@ PureGitCommit >> printOn: stream [
 ]
 
 { #category : #accessing }
+PureGitCommit >> shortParentIds [
+	^ parentIds collect: [ : each | each first: 7 ]
+]
+
+{ #category : #accessing }
+PureGitCommit >> shortTreeId [
+	^ treeId first: 7
+]
+
+{ #category : #accessing }
 PureGitCommit >> timestamp [
 	^ timestamp
 ]

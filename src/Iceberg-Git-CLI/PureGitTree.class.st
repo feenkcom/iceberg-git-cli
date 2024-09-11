@@ -82,3 +82,8 @@ PureGitTree >> printOn: stream [
 	stream nextPutAll: self id.
 	stream nextPut: $)
 ]
+
+{ #category : #accessing }
+PureGitTree >> shortId [
+	^ id first: 7
+]
