@@ -96,6 +96,11 @@ PureGitTreeEntry >> resolve [
 ]
 
 { #category : #accessing }
+PureGitTreeEntry >> shortId [
+	^ id first: 7
+]
+
+{ #category : #accessing }
 PureGitTreeEntry >> subEntries [
 	^ self isTree
 		ifTrue: [ self resolve entries ] 

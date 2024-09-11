@@ -56,7 +56,9 @@ PureGitBlob >> contents: aByteArray [
 { #category : #'as yet unclassified' }
 PureGitBlob >> gtDetails [
 	^ super gtDetails , {
-		{ 'blob' . self id }.
+		{ 'blob' 
+			. self shortId
+			. self id }.
 		{ 'contents'
 			. '{1} bytes' format: { self contents size }
 			. self contents }
@@ -79,6 +81,11 @@ PureGitBlob >> printOn: stream [
 	stream nextPut: $(.
 	stream nextPutAll: self id.
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitBlob >> shortId [
+	^ id first: 7
 ]
 
 { #category : #accessing }
