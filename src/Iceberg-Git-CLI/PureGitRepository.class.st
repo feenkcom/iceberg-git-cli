@@ -131,6 +131,11 @@ PureGitRepository >> contentsOfBlob: aHash [
 		for: #contentsOfFile:
 ]
 
+{ #category : #accessing }
+PureGitRepository >> diff: args [
+	^ self runGitWithArgs: #('diff') , args
+]
+
 { #category : #private }
 PureGitRepository >> ensureLocation [
 	(location notNil and: [ location exists not ])
