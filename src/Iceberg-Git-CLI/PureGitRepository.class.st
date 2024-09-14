@@ -304,6 +304,18 @@ PureGitRepository >> runGitWithArgs: args [
 	^ executor runGitWithArgs: args for: operation
 ]
 
+{ #category : #private }
+PureGitRepository >> runGitWithArgsAsync: args [
+	"Run CLI git with the passed arguments and return the lines from standard output as an asynchroneous stream..
+	Do not wait for the git command to complete. Signal an error when not successful."
+
+	| operation executor |
+	operation := thisContext sender method selector.
+	executor := IceGitCliPlatform current executor.
+	executor workingDirectory: self ensureLocation.
+	^ executor runGitWithArgsAsync: args for: operation
+]
+
 { #category : #operations }
 PureGitRepository >> stage: filePath [
 	self runGitWithArgs: { 'add' . filePath }.
