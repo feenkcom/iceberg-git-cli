@@ -27,7 +27,7 @@ PureGitRepository class >> on: aFileReference [
 { #category : #accessing }
 PureGitRepository >> allAnnotatedCommits [
 	| commitsMap annotatedCommits |
-	annotatedCommits := self allCommits collect: [ :each |
+	annotatedCommits := self allCommits toArray wait collect: [ :each |
 		PureGitAnnotatedCommit new
 			commit: each;
 			yourself ].
@@ -36,7 +36,7 @@ PureGitRepository >> allAnnotatedCommits [
 		commitsMap at: each id put: each ].
 	annotatedCommits do: [ :annotatedCommit |
 		annotatedCommit parents: (annotatedCommit parentIds collect: [ :id | commitsMap at: id ]) ].
-	self tags do: [ :tag |
+	self tags toArray wait do: [ :tag |
 		commitsMap 
 			at: tag commitId 
 			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: tag name ] ].
@@ -54,17 +54,16 @@ PureGitRepository >> allBranches [
 
 { #category : #accessing }
 PureGitRepository >> allCommits [
-	| output commitLines commits |
-	self exists ifFalse: [ ^ #() ].
-	output := self runGitWithArgs: { 
+	| output commitLines |
+	self exists ifFalse: [ ^ #() asAsyncStream ].
+	output := self runGitWithArgsAsync: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
 		'--all'.
 		'--remotes' }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines removeLast.
-	commits := commitLines collect: [ :each | self commitFromLines: each ].
-	^ commits sort: #timestamp descending
+	commitLines := commitLines select: [ :lines | lines notEmpty ].
+	^ commitLines collect: [ :each | self commitFromLines: each ]
 ]
 
 { #category : #private }
@@ -186,11 +185,14 @@ PureGitRepository >> internals [
 	config := values
 			collect: [ :each | each first -> each second ]
 			as: OrderedDictionary.
-	lines := self runGitWithArgs: #('count-objects' '-v').
-	values := lines collect: [ :line | $: split: line ].
-	counts := values
-			collect: [ :each | each first -> each second trimBoth asNumber ]
-			as: OrderedDictionary.
+	self exists 
+		ifTrue: [
+			lines := self runGitWithArgs: #('count-objects' '-v').
+			values := lines collect: [ :line | $: split: line ].
+			counts := values
+					collect: [ :each | each first -> each second trimBoth asNumber ]
+					as: OrderedDictionary]
+		ifFalse: [ counts := nil ].
 	^ {
 		#'git-config' -> config.
 		#'git-count-objects' -> counts } as: OrderedDictionary
@@ -225,19 +227,19 @@ PureGitRepository >> location: aFileReference [
 
 { #category : #accessing }
 PureGitRepository >> log [
-	self hasHead ifFalse: [ ^ #() ].
+	self hasHead ifFalse: [ ^ #() asAsyncStream ].
 	^ self head log
 ]
 
 { #category : #accessing }
 PureGitRepository >> logFrom: startCommit [
 	| output commitLines |
-	output := self runGitWithArgs: { 
+	output := self runGitWithArgsAsync: { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
 		startCommit }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines removeLast.
+	commitLines := commitLines select: [ :lines | lines notEmpty ].
 	^ commitLines collect: [ :each | self commitFromLines: each ]
 ]
 
@@ -335,8 +337,8 @@ PureGitRepository >> status [
 { #category : #accessing }
 PureGitRepository >> tags [
 	| output |
-	self exists ifFalse: [ ^ #() ].
-	output := self runGitWithArgs: {
+	self exists ifFalse: [ ^ #() asAsyncStream ].
+	output := self runGitWithArgsAsync: {
 		'tag'.
 		'--format=%(objectname) %(refname:short)' }.
 	^ output
