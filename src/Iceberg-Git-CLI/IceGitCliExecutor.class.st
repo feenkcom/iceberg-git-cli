@@ -118,6 +118,43 @@ IceGitCliExecutor >> runGitWithArgs: args for: operation [
 	^ lines
 ]
 
+{ #category : #public }
+IceGitCliExecutor >> runGitWithArgsAsync: args for: operation [
+	"Run CLI git with the passed arguments and return the lines from standard output as an asynchroneous stream.
+	Do not wait for the git command to complete. (Signal an error when not successful.)"
+
+	| processBuilder child "status" |
+	self logStarted: operation args: args.
+	processBuilder := self git args: args.
+	child := self spawnProcessAsync: processBuilder.
+	"status := child wait.
+	status isSuccess 
+		ifFalse: [ | lines |
+			lines := child stderr lines.
+			self logEnded: operation args: args output: lines.
+			^ GtGitCliCommandError new
+				args: args;
+				stderr: lines;
+				exitCode: status code;
+				signal ]."
+	self logEnded: operation args: args output: #('Asynchroneous output').
+	^ child stdoutStream lines
+]
+
+{ #category : #private }
+IceGitCliExecutor >> spawnProcessAsync: processBuilder [
+	"Run the native process described in processBuilder but do not wait for it to complete or produce output.
+	The result, an instance of GtNativeExternalProcessChild, can be queried for its status, stdout and stderr.
+	This will not block the current process nor the VM"
+
+	| nativeProcess |
+	processBuilder 
+		pipeStdout; 
+		pipeStderr.
+	nativeProcess := processBuilder spawn.
+	^ nativeProcess
+]
+
 { #category : #private }
 IceGitCliExecutor >> waitForProcess: processBuilder [
 	"Run the native process described in processBuilder and wait for it to complete and produce output.

@@ -47,3 +47,10 @@ PureGitTag >> printOn: stream [
 	name ifNotNil: [ stream nextPutAll: name ].
 	stream nextPut: $)
 ]
+
+{ #category : #accessing }
+PureGitTag >> shortCommitId [
+	^ commit isString
+		ifTrue: [ commit first: 7 ]
+		ifFalse: [ commit shortCommitId ]
+]
