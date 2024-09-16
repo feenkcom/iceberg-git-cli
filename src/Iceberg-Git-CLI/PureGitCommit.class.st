@@ -34,28 +34,10 @@ PureGitCommit >> author: aString [
 ]
 
 { #category : #accessing }
-PureGitCommit >> changes [
-	| diffArgs |
-	diffArgs := { self id , '^' . self id }.
-	^ { (self changesSummary: diffArgs) } , (self diff: diffArgs)
-]
-
-{ #category : #accessing }
-PureGitCommit >> changesSummary: diffArgs [
-	| numstat filesChangedCount additionsCount deletionsCount |
-	numstat := self repository diff: { '--numstat' } , diffArgs.
-	numstat := numstat collect: [ :each | | elements |
-		elements := Character tab split: each.
-		Array 
-			with: (Integer readFrom: elements first ifFail: [ 0 ])
-			with: (Integer readFrom: elements second ifFail: [ 0 ]) ].
-	filesChangedCount := numstat size.
-	additionsCount := numstat sum: #first.
-	deletionsCount := numstat sum: #second.
-	^ '{1} with {2} and {3.' format: {
-		filesChangedCount pluralize: 'changed file'. 
-		additionsCount pluralize: 'addition'.
-		deletionsCount pluralize: 'deletion' }
+PureGitCommit >> changesToParent [
+	^ self repository diffTool
+		diffArgs: { self id , '^' . self id };
+		diff
 ]
 
 { #category : #accessing }

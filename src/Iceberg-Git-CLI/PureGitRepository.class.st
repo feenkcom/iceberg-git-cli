@@ -135,6 +135,11 @@ PureGitRepository >> diff: args [
 	^ self runGitWithArgs: #('diff') , args
 ]
 
+{ #category : #accessing }
+PureGitRepository >> diffTool [
+	^ PureGitDiffTool inRepository: self
+]
+
 { #category : #private }
 PureGitRepository >> ensureLocation [
 	(location notNil and: [ location exists not ])
