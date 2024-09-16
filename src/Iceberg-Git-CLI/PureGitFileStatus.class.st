@@ -98,6 +98,20 @@ PureGitFileStatus >> printOn: stream [
 ]
 
 { #category : #accessing }
+PureGitFileStatus >> stagedChanges [
+	^ self repository diffTool
+		diffArgs: { '--staged' . self path };
+		diff
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> stagedChangesAsRopedText [
+	^ self repository diffTool
+		diffArgs: { '--staged' . self path };
+		asRopedText
+]
+
+{ #category : #accessing }
 PureGitFileStatus >> statusInIndex [
 	^ statusInIndex
 ]
@@ -115,4 +129,18 @@ PureGitFileStatus >> statusInWorkTree [
 { #category : #accessing }
 PureGitFileStatus >> statusInWorkTree: aStatusSymbol [
 	statusInWorkTree := aStatusSymbol
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> unstagedChanges [
+	^ self repository diffTool
+		diffArgs: { self path };
+		diff
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> unstagedChangesAsRopedText [
+	^ self repository diffTool
+		diffArgs: { self path };
+		asRopedText
 ]
