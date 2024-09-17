@@ -11,3 +11,26 @@ Class {
 PureGitRemoteBranch >> branchType [
 	^ #remote
 ]
+
+{ #category : #accessing }
+PureGitRemoteBranch >> remote [
+	^ self repository remotes
+		detect: [ :each | each name = self remoteName ]
+		ifNone: [ nil ]
+]
+
+{ #category : #accessing }
+PureGitRemoteBranch >> remoteName [
+	^ ($/ split: self name) first
+]
+
+{ #category : #accessing }
+PureGitRemoteBranch >> shortName [
+	^ ($/ split: self name) second
+]
+
+{ #category : #accessing }
+PureGitRemoteBranch >> trackers [
+	^ self repository localBranches
+		select: [ :each | each upstreamName = self name ]
+]
