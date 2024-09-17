@@ -131,6 +131,14 @@ PureGitRepository >> contentsOfBlob: aHash [
 ]
 
 { #category : #accessing }
+PureGitRepository >> currentBranchName [
+	| output |
+	self exists ifFalse: [ ^ '' ].
+	output := self runGitWithArgs: #( 'branch' '--show-current' ).
+	^ output isEmpty ifTrue: [ '' ] ifFalse: [ output first ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> diff: args [
 	^ self runGitWithArgs: #('diff') , args
 ]

@@ -11,3 +11,8 @@ Class {
 PureGitLocalBranch >> branchType [
 	^ #local
 ]
+
+{ #category : #testing }
+PureGitLocalBranch >> isCurrent [
+	^ self name = self repository currentBranchName
+]
