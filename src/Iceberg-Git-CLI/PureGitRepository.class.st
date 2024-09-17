@@ -283,6 +283,17 @@ PureGitRepository >> remoteBranches [
 ]
 
 { #category : #accessing }
+PureGitRepository >> remotes [
+	self exists ifFalse: [ ^ #() ].
+	^ (self runGitWithArgs: #( 'remote' )) collect: [ :each | | url |
+		url := (self runGitWithArgs: { 'remote' . 'get-url' . each }) first.
+		(PureGitRemote inRepository: self)
+			name: each;
+			url: url;
+			yourself ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> resolveBlob: blobId [
 	^ (PureGitBlob inRepository: self)
 		id: blobId;
@@ -398,4 +409,15 @@ PureGitRepository >> unstagedChanges [
 	^ self diffTool
 		diffArgs: { };
 		diff
+]
+
+{ #category : #accessing }
+PureGitRepository >> upstreamNameForBranch: localBranchName [
+	| result |
+	result := self runGitWithArgs: {
+			'branch'.
+			'--list'.
+			'--format=%(upstream:short)'.
+			localBranchName }.
+	^ result isEmpty ifTrue: [ nil ] ifFalse: [ result first ]
 ]
