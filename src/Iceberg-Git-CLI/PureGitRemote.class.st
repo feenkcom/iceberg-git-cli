@@ -12,6 +12,12 @@ Class {
 }
 
 { #category : #accessing }
+PureGitRemote >> branches [
+	^ self repository remoteBranches
+		select: [ :each | each remoteName = self name ]
+]
+
+{ #category : #accessing }
 PureGitRemote >> name [
 	^ name
 ]
