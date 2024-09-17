@@ -55,16 +55,6 @@ PureGitFileStatus >> fromLine: line [
 			path := line copyFrom: 4 to: line size ]
 ]
 
-{ #category : #'as yet unclassified' }
-PureGitFileStatus >> gtDetails [
-	^ super gtDetails , {
-		{ 'path' . self path . self fileReference }.
-		{ 'original path' . self originalPath ifNil: [ '' ] . self originalPath }.
-		{ 'status in index' . self statusInIndex }.
-		{ 'status in work tree' . self statusInWorkTree }
-	}
-]
-
 { #category : #accessing }
 PureGitFileStatus >> originalPath [
 	^ originalPath
@@ -105,13 +95,6 @@ PureGitFileStatus >> stagedChanges [
 ]
 
 { #category : #accessing }
-PureGitFileStatus >> stagedChangesAsRopedText [
-	^ self repository diffTool
-		diffArgs: { '--staged' . self path };
-		asRopedText
-]
-
-{ #category : #accessing }
 PureGitFileStatus >> statusInIndex [
 	^ statusInIndex
 ]
@@ -136,11 +119,4 @@ PureGitFileStatus >> unstagedChanges [
 	^ self repository diffTool
 		diffArgs: { self path };
 		diff
-]
-
-{ #category : #accessing }
-PureGitFileStatus >> unstagedChangesAsRopedText [
-	^ self repository diffTool
-		diffArgs: { self path };
-		asRopedText
 ]

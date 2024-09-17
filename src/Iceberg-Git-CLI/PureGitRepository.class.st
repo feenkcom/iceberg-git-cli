@@ -330,6 +330,13 @@ PureGitRepository >> stage: filePath [
 ]
 
 { #category : #accessing }
+PureGitRepository >> stagedChanges [
+	^ self diffTool
+		diffArgs: { '--staged' };
+		diff
+]
+
+{ #category : #accessing }
 PureGitRepository >> status [
 	| lines |
 	self exists ifFalse: [ ^ #() ].
@@ -376,4 +383,11 @@ PureGitRepository >> treeEntriesFor: treeId [
 PureGitRepository >> unstage: filePath [
 	self runGitWithArgs: { 'restore' . '--staged' . filePath }.
 	self announceRepositoryModified
+]
+
+{ #category : #accessing }
+PureGitRepository >> unstagedChanges [
+	^ self diffTool
+		diffArgs: { };
+		diff
 ]
