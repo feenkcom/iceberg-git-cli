@@ -76,6 +76,15 @@ PureGitRepository >> announcer [
 	^ announcer
 ]
 
+{ #category : #accessing }
+PureGitRepository >> branch [
+	| currentBranchName |
+	currentBranchName := self currentBranchName.
+	^ self localBranches
+		detect: [ :each | each name = currentBranchName ]
+		ifNone: [ nil ]
+]
+
 { #category : #operations }
 PureGitRepository >> clone: gitUrl [
 	self runGitWithArgs: { 'clone' . gitUrl . '.' }.
@@ -159,6 +168,11 @@ PureGitRepository >> ensureLocation [
 PureGitRepository >> exists [
 	^ exists 
 		or: [ exists := location notNil and: [ (location / '.git') exists ] ]
+]
+
+{ #category : #testing }
+PureGitRepository >> hasDetachedHead [
+	^ self currentBranchName isEmpty
 ]
 
 { #category : #testing }
