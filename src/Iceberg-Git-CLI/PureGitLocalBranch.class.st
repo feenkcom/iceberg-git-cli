@@ -19,7 +19,11 @@ PureGitLocalBranch >> hasUpstream [
 
 { #category : #testing }
 PureGitLocalBranch >> isCurrent [
-	^ self name = self repository currentBranchName
+	| currentBranchName |
+	currentBranchName := self repository currentBranchName.
+	^ self name = currentBranchName
+		or: [ currentBranchName isEmpty
+				and: [ self name includesSubstring: 'HEAD detached' ] ]
 ]
 
 { #category : #accessing }
