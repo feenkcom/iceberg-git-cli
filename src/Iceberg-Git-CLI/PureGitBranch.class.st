@@ -11,6 +11,13 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #comparing }
+PureGitBranch >> = anObject [
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	^ self name = anObject name and: [ self commitId = anObject commitId ]
+]
+
 { #category : #accessing }
 PureGitBranch >> branchType [
 	self subclassResponsibility
@@ -33,6 +40,11 @@ PureGitBranch >> commitId [
 	^ commit isString
 		ifTrue: [ commit ]
 		ifFalse: [ commit id ]
+]
+
+{ #category : #comparing }
+PureGitBranch >> hash [
+	^ self name hash bitXor: self commitId hash
 ]
 
 { #category : #accessing }

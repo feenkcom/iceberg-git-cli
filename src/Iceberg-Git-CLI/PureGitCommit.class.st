@@ -23,6 +23,13 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #comparing }
+PureGitCommit >> = anObject [
+	self == anObject ifTrue: [ ^ true ].
+	self class = anObject class ifFalse: [ ^ false ].
+	^ self id = anObject id
+]
+
 { #category : #accessing }
 PureGitCommit >> author [
 	^ author
@@ -73,6 +80,11 @@ PureGitCommit >> hasParents [
 { #category : #testing }
 PureGitCommit >> hasSingleParent [
 	^ self numberOfParents = 1
+]
+
+{ #category : #comparing }
+PureGitCommit >> hash [
+	^ self id hash
 ]
 
 { #category : #accessing }
