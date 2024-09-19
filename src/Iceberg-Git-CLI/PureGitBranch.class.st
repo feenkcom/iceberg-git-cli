@@ -23,6 +23,11 @@ PureGitBranch >> branchType [
 	self subclassResponsibility
 ]
 
+{ #category : #operations }
+PureGitBranch >> checkout [
+	self repository checkout: self name
+]
+
 { #category : #accessing }
 PureGitBranch >> commit [
 	^ commit isString

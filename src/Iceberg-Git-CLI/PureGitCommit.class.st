@@ -47,6 +47,11 @@ PureGitCommit >> changesToParent [
 		diff
 ]
 
+{ #category : #operations }
+PureGitCommit >> checkout [
+	self repository checkout: self id
+]
+
 { #category : #accessing }
 PureGitCommit >> comment [
 	^ comment

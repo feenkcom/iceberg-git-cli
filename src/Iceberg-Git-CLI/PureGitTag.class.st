@@ -18,6 +18,11 @@ PureGitTag >> = anObject [
 	^ self name = anObject name and: [ self commitId = anObject commitId ]
 ]
 
+{ #category : #operations }
+PureGitTag >> checkout [
+	self repository checkout: self name
+]
+
 { #category : #accessing }
 PureGitTag >> commit [
 	^ commit isString

@@ -86,6 +86,11 @@ PureGitRepository >> branch [
 ]
 
 { #category : #operations }
+PureGitRepository >> checkout: commitish [
+	self runGitWithArgs: { 'checkout' . commitish }
+]
+
+{ #category : #operations }
 PureGitRepository >> clone: gitUrl [
 	self runGitWithArgs: { 'clone' . gitUrl . '.' }.
 	self announceRepositoryModified
@@ -147,7 +152,7 @@ PureGitRepository >> currentBranchName [
 	^ output isEmpty ifTrue: [ '' ] ifFalse: [ output first ]
 ]
 
-{ #category : #accessing }
+{ #category : #operations }
 PureGitRepository >> diff: args [
 	^ self runGitWithArgs: #('diff') , args
 ]

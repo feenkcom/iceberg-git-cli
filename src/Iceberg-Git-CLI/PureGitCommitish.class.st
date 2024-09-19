@@ -7,6 +7,11 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #operations }
+PureGitCommitish >> checkout [
+	self subclassResponsibility
+]
+
 { #category : #accessing }
 PureGitCommitish >> commit [
 	self subclassResponsibility
