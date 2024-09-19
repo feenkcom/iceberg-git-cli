@@ -43,8 +43,15 @@ PureGitCommit >> author: aString [
 { #category : #accessing }
 PureGitCommit >> changesToParent [
 	^ self repository diffTool
-		diffArgs: { self id , '^' . self id };
+		diffArgs: self changesToParentDiffArgs;
 		diff
+]
+
+{ #category : #accessing }
+PureGitCommit >> changesToParentDiffArgs [
+	^ self isRoot
+		ifTrue: [ { PureGitTree emptyTreeHash . self id } ]
+		ifFalse: [ { self id , '^' . self id } ]
 ]
 
 { #category : #operations }

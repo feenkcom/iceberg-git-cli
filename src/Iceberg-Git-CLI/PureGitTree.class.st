@@ -16,6 +16,11 @@ Class {
 }
 
 { #category : #accessing }
+PureGitTree class >> emptyTreeHash [
+	^ '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
+]
+
+{ #category : #accessing }
 PureGitTree >> entries [
 	^ entries ifNil: [ entries := self repository treeEntriesFor: self id ]
 ]
