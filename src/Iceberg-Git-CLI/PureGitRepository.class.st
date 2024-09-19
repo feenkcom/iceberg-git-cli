@@ -135,6 +135,13 @@ PureGitRepository >> commitLineFormat [
 ]
 
 { #category : #accessing }
+PureGitRepository >> configAt: optionName ifAbsent: block [
+	| result |
+	result := self runGitWithArgs: { 'config'. optionName }.
+	^ result isEmpty ifTrue: block ifFalse: [ result first ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> contentsOfBlob: aHash [
 	| executor |
 	executor := IceGitCliPlatform current executor.
@@ -198,6 +205,14 @@ PureGitRepository >> head [
 PureGitRepository >> init [
 	self runGitWithArgs: { 'init' }.
 	self announceRepositoryModified
+]
+
+{ #category : #accessing }
+PureGitRepository >> initialDefaultBranchName [
+	"Return the default branch name used when initializing a new repository.
+	Consult the init.defaultbranch git config option and fall back to our superclass' implementation."
+
+	^ self configAt: 'init.defaultbranch' ifAbsent: [ 'master' ]
 ]
 
 { #category : #initialization }
