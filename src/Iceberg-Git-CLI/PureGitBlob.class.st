@@ -21,7 +21,7 @@ Class {
 PureGitBlob class >> hashBytes: bytes [
 	| encoding |
 	encoding := ('blob {1}' format: { bytes size }) utf8Encoded , #[ 0 ], bytes.
-	^ SHA1 hashMessage: encoding
+	^ (SHA1 hashMessage: encoding) hex
 ]
 
 { #category : #utilities }
