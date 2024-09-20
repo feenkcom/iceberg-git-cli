@@ -14,6 +14,23 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> diffLinesWithPositions [
+	| oldPosition newPosition |
+	oldPosition := oldStart.
+	newPosition := newStart.
+	^ diffLines collect: [ :line | | elements |
+		elements := { 
+			line first = $+ ifTrue: [ nil ] ifFalse: [ oldPosition ] . 
+			line first = $- ifTrue: [ nil ] ifFalse: [ newPosition ] . 
+			line }.
+		line first = $+
+			ifFalse: [ oldPosition := oldPosition + 1 ].
+		line first = $-
+			ifFalse: [ newPosition := newPosition + 1 ].
+		elements ]
+]
+
 { #category : #initialization }
 UnifiedDiffChangeChunk >> initialize [
 	super initialize.
@@ -22,28 +39,34 @@ UnifiedDiffChangeChunk >> initialize [
 
 { #category : #accessing }
 UnifiedDiffChangeChunk >> newContents [
-	^ String streamContents: [ :out |
-		diffLines do: [ :line |
-			line first = $-
-				ifFalse: [ 
-					out 
-						next: line size - 1 
-						putAll: line 
-						startingAt: 2.
-					out cr ] ] ]
+	^ String streamContents: [ :out | 
+		self newContentsLines do: [ :line | 
+			out
+				next: line size - 1
+				putAll: line
+				startingAt: 2.
+			out cr ] ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> newContentsLines [
+	^ diffLines reject: [ : line | line first = $- ]
 ]
 
 { #category : #accessing }
 UnifiedDiffChangeChunk >> oldContents [
-	^ String streamContents: [ :out |
-		diffLines do: [ :line |
-			line first = $+
-				ifFalse: [ 
-					out 
-						next: line size - 1 
-						putAll: line 
-						startingAt: 2.
-					out cr ] ] ]
+	^ String streamContents: [ :out | 
+		self oldContentsLines do: [ :line | 
+			out
+				next: line size - 1
+				putAll: line
+				startingAt: 2.
+			out cr ] ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldContentsLines [
+	^ diffLines reject: [ : line | line first = $+ ]
 ]
 
 { #category : #printing }
