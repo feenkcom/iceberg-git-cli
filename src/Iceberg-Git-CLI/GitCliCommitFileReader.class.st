@@ -69,8 +69,13 @@ GitCliCommitFileReader >> initialize [
 ]
 
 { #category : #logging }
+GitCliCommitFileReader >> isLoggingEnabled [
+	^ IceGitCliPlatform current signalClass notNil
+]
+
+{ #category : #logging }
 GitCliCommitFileReader >> logEnded: operation args: args output: output [
-	self loggingEnabled
+	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
 				operation: operation;
 				markAsEndSignal;
@@ -79,16 +84,11 @@ GitCliCommitFileReader >> logEnded: operation args: args output: output [
 
 { #category : #logging }
 GitCliCommitFileReader >> logStarted: operation args: args [
-	self loggingEnabled
+	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args)
 				operation: operation;
 				markAsStartSignal;
 				emit ]
-]
-
-{ #category : #logging }
-GitCliCommitFileReader >> loggingEnabled [
-	^ IceGitCliPlatform current signalClass notNil
 ]
 
 { #category : #accessing }

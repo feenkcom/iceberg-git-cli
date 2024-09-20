@@ -38,11 +38,21 @@ IceGitCliPlatform >> config [
 	^ self dummyInstance config
 ]
 
+{ #category : #operations }
+IceGitCliPlatform >> disableLogging [
+	signalClass := nil
+]
+
 { #category : #accessing }
 IceGitCliPlatform >> dummyInstance [
 	^ self repositoryClass new
 		location: FileLocator home;
 		yourself
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> enabledFullLogging [
+	signalClass := GtGitCliSignal
 ]
 
 { #category : #accessing }
@@ -84,6 +94,11 @@ IceGitCliPlatform >> install [
 { #category : #testing }
 IceGitCliPlatform >> isInstalled [
 	^ IceRepository repositoryClass = self repositoryClass
+]
+
+{ #category : #testing }
+IceGitCliPlatform >> isLoggingEnabled [
+	^ signalClass notNil
 ]
 
 { #category : #accessing }

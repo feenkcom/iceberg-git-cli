@@ -40,8 +40,13 @@ IceGitCliExecutor >> gitVersion [
 ]
 
 { #category : #logging }
+IceGitCliExecutor >> isLoggingEnabled [
+	^ IceGitCliPlatform current isLoggingEnabled
+]
+
+{ #category : #logging }
 IceGitCliExecutor >> logEnded: operation args: args output: output [
-	self loggingEnabled
+	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
 				operation: operation;
 				markAsEndSignal;
@@ -50,16 +55,11 @@ IceGitCliExecutor >> logEnded: operation args: args output: output [
 
 { #category : #logging }
 IceGitCliExecutor >> logStarted: operation args: args [
-	self loggingEnabled
+	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args)
 				operation: operation;
 				markAsStartSignal;
 				emit ]
-]
-
-{ #category : #logging }
-IceGitCliExecutor >> loggingEnabled [
-	^ IceGitCliPlatform current signalClass notNil
 ]
 
 { #category : #public }
