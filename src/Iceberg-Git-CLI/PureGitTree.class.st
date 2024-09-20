@@ -48,6 +48,17 @@ PureGitTree >> entriesRecursively [
 ]
 
 { #category : #accessing }
+PureGitTree >> entryAtPath: path ifAbsent: block [
+	| subTree |
+	^ path size = 1
+		ifTrue: [ self entryNamed: path first ifAbsent: block ]
+		ifFalse: [ subTree := self entryNamed: path first ifAbsent: block.
+			subTree isTree ifFalse: block.
+			subTree := subTree resolve.
+			subTree entryAtPath: path allButFirst ifAbsent: block ]
+]
+
+{ #category : #accessing }
 PureGitTree >> entryNamed: name [
 	^ self entries detect: [ :each | each name = name ]
 ]
