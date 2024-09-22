@@ -290,6 +290,19 @@ PureGitRepository >> logFrom: startCommit [
 	^ commitLines collect: [ :each | self commitFromLines: each ]
 ]
 
+{ #category : #accessing }
+PureGitRepository >> logFrom: startCommit for: path [
+	| output commitLines |
+	output := self runGitWithArgsAsync: { 
+		'log'.
+		self commitLineFormat , '%n@@@'.
+		startCommit.
+		path }.
+	commitLines := output splitOn: [ :each | each = '@@@' ].
+	commitLines := commitLines select: [ :lines | lines notEmpty ].
+	^ commitLines collect: [ :each | self commitFromLines: each ]
+]
+
 { #category : #printing }
 PureGitRepository >> printOn: stream [
 	super printOn: stream.
