@@ -8,8 +8,20 @@ Class {
 }
 
 { #category : #accessing }
+PureGitDiffTool >> asText [
+	^ String streamContents: [ :out |
+		self diffLines do: [ :each |
+			out nextPutAll: each; cr ] ]
+]
+
+{ #category : #accessing }
+PureGitDiffTool >> asUnifiedDiff [
+	^ UnifiedDiffCollection new readFrom: self asText readStream
+]
+
+{ #category : #accessing }
 PureGitDiffTool >> diff [
-	^ self repository diff: { '--no-prefix' } , diffArgs
+	^ self asUnifiedDiff
 ]
 
 { #category : #accessing }
@@ -20,6 +32,11 @@ PureGitDiffTool >> diffArgs [
 { #category : #accessing }
 PureGitDiffTool >> diffArgs: aCollection [
 	diffArgs := aCollection
+]
+
+{ #category : #accessing }
+PureGitDiffTool >> diffLines [
+	^ self repository diff: { '--no-prefix' } , diffArgs
 ]
 
 { #category : #accessing }
