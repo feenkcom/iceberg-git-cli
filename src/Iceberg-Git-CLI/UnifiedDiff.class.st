@@ -14,13 +14,43 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #accessing }
+UnifiedDiff >> changeChunks [
+	^ changeChunks
+]
+
+{ #category : #accessing }
+UnifiedDiff >> header [
+	^ oldPath = newPath 
+		ifTrue: [ oldPath ]
+		ifFalse: [ oldPath , ' > ' , newPath ]
+]
+
+{ #category : #accessing }
+UnifiedDiff >> numberOfChanges [
+	^ self changeChunks size
+]
+
+{ #category : #accessing }
+UnifiedDiff >> numberOfLinesAdded [
+	^ self changeChunks sum: [ : each | each numberOfLinesAdded ]
+]
+
+{ #category : #accessing }
+UnifiedDiff >> numberOfLinesModified [
+	^ self changeChunks sum: [ : each | each numberOfLinesModified ]
+]
+
+{ #category : #accessing }
+UnifiedDiff >> numberOfLinesRemoved [
+	^ self changeChunks sum: [ : each | each numberOfLinesRemoved ]
+]
+
 { #category : #printing }
 UnifiedDiff >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	stream print: oldPath.
-	stream nextPut: $,.
-	stream print: newPath.
+	stream nextPutAll: self header.
 	stream nextPut: $)
 ]
 
@@ -29,18 +59,25 @@ UnifiedDiff >> readFrom: stream [
 	| lineReader |
 	lineReader := ZnFastLineReader on: stream.
 	self readHeaderFrom: lineReader nextLine.
-	[ stream peek = $@ ]
-		whileFalse: [ lineReader nextLine ].
+	[ 'd@' includes: stream peek ]
+		whileFalse: [ self readHeaderFrom: lineReader nextLine ].
 	changeChunks := Array streamContents: [ :out |
-		[ lineReader atEnd ]
+		[ lineReader atEnd or: [ (stream peek = $@) not ] ]
 			whileFalse: [ out nextPut: (UnifiedDiffChangeChunk new readFrom: stream) ] ]
 ]
 
 { #category : #parsing }
 UnifiedDiff >> readHeaderFrom: aLine [
 	| elements |
-	elements := Character space split: aLine.
-	self assert: elements first = 'diff'.
-	oldPath := elements third.
-	newPath := elements fourth
+	elements := aLine splitOn: [ :each | each isSeparator ].
+	elements first = 'diff'
+		ifTrue: [ oldPath := elements third.
+			newPath := elements fourth.
+			^ self ].
+	elements first = '---'
+		ifTrue: [ oldPath := elements second.
+			^ self ].
+	elements first = '+++'
+		ifTrue: [ newPath := elements second.
+			^ self ]
 ]

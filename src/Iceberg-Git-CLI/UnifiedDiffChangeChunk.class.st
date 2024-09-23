@@ -54,6 +54,30 @@ UnifiedDiffChangeChunk >> newContentsLines [
 ]
 
 { #category : #accessing }
+UnifiedDiffChangeChunk >> numberOfLinesAdded [
+	^ diffLines count: [ :each | each first = $+ ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> numberOfLinesModified [
+	| removed modified |
+	removed := modified := 0.
+	diffLines do: [ :each |
+		each first = $-
+			ifTrue: [ removed := removed + 1 ].
+		(each first = $+ and: [ removed > 0 ])
+			ifTrue: [ modified := modified + 1. removed := removed - 1 ].
+		each first = Character space
+			ifTrue: [ removed := 0 ] ].
+	^ modified
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> numberOfLinesRemoved [
+	^ diffLines count: [ :each | each first = $- ]
+]
+
+{ #category : #accessing }
 UnifiedDiffChangeChunk >> oldContents [
 	^ String streamContents: [ :out | 
 		self oldContentsLines do: [ :line | 
@@ -96,8 +120,9 @@ UnifiedDiffChangeChunk >> readLinesFrom: stream [
 	"skip the range line"
 	lineReader nextLine.
 	diffLines := Array streamContents: [ :out |
-		[ stream atEnd or: [ stream peek = $@ ] ] whileFalse: [ 
-			lineReader nextLine ifNotNil: [ :line | out nextPut: line ] ] ]
+		[ stream atEnd or: [ (' +-\' includes: stream peek) not ] ] whileFalse: [ 
+			lineReader nextLine ifNotNil: [ :line | 
+				line first = $\ ifFalse: [ out nextPut: line ] ] ] ]
 ]
 
 { #category : #parsing }

@@ -138,8 +138,7 @@ UnifiedDiffExamples >> exampleStandardUnifiedDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleStandardUnifiedDiffOutput [
 	<gtExample>
-	^ 'diff -u original.txt new.txt
---- original.txt	2024-09-20 11:15:06
+	^ '--- original.txt	2024-09-20 11:15:06
 +++ new.txt	2024-09-20 11:15:21
 @@ -1,3 +1,9 @@
 +This is an important
