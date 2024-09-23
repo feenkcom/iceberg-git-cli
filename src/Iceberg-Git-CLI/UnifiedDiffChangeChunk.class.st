@@ -59,6 +59,20 @@ UnifiedDiffChangeChunk >> numberOfLinesAdded [
 ]
 
 { #category : #accessing }
+UnifiedDiffChangeChunk >> numberOfLinesModified [
+	| removed modified |
+	removed := modified := 0.
+	diffLines do: [ :each |
+		each first = $-
+			ifTrue: [ removed := removed + 1 ].
+		(each first = $+ and: [ removed > 0 ])
+			ifTrue: [ modified := modified + 1. removed := removed - 1 ].
+		each first = Character space
+			ifTrue: [ removed := 0 ] ].
+	^ modified
+]
+
+{ #category : #accessing }
 UnifiedDiffChangeChunk >> numberOfLinesRemoved [
 	^ diffLines count: [ :each | each first = $- ]
 ]
