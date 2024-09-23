@@ -55,7 +55,7 @@ UnifiedDiff >> readFrom: stream [
 	lineReader := ZnFastLineReader on: stream.
 	self readHeaderFrom: lineReader nextLine.
 	[ 'd@' includes: stream peek ]
-		whileFalse: [ lineReader nextLine ].
+		whileFalse: [ self readHeaderFrom: lineReader nextLine ].
 	changeChunks := Array streamContents: [ :out |
 		[ lineReader atEnd or: [ (stream peek = $@) not ] ]
 			whileFalse: [ out nextPut: (UnifiedDiffChangeChunk new readFrom: stream) ] ]
@@ -64,8 +64,15 @@ UnifiedDiff >> readFrom: stream [
 { #category : #parsing }
 UnifiedDiff >> readHeaderFrom: aLine [
 	| elements |
-	elements := Character space split: aLine.
-	self assert: elements first = 'diff'.
-	oldPath := elements third.
-	newPath := elements fourth
+	elements := aLine splitOn: [ :each | each isSeparator ].
+	elements first = 'diff'
+		ifTrue: [ oldPath := elements third.
+			newPath := elements fourth.
+			^ self ].
+	elements first = '---'
+		ifTrue: [ oldPath := elements second.
+			^ self ].
+	elements first = '+++'
+		ifTrue: [ newPath := elements second.
+			^ self ]
 ]
