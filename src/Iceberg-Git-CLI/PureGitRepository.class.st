@@ -359,6 +359,18 @@ PureGitRepository >> resolveCommit: commitId [
 ]
 
 { #category : #accessing }
+PureGitRepository >> resolveFilePath: relativePathString [
+	^ (PureGitFile inRepository: self)
+		path: relativePathString;
+		yourself
+]
+
+{ #category : #accessing }
+PureGitRepository >> resolveFileReference: fileReference [
+	^ self resolveFilePath: (fileReference relativeTo: self location) pathString
+]
+
+{ #category : #accessing }
 PureGitRepository >> resolveTree: treeId [
 	^ (PureGitTree inRepository: self)
 		id: treeId;
