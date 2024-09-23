@@ -7,6 +7,16 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #accessing }
+UnifiedDiffCollection >> diffs [
+	^ diffs
+]
+
+{ #category : #accessing }
+UnifiedDiffCollection >> firstDiff [
+	^ diffs first
+]
+
 { #category : #initialization }
 UnifiedDiffCollection >> initialize [
 	super initialize.
