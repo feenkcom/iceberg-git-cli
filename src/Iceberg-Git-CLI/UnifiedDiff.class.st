@@ -47,6 +47,11 @@ UnifiedDiff >> numberOfLinesAdded [
 ]
 
 { #category : #accessing }
+UnifiedDiff >> numberOfLinesChanged [
+	^ self changeChunks sum: [ : each | each numberOfLinesChanged ]
+]
+
+{ #category : #accessing }
 UnifiedDiff >> numberOfLinesModified [
 	^ self changeChunks sum: [ : each | each numberOfLinesModified ]
 ]
