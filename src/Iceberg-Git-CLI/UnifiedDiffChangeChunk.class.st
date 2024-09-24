@@ -59,6 +59,11 @@ UnifiedDiffChangeChunk >> numberOfLinesAdded [
 ]
 
 { #category : #accessing }
+UnifiedDiffChangeChunk >> numberOfLinesChanged [
+	^ self numberOfLinesAdded - self numberOfLinesRemoved
+]
+
+{ #category : #accessing }
 UnifiedDiffChangeChunk >> numberOfLinesModified [
 	| removed modified |
 	removed := modified := 0.

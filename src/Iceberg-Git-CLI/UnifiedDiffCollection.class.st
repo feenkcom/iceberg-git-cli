@@ -8,6 +8,11 @@ Class {
 }
 
 { #category : #accessing }
+UnifiedDiffCollection >> changedPaths [
+	^ self diffs flatCollect: #paths
+]
+
+{ #category : #accessing }
 UnifiedDiffCollection >> diffs [
 	^ diffs
 ]

@@ -21,9 +21,19 @@ UnifiedDiff >> changeChunks [
 
 { #category : #accessing }
 UnifiedDiff >> header [
-	^ oldPath = newPath 
-		ifTrue: [ oldPath ]
-		ifFalse: [ oldPath , ' > ' , newPath ]
+	^ self isRename 
+		ifTrue: [ oldPath , ' > ' , newPath ]
+		ifFalse: [ oldPath ]
+]
+
+{ #category : #testing }
+UnifiedDiff >> isRename [
+	^ oldPath ~= newPath
+]
+
+{ #category : #accessing }
+UnifiedDiff >> newPath [
+	^ newPath
 ]
 
 { #category : #accessing }
@@ -37,6 +47,11 @@ UnifiedDiff >> numberOfLinesAdded [
 ]
 
 { #category : #accessing }
+UnifiedDiff >> numberOfLinesChanged [
+	^ self changeChunks sum: [ : each | each numberOfLinesChanged ]
+]
+
+{ #category : #accessing }
 UnifiedDiff >> numberOfLinesModified [
 	^ self changeChunks sum: [ : each | each numberOfLinesModified ]
 ]
@@ -44,6 +59,18 @@ UnifiedDiff >> numberOfLinesModified [
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesRemoved [
 	^ self changeChunks sum: [ : each | each numberOfLinesRemoved ]
+]
+
+{ #category : #accessing }
+UnifiedDiff >> oldPath [
+	^ oldPath
+]
+
+{ #category : #accessing }
+UnifiedDiff >> paths [
+	^ self isRename 
+		ifTrue: [ Array with: oldPath with: newPath ]
+		ifFalse: [ Array with: oldPath ]
 ]
 
 { #category : #printing }
