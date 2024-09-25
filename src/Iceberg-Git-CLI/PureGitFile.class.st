@@ -12,20 +12,9 @@ Class {
 
 { #category : #accessing }
 PureGitFile >> analyze [
-	| extendedFileCommits first |
-	extendedFileCommits := self log collect: [ :each |
-		PureGitExtendedFileCommit new
-			commit: each;
-			changesToParent;
-			yourself ].
-	extendedFileCommits := extendedFileCommits toArray wait reverse.
-	first := true.
-	extendedFileCommits overlappingPairsDo: [ :parent :each |
-		first ifTrue: [
-			parent initializeAsFirst.
-			first := false ].
-		each initializeFromParent: parent ].
-	^ extendedFileCommits
+	^ PureGitExtendedFileAnalysis new
+		file: self;
+		analyze
 ]
 
 { #category : #accessing }
