@@ -9,7 +9,9 @@ Class {
 	#instVars : [
 		'oldPath',
 		'newPath',
-		'changeChunks'
+		'changeChunks',
+		'newFile',
+		'deletedFile'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -23,7 +25,23 @@ UnifiedDiff >> changeChunks [
 UnifiedDiff >> header [
 	^ self isRename 
 		ifTrue: [ oldPath , ' > ' , newPath ]
-		ifFalse: [ oldPath ]
+		ifFalse: [ oldPath ifNil: [ '' ] ]
+]
+
+{ #category : #'initialization ' }
+UnifiedDiff >> initialize [
+	super initialize.
+	newFile := deletedFile := false
+]
+
+{ #category : #testing }
+UnifiedDiff >> isDeletedFile [
+	^ deletedFile
+]
+
+{ #category : #testing }
+UnifiedDiff >> isNewFile [
+	^ newFile
 ]
 
 { #category : #testing }
@@ -83,10 +101,13 @@ UnifiedDiff >> printOn: stream [
 
 { #category : #parsing }
 UnifiedDiff >> readFrom: stream [
-	| lineReader |
+	| lineReader savedPosition peekedLine |
 	lineReader := ZnFastLineReader on: stream.
 	self readHeaderFrom: lineReader nextLine.
-	[ 'd@' includes: stream peek ]
+	[ savedPosition := stream position.
+	peekedLine := lineReader nextLine.
+	stream position: savedPosition.
+	(peekedLine beginsWith: '@@') or: [ peekedLine beginsWith: 'diff' ] ]
 		whileFalse: [ self readHeaderFrom: lineReader nextLine ].
 	changeChunks := Array streamContents: [ :out |
 		[ lineReader atEnd or: [ (stream peek = $@) not ] ]
@@ -99,12 +120,9 @@ UnifiedDiff >> readHeaderFrom: aLine [
 	elements := aLine splitOn: [ :each | each isSeparator ].
 	elements first = 'diff'
 		ifTrue: [ oldPath := elements third.
-			newPath := elements fourth.
-			^ self ].
-	elements first = '---'
-		ifTrue: [ oldPath := elements second.
-			^ self ].
-	elements first = '+++'
-		ifTrue: [ newPath := elements second.
-			^ self ]
+			^ newPath := elements fourth ].
+	elements first = '---' ifTrue: [ ^ elements second = '/dev/null' ifFalse: [ oldPath := elements second ] ].
+	elements first = '+++' ifTrue: [ ^ elements second = '/dev/null' ifFalse: [ newPath := elements second ] ].
+	elements first = 'new' ifTrue: [ ^ newFile := true ].
+	elements first = 'deleted' ifTrue: [ ^ deletedFile := true ]
 ]

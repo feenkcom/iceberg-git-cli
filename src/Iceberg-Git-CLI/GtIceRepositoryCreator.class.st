@@ -57,6 +57,20 @@ GtIceRepositoryCreator >> addLocalRepository [
 	^ repository
 ]
 
+{ #category : #private }
+GtIceRepositoryCreator >> addProjectFileTo: aRepository [
+	
+	| newProject |
+	newProject := IceBasicProject onRepository: aRepository.
+	newProject sourceDirectory: self subdirectory.
+	aRepository workingCopy basicSetProject: newProject.
+]
+
+{ #category : #private }
+GtIceRepositoryCreator >> addPropertiesFileTo: aRepository [
+	aRepository properties fileFormat: self formatToUse
+]
+
 { #category : #accessing }
 GtIceRepositoryCreator >> cloneRepository [
 	location := self locationToUse.
@@ -93,9 +107,9 @@ GtIceRepositoryCreator >> createNewRepositoryNamed: aString [
 		location: locationToUse;
 		initBare: isBareRepository;
 		yourself.
-"	self addProjectFileTo: repository.
+	self addProjectFileTo: repository.
 	self addPropertiesFileTo: repository.
-	repository workingCopy refreshProject."
+	repository workingCopy refreshProject.
 	^ repository
 ]
 
@@ -152,6 +166,11 @@ GtIceRepositoryCreator >> executeGitClone [
 	url := self remoteToUse url.
 	repository := IceGitCliRepository on: location.
 	repository clone: url
+]
+
+{ #category : #accessing }
+GtIceRepositoryCreator >> formatToUse [ 
+	^ IceLibgitRepository defaultFileFormat
 ]
 
 { #category : #initialization }
