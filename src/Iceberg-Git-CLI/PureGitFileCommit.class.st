@@ -59,3 +59,10 @@ PureGitFileCommit >> path [
 PureGitFileCommit >> path: aPathString [
 	path := aPathString
 ]
+
+{ #category : #printing }
+PureGitFileCommit >> printDetailsOn: stream [
+	stream nextPutAll: self id.
+	stream space.
+	stream nextPutAll: self path
+]

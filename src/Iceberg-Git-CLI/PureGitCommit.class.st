@@ -140,10 +140,15 @@ PureGitCommit >> parents [
 ]
 
 { #category : #printing }
+PureGitCommit >> printDetailsOn: stream [
+	stream nextPutAll: self id
+]
+
+{ #category : #printing }
 PureGitCommit >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	stream nextPutAll: self id.
+	self printDetailsOn: stream.
 	stream nextPut: $)
 ]
 
