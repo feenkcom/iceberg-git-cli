@@ -25,7 +25,7 @@ PureGitExtendedFileCommit >> authorTop3Description [
 	selection := self authors associations sort: #value descending.
 	selection := selection copyFrom: 1 to: (3 min: selection size).
 	^ ', ' join: (selection collect: [ :each |
-		'{1} ({2})' format: { each key. each value printShowingDecimalPlaces: 2 } ])
+		'{1} {2}' format: { each key. each value printShowingDecimalPlaces: 2 } ])
 ]
 
 { #category : #accessing }
@@ -38,6 +38,11 @@ PureGitExtendedFileCommit >> authors [
 PureGitExtendedFileCommit >> changesToParent [
 	^ changesToParent ifNil: [ 
 		changesToParent := self commit changesToParent firstDiff ]
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> comment [
+	^ commit comment
 ]
 
 { #category : #accessing }
@@ -114,4 +119,9 @@ PureGitExtendedFileCommit >> printOn: stream [
 { #category : #accessing }
 PureGitExtendedFileCommit >> shortId [
 	^ commit shortCommitId
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> timestamp [
+	^ commit timestamp
 ]
