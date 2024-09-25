@@ -75,6 +75,14 @@ PureGitAnnotatedCommit >> parents: anObject [
 	parents := anObject
 ]
 
+{ #category : #printing }
+PureGitAnnotatedCommit >> printOn: stream [
+	super printOn: stream.
+	stream nextPut: $(.
+	stream nextPutAll: self id.
+	stream nextPut: $)
+]
+
 { #category : #accessing }
 PureGitAnnotatedCommit >> shortId [
 	^ commit shortCommitId
