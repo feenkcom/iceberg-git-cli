@@ -160,6 +160,14 @@ PureGitRepository >> currentBranchName [
 ]
 
 { #category : #operations }
+PureGitRepository >> delete [
+	self exists
+		ifTrue: [ self location ensureDeleteAll.
+			exists := false.
+			self announceRepositoryModified ]
+]
+
+{ #category : #operations }
 PureGitRepository >> diff: args [
 	^ self runGitWithArgs: #('diff') , args
 ]

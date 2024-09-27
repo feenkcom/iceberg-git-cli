@@ -17,6 +17,13 @@ PureGitFile >> analyze [
 		analyze
 ]
 
+{ #category : #operations }
+PureGitFile >> delete [
+	self fileReference ensureDelete.
+	"should we also delete empty parent directories as they do not exist in git ?"
+	self repository announceRepositoryModified
+]
+
 { #category : #accessing }
 PureGitFile >> fileReference [
 	^ self repository location / self path
