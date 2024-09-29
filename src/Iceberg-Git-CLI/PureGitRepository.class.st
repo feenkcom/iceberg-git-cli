@@ -367,6 +367,18 @@ PureGitRepository >> resolveCommit: commitId [
 ]
 
 { #category : #accessing }
+PureGitRepository >> resolveDirectory [
+	^ PureGitDirectory inRepository: self
+]
+
+{ #category : #accessing }
+PureGitRepository >> resolveDirectoryPath: relativePathString [
+	^ (PureGitDirectory inRepository: self)
+		path: relativePathString;
+		yourself
+]
+
+{ #category : #accessing }
 PureGitRepository >> resolveFilePath: relativePathString [
 	^ (PureGitFile inRepository: self)
 		path: relativePathString;
@@ -375,7 +387,11 @@ PureGitRepository >> resolveFilePath: relativePathString [
 
 { #category : #accessing }
 PureGitRepository >> resolveFileReference: fileReference [
-	^ self resolveFilePath: (fileReference relativeTo: self location) pathString
+	| path |
+	path := (fileReference relativeTo: self location) pathString.
+	^ fileReference isFile
+		ifTrue: [ self resolveFilePath: path ]
+		ifFalse: [ self resolveDirectoryPath: path ]
 ]
 
 { #category : #accessing }
@@ -427,6 +443,16 @@ PureGitRepository >> status [
 	| lines |
 	self exists ifFalse: [ ^ #() ].
 	lines := self runGitWithArgs: { 'status' . '--porcelain' }.
+	^ lines collect: [ :each |
+		(PureGitFileStatus inRepository: self)
+			fromLine: each ]
+]
+
+{ #category : #accessing }
+PureGitRepository >> statusFor: path [
+	| lines |
+	self exists ifFalse: [ ^ #() ].
+	lines := self runGitWithArgs: { 'status' . '--porcelain' . path }.
 	^ lines collect: [ :each |
 		(PureGitFileStatus inRepository: self)
 			fromLine: each ]
