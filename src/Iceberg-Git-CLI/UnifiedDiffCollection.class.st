@@ -28,6 +28,11 @@ UnifiedDiffCollection >> initialize [
 	diffs := OrderedCollection new
 ]
 
+{ #category : #testing }
+UnifiedDiffCollection >> isEmpty [
+	^ diffs isEmpty
+]
+
 { #category : #printing }
 UnifiedDiffCollection >> printOn: stream [
 	super printOn: stream.
