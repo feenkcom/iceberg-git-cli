@@ -17,6 +17,16 @@ PureGitFile >> analyze [
 		analyze
 ]
 
+{ #category : #accessing }
+PureGitFile >> basename [
+	^ ($/ split: path) last
+]
+
+{ #category : #accessing }
+PureGitFile >> children [
+	^ #()
+]
+
 { #category : #operations }
 PureGitFile >> delete [
 	self fileReference ensureDelete.
@@ -29,6 +39,16 @@ PureGitFile >> fileReference [
 	^ self repository location / self path
 ]
 
+{ #category : #testing }
+PureGitFile >> isDirectory [
+	^ false
+]
+
+{ #category : #testing }
+PureGitFile >> isFile [
+	^ true
+]
+
 { #category : #accessing }
 PureGitFile >> log [
 	^ (self repository logFrom: 'HEAD' for: self path)
@@ -37,6 +57,11 @@ PureGitFile >> log [
 				copyFrom: each;
 				path: self path;
 				yourself ]
+]
+
+{ #category : #accessing }
+PureGitFile >> parent [
+	^ self repository resolveFileReference: self fileReference parent
 ]
 
 { #category : #accessing }
