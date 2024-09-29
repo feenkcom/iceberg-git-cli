@@ -449,6 +449,16 @@ PureGitRepository >> status [
 ]
 
 { #category : #accessing }
+PureGitRepository >> statusFor: path [
+	| lines |
+	self exists ifFalse: [ ^ #() ].
+	lines := self runGitWithArgs: { 'status' . '--porcelain' . path }.
+	^ lines collect: [ :each |
+		(PureGitFileStatus inRepository: self)
+			fromLine: each ]
+]
+
+{ #category : #accessing }
 PureGitRepository >> tags [
 	| output |
 	self exists ifFalse: [ ^ #() asAsyncStream ].

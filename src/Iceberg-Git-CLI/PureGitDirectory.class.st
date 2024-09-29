@@ -66,6 +66,11 @@ PureGitDirectory >> isRoot [
 	^ path = ''
 ]
 
+{ #category : #testing }
+PureGitDirectory >> isTracked [
+	^ false
+]
+
 { #category : #accessing }
 PureGitDirectory >> log [
 	| commits |
@@ -100,4 +105,9 @@ PureGitDirectory >> path: aPathString [
 PureGitDirectory >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(; nextPutAll: self path; nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitDirectory >> status [
+	^ self repository statusFor: self path
 ]

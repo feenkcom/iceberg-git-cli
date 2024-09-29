@@ -17,6 +17,11 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #'initialization ' }
+PureGitFileStatus >> beUnmodified [
+	statusInIndex := statusInWorkTree := #unmodified
+]
+
 { #category : #accessing }
 PureGitFileStatus >> fileReference [
 	^ self repository location / self path
@@ -79,9 +84,7 @@ PureGitFileStatus >> path: aPathString [
 PureGitFileStatus >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	stream nextPutAll: statusInIndex.
-	stream nextPut: $/.
-	stream nextPutAll: statusInWorkTree.
+	stream nextPutAll: self statusSummary.
 	stream space.
 	stream nextPutAll: path.
 	stream nextPut: $)
@@ -112,6 +115,14 @@ PureGitFileStatus >> statusInWorkTree [
 { #category : #accessing }
 PureGitFileStatus >> statusInWorkTree: aStatusSymbol [
 	statusInWorkTree := aStatusSymbol
+]
+
+{ #category : #accessing }
+PureGitFileStatus >> statusSummary [
+	^ String streamContents: [ :out |
+		out nextPutAll: statusInIndex.
+		out nextPut: $/.
+		out nextPutAll: statusInWorkTree ]
 ]
 
 { #category : #accessing }
