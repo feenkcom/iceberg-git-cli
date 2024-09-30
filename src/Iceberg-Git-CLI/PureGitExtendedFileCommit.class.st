@@ -98,7 +98,7 @@ PureGitExtendedFileCommit >> numberOfLinesChanged [
 { #category : #accessing }
 PureGitExtendedFileCommit >> numberOfLinesChangedDescription [
 	^ (self numberOfLinesChanged signBit = 1 ifTrue: [ '-' ] ifFalse: [ '+' ])
-		, self numberOfLinesChanged printString
+		, self numberOfLinesChanged abs printString
 ]
 
 { #category : #accessing }

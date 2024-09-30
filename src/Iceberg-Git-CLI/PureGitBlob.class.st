@@ -45,7 +45,7 @@ PureGitBlob class >> imageTypeUsingMagicHeaderFrom: bytes [
 
 { #category : #accessing }
 PureGitBlob >> contents [
-	^ contents ifNil: [ contents := self repository contentsOfBlob: self id ]
+	^ contents ifNil: [ contents := self repository queries contentsOfBlob: self id ]
 ]
 
 { #category : #accessing }

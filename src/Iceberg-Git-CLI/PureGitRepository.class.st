@@ -24,48 +24,6 @@ PureGitRepository class >> on: aFileReference [
 		yourself
 ]
 
-{ #category : #accessing }
-PureGitRepository >> allAnnotatedCommits [
-	| commitsMap annotatedCommits |
-	annotatedCommits := self allCommits toArray wait collect: [ :each |
-		PureGitAnnotatedCommit new
-			commit: each;
-			yourself ].
-	commitsMap := Dictionary new: annotatedCommits size.
-	annotatedCommits do: [ :each | 
-		commitsMap at: each id put: each ].
-	annotatedCommits do: [ :annotatedCommit |
-		annotatedCommit parents: (annotatedCommit parentIds collect: [ :id | commitsMap at: id ]) ].
-	self tags toArray wait do: [ :tag |
-		commitsMap 
-			at: tag commitId 
-			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: tag name ] ].
-	self allBranches do: [ :branch |
-		commitsMap 
-			at: branch commitId 
-			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: branch name ] ].
-	^ annotatedCommits
-]
-
-{ #category : #accessing }
-PureGitRepository >> allBranches [
-	^ self localBranches , self remoteBranches
-]
-
-{ #category : #accessing }
-PureGitRepository >> allCommits [
-	| output commitLines |
-	self exists ifFalse: [ ^ #() asAsyncStream ].
-	output := self runGitWithArgsAsync: { 
-		'log'.
-		self commitLineFormat , '%n@@@'.
-		'--all'.
-		'--remotes' }.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self commitFromLines: each ]
-]
-
 { #category : #private }
 PureGitRepository >> announceRepositoryModified [
 	self announcer announce: PureGitRepositoryModified new
@@ -76,110 +34,15 @@ PureGitRepository >> announcer [
 	^ announcer
 ]
 
-{ #category : #accessing }
+{ #category : #convenience }
 PureGitRepository >> branch [
-	| currentBranchName |
-	currentBranchName := self currentBranchName.
-	^ self localBranches
-		detect: [ :each | each name = currentBranchName ]
-		ifNone: [ nil ]
-]
-
-{ #category : #operations }
-PureGitRepository >> checkout: commitish [
-	self runGitWithArgs: { 'checkout' . commitish }.
-	self announceRepositoryModified
-]
-
-{ #category : #operations }
-PureGitRepository >> clone: gitUrl [
-	self runGitWithArgs: { 'clone' . gitUrl . '.' }.
-	self announceRepositoryModified
-]
-
-{ #category : #operations }
-PureGitRepository >> commit: comment [
-	self runGitWithArgs: { 'commit' . '-m' . comment }.
-	self announceRepositoryModified
+	^ self queries branch
 ]
 
 { #category : #private }
-PureGitRepository >> commitFromLines: lines [
-	| author timestamp message id parents tree start stop |
-	id := lines first.
-	author := lines second.
-	timestamp := ZTimestamp fromUnixTime: lines third asInteger.
-	parents := lines fourth 
-			ifEmpty: [ #() ] 
-			ifNotEmpty: [ :line | line splitOn: ' ' ].
-	tree := lines fifth.
-	start := 7.
-	stop := lines size.
-	[ (lines at: start) isEmpty and: [ start <= stop ] ]
-		whileTrue: [ start := start + 1 ].
-	[ (lines at: stop) isEmpty and: [ start <= stop ] ]
-		whileTrue: [ stop := stop - 1 ].
-	message := String cr join: (lines copyFrom: start to: stop).
-	^ (PureGitCommit inRepository: self)
-		id: id;
-		author: author;
-		timestamp: timestamp;
-		parentIds: parents;
-		treeId: tree;
-		comment: message;
-		yourself
-]
-
-{ #category : #private }
-PureGitRepository >> commitLineFormat [
-	^ '--format=%H%n%an%n%at%n%P%n%T%n%n%B'
-]
-
-{ #category : #accessing }
-PureGitRepository >> configAt: optionName ifAbsent: block [
-	| result |
-	result := self runGitWithArgs: { 'config'. optionName }.
-	^ result isEmpty ifTrue: block ifFalse: [ result first ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> contentsOfBlob: aHash [
-	| executor |
-	executor := IceGitCliPlatform current executor.
-	executor workingDirectory: self ensureLocation.
-	^ executor 
-		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
-		for: #contentsOfFile:
-]
-
-{ #category : #operations }
-PureGitRepository >> createBranch: branchName [
-	| newBranch |
-	self runGitWithArgs: { 'branch' . branchName }.
-	newBranch := self localBranches detect: [ :branch | branch name = branchName ].
-	newBranch checkout. "will trigger announceRepositoryModified"
-	^ newBranch
-]
-
-{ #category : #accessing }
-PureGitRepository >> currentBranchName [
-	| output |
-	self exists ifFalse: [ ^ '' ].
-	output := self runGitWithArgs: #( 'branch' '--show-current' ).
-	^ output isEmpty ifTrue: [ '' ] ifFalse: [ output first ]
-]
-
-{ #category : #operations }
-PureGitRepository >> delete [
-	self exists
-		ifTrue: [ self location ensureDeleteAll.
-			exists := false.
-			self announceRepositoryModified ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> diff: args [
-	^ self runGitWithArgs: #('diff') , args
+PureGitRepository >> deleted [
+	exists := false.
+	hasHead := false.
 ]
 
 { #category : #accessing }
@@ -202,35 +65,21 @@ PureGitRepository >> exists [
 
 { #category : #testing }
 PureGitRepository >> hasDetachedHead [
-	^ self currentBranchName isEmpty
+	^ self queries currentBranchName isEmpty
 ]
 
 { #category : #testing }
 PureGitRepository >> hasHead [
 	^ hasHead
 		or: [ hasHead := self exists
-					and: [ [ (self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')) notEmpty ]
+					and: [ [ self queries resolveHead notEmpty ]
 							on: GtGitCliCommandError
 							do: [ false ] ] ]
 ]
 
-{ #category : #accessing }
+{ #category : #convenience }
 PureGitRepository >> head [
-	^ self resolveCommit: 'HEAD'
-]
-
-{ #category : #operations }
-PureGitRepository >> init [
-	self runGitWithArgs: { 'init' }.
-	self announceRepositoryModified
-]
-
-{ #category : #accessing }
-PureGitRepository >> initialDefaultBranchName [
-	"Return the default branch name used when initializing a new repository.
-	Consult the init.defaultbranch git config option and fall back to our superclass' implementation."
-
-	^ self configAt: 'init.defaultbranch' ifAbsent: [ 'master' ]
+	^ self queries head
 ]
 
 { #category : #initialization }
@@ -239,45 +88,6 @@ PureGitRepository >> initialize [
 	exists := false.
 	hasHead := false.
 	announcer := Announcer new.
-]
-
-{ #category : #accessing }
-PureGitRepository >> internals [
-	| config lines counts values |
-	lines := self runGitWithArgs: #('config' '--list').
-	values := lines collect: [ :line | $= split: line ].
-	values sort: #first ascending.
-	config := values
-			collect: [ :each | each first -> each second ]
-			as: OrderedDictionary.
-	self exists 
-		ifTrue: [
-			lines := self runGitWithArgs: #('count-objects' '-v').
-			values := lines collect: [ :line | $: split: line ].
-			counts := values
-					collect: [ :each | each first -> each second trimBoth asNumber ]
-					as: OrderedDictionary]
-		ifFalse: [ counts := nil ].
-	^ {
-		#'git-config' -> config.
-		#'git-count-objects' -> counts } as: OrderedDictionary
-]
-
-{ #category : #accessing }
-PureGitRepository >> localBranches [
-	| output |
-	self exists ifFalse: [ ^ #() ].
-	output := self runGitWithArgs: {
-		'branch'.
-		'--format=%(objectname) %(refname:short)' }.
-	^ output
-		collect: [ :each | 
-			| firstSpace |
-			firstSpace := each indexOf: Character space.
-			(PureGitLocalBranch inRepository: self)
-				commit: (each copyFrom: 1 to: firstSpace - 1);
-				name: (each copyFrom: firstSpace + 1 to: each size);
-				yourself ]
 ]
 
 { #category : #accessing }
@@ -290,24 +100,14 @@ PureGitRepository >> location: aFileReference [
 	location := aFileReference
 ]
 
-{ #category : #accessing }
+{ #category : #convenience }
 PureGitRepository >> log [
-	self hasHead ifFalse: [ ^ #() asAsyncStream ].
-	^ self head log
+	^ self queries log
 ]
 
 { #category : #accessing }
-PureGitRepository >> logFrom: startCommit for: path [
-	| output commitLines args |
-	args := { 
-		'log'.
-		self commitLineFormat , '%n@@@'.
-		startCommit }.
-	path ifNotNil: [ args := args copyWith: path ].
-	output := self runGitWithArgsAsync: args.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self commitFromLines: each ]
+PureGitRepository >> operations [
+	^ PureGitOperations inRepository: self
 ]
 
 { #category : #printing }
@@ -319,32 +119,8 @@ PureGitRepository >> printOn: stream [
 ]
 
 { #category : #accessing }
-PureGitRepository >> remoteBranches [
-	| output |
-	self exists ifFalse: [ ^ #() ].
-	output := self runGitWithArgs: {
-		'branch'.
-		'--remote'.
-		'--format=%(objectname) %(refname:short)' }.
-	^ output
-		collect: [ :each | 
-			| firstSpace |
-			firstSpace := each indexOf: Character space.
-			(PureGitRemoteBranch inRepository: self)
-				commit: (each copyFrom: 1 to: firstSpace - 1);
-				name: (each copyFrom: firstSpace + 1 to: each size);
-				yourself ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> remotes [
-	self exists ifFalse: [ ^ #() ].
-	^ (self runGitWithArgs: #( 'remote' )) collect: [ :each | | url |
-		url := (self runGitWithArgs: { 'remote' . 'get-url' . each }) first.
-		(PureGitRemote inRepository: self)
-			name: each;
-			url: url;
-			yourself ]
+PureGitRepository >> queries [
+	^ PureGitQueries inRepository: self
 ]
 
 { #category : #accessing }
@@ -352,17 +128,6 @@ PureGitRepository >> resolveBlob: blobId [
 	^ (PureGitBlob inRepository: self)
 		id: blobId;
 		yourself
-]
-
-{ #category : #accessing }
-PureGitRepository >> resolveCommit: commitId [
-	| output |
-	output := self runGitWithArgs: {
-		'show'.
-		'--no-patch'.
-		self commitLineFormat.
-		commitId }.
-	^ self commitFromLines: output
 ]
 
 { #category : #accessing }
@@ -400,113 +165,7 @@ PureGitRepository >> resolveTree: treeId [
 		yourself
 ]
 
-{ #category : #private }
-PureGitRepository >> runGitWithArgs: args [
-	"Run CLI git with the passed arguments and return the lines from standard output.
-	Wait for the git command to complete. Signal an error when not successful."
-
-	| operation executor |
-	operation := thisContext sender method selector.
-	executor := IceGitCliPlatform current executor.
-	executor workingDirectory: self ensureLocation.
-	^ executor runGitWithArgs: args for: operation
-]
-
-{ #category : #private }
-PureGitRepository >> runGitWithArgsAsync: args [
-	"Run CLI git with the passed arguments and return the lines from standard output as an asynchroneous stream..
-	Do not wait for the git command to complete. Signal an error when not successful."
-
-	| operation executor |
-	operation := thisContext sender method selector.
-	executor := IceGitCliPlatform current executor.
-	executor workingDirectory: self ensureLocation.
-	^ executor runGitWithArgsAsync: args for: operation
-]
-
-{ #category : #operations }
-PureGitRepository >> stage: filePath [
-	self runGitWithArgs: { 'add' . filePath }.
-	self announceRepositoryModified
-]
-
-{ #category : #accessing }
-PureGitRepository >> stagedChanges [
-	^ self diffTool
-		diffArgs: { '--staged' };
-		diff
-]
-
-{ #category : #accessing }
+{ #category : #convenience }
 PureGitRepository >> status [
-	^ self statusFor: nil
-]
-
-{ #category : #accessing }
-PureGitRepository >> statusFor: path [
-	| lines args |
-	self exists ifFalse: [ ^ #() ].
-	args := { 'status' . '--porcelain' }.
-	path ifNotNil: [ args := args copyWith: path ].
-	lines := self runGitWithArgs: args.
-	^ lines collect: [ :each |
-		(PureGitFileStatus inRepository: self)
-			fromLine: each ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> tags [
-	| output |
-	self exists ifFalse: [ ^ #() asAsyncStream ].
-	output := self runGitWithArgsAsync: {
-		'tag'.
-		'--format=%(objectname) %(refname:short)' }.
-	^ output
-		collect: [ :each | 
-			| firstSpace |
-			firstSpace := each indexOf: Character space.
-			(PureGitTag inRepository: self)
-				commit: (each copyFrom: 1 to: firstSpace - 1);
-				name: (each copyFrom: firstSpace + 1 to: each size);
-				yourself ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> treeEntriesFor: treeId [
-	| lines |
-	lines := self runGitWithArgs:  { 'ls-tree' . treeId }.
-	^ lines collect: [ :line | | firstTab meta name |
-		firstTab := line indexOf: Character tab.
-		meta := Character space split: (line copyFrom: 1 to: firstTab - 1).
-		name := line copyFrom: firstTab + 1 to: line size.
-		(PureGitTreeEntry inRepository: self)
-			name: name;
-			mode: (Integer readFrom: meta first base: 8);
-			type: meta second asSymbol;
-			id: meta third;
-			yourself ]
-]
-
-{ #category : #operations }
-PureGitRepository >> unstage: filePath [
-	self runGitWithArgs: { 'restore' . '--staged' . filePath }.
-	self announceRepositoryModified
-]
-
-{ #category : #accessing }
-PureGitRepository >> unstagedChanges [
-	^ self diffTool
-		diffArgs: { };
-		diff
-]
-
-{ #category : #accessing }
-PureGitRepository >> upstreamNameForBranch: localBranchName [
-	| result |
-	result := self runGitWithArgs: {
-			'branch'.
-			'--list'.
-			'--format=%(upstream:short)'.
-			localBranchName }.
-	^ result isEmpty ifTrue: [ nil ] ifFalse: [ result first ]
+	^ self queries status
 ]

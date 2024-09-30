@@ -36,13 +36,13 @@ PureGitDiffTool >> diffArgs: aCollection [
 
 { #category : #accessing }
 PureGitDiffTool >> diffLines [
-	^ self repository diff: { '--no-prefix' } , diffArgs
+	^ self repository queries diff: { '--no-prefix' } , diffArgs
 ]
 
 { #category : #accessing }
 PureGitDiffTool >> diffSummary [
 	| numstat filesChangedCount additionsCount deletionsCount |
-	numstat := self repository diff: { '--numstat' } , diffArgs.
+	numstat := self repository queries diff: { '--numstat' } , diffArgs.
 	filesChangedCount := numstat size.
 	filesChangedCount = 0 
 		ifTrue: [ ^ 'no changes' ].

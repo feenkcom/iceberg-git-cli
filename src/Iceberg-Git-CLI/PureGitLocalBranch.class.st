@@ -14,7 +14,7 @@ PureGitLocalBranch >> branchType [
 
 { #category : #operations }
 PureGitLocalBranch >> checkout [
-	self repository checkout: self name
+	self repository operations checkout: self name
 ]
 
 { #category : #testing }
@@ -25,7 +25,7 @@ PureGitLocalBranch >> hasUpstream [
 { #category : #testing }
 PureGitLocalBranch >> isCurrent [
 	| currentBranchName |
-	currentBranchName := self repository currentBranchName.
+	currentBranchName := self repository queries currentBranchName.
 	^ self name = currentBranchName
 		or: [ currentBranchName isEmpty
 				and: [ self name includesSubstring: 'HEAD detached' ] ]
@@ -36,18 +36,18 @@ PureGitLocalBranch >> upstream [
 	| upstreamName |
 	upstreamName := self upstreamName.
 	upstreamName ifNil: [ ^ nil ].
-	^ self repository remoteBranches
+	^ self repository queries remoteBranches
 		detect: [ :each | each name = upstreamName ]
 		ifNone: [ nil ]
 ]
 
 { #category : #accessing }
 PureGitLocalBranch >> upstreamName [
-	^ self repository upstreamNameForBranch: self name
+	^ self repository queries upstreamNameForBranch: self name
 ]
 
 { #category : #accessing }
 PureGitLocalBranch >> upstreamRemoteName [
-	^ (self repository upstreamNameForBranch: self name)
+	^ (self repository queries upstreamNameForBranch: self name)
 		ifNotNil: [ :fullName | ($/ split: fullName) first ]
 ]

@@ -22,7 +22,7 @@ PureGitTree class >> emptyTreeHash [
 
 { #category : #accessing }
 PureGitTree >> entries [
-	^ entries ifNil: [ entries := self repository treeEntriesFor: self id ]
+	^ entries ifNil: [ entries := self repository queries treeEntriesFor: self id ]
 ]
 
 { #category : #accessing }

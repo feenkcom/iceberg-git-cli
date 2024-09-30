@@ -73,7 +73,7 @@ PureGitFile >> isTracked [
 
 { #category : #accessing }
 PureGitFile >> log [
-	^ (self repository logFrom: 'HEAD' for: self path)
+	^ (self repository queries logFrom: 'HEAD' for: self path)
 		collect: [ :each |
 			PureGitFileCommit new
 				copyFrom: each;
@@ -114,14 +114,14 @@ PureGitFile >> size [
 
 { #category : #operations }
 PureGitFile >> stage [
-	self repository stage: self path.
+	self repository operations stage: self path.
 	self resetStatus
 ]
 
 { #category : #accessing }
 PureGitFile >> status [
 	^ status ifNil: [ 
-		status := (self repository statusFor: self path)
+		status := (self repository queries statusFor: self path)
 			ifEmpty: [ 
 				(PureGitFileStatus inRepository: self repository) 
 					path: path;
@@ -131,6 +131,6 @@ PureGitFile >> status [
 
 { #category : #operations }
 PureGitFile >> unstage [
-	self repository unstage: self path.
+	self repository operations unstage: self path.
 	self resetStatus
 ]

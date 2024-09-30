@@ -56,7 +56,7 @@ PureGitCommit >> changesToParentDiffArgs [
 
 { #category : #operations }
 PureGitCommit >> checkout [
-	self repository checkout: self id
+	self repository operations checkout: self id
 ]
 
 { #category : #accessing }
@@ -77,11 +77,6 @@ PureGitCommit >> commit [
 { #category : #accessing }
 PureGitCommit >> commitId [
 	^ id
-]
-
-{ #category : #accessing }
-PureGitCommit >> diff: diffArgs [
-	^ self repository diff: { '--no-prefix' } , diffArgs
 ]
 
 { #category : #testing }
@@ -121,7 +116,7 @@ PureGitCommit >> numberOfParents [
 
 { #category : #accessing }
 PureGitCommit >> parent [
-	^ self repository resolveCommit: self parentIds first
+	^ self repository queries resolveCommit: self parentIds first
 ]
 
 { #category : #accessing }
@@ -136,7 +131,7 @@ PureGitCommit >> parentIds: aStringCollection [
 
 { #category : #accessing }
 PureGitCommit >> parents [
-	^ self parentIds collect: [ :each | self repository resolveCommit: each ]
+	^ self parentIds collect: [ :each | self repository queries resolveCommit: each ]
 ]
 
 { #category : #printing }

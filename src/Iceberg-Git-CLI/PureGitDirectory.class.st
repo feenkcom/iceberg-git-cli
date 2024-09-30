@@ -79,7 +79,7 @@ PureGitDirectory >> isTracked [
 { #category : #accessing }
 PureGitDirectory >> log [
 	| commits |
-	commits := self repository 
+	commits := self repository queries
 		logFrom: 'HEAD' 
 		for: (self isRoot ifTrue: [ nil ] ifFalse: [ self path ]).
 	^ commits collect: [ :each |
@@ -114,5 +114,5 @@ PureGitDirectory >> printOn: stream [
 
 { #category : #accessing }
 PureGitDirectory >> status [
-	^ self repository statusFor: self path
+	^ self repository queries statusFor: self path
 ]
