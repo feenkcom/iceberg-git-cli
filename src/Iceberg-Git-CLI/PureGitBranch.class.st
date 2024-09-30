@@ -26,7 +26,7 @@ PureGitBranch >> branchType [
 { #category : #accessing }
 PureGitBranch >> commit [
 	^ commit isString
-		ifTrue: [ commit := repository resolveCommit: commit ]
+		ifTrue: [ commit := self repository queries resolveCommit: commit ]
 		ifFalse: [ commit ]
 ]
 

@@ -13,7 +13,7 @@ Class {
 
 { #category : #accessing }
 PureGitRemote >> branches [
-	^ self repository remoteBranches
+	^ self repository queries remoteBranches
 		select: [ :each | each remoteName = self name ]
 ]
 

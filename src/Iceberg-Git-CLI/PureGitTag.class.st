@@ -20,13 +20,13 @@ PureGitTag >> = anObject [
 
 { #category : #operations }
 PureGitTag >> checkout [
-	self repository checkout: self name
+	self repository operations checkout: self name
 ]
 
 { #category : #accessing }
 PureGitTag >> commit [
 	^ commit isString
-		ifTrue: [ commit := repository resolveCommit: commit ]
+		ifTrue: [ commit := self repository queries resolveCommit: commit ]
 		ifFalse: [ commit ]
 ]
 

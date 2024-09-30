@@ -14,7 +14,7 @@ PureGitRemoteBranch >> branchType [
 
 { #category : #accessing }
 PureGitRemoteBranch >> remote [
-	^ self repository remotes
+	^ self repository queries remotes
 		detect: [ :each | each name = self remoteName ]
 		ifNone: [ nil ]
 ]
@@ -31,6 +31,6 @@ PureGitRemoteBranch >> shortName [
 
 { #category : #accessing }
 PureGitRemoteBranch >> trackers [
-	^ self repository localBranches
+	^ self repository queries localBranches
 		select: [ :each | each upstreamName = self name ]
 ]
