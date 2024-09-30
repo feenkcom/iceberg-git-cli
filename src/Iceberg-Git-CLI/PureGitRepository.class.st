@@ -177,7 +177,7 @@ PureGitRepository >> delete [
 			self announceRepositoryModified ]
 ]
 
-{ #category : #operations }
+{ #category : #accessing }
 PureGitRepository >> diff: args [
 	^ self runGitWithArgs: #('diff') , args
 ]
@@ -297,25 +297,14 @@ PureGitRepository >> log [
 ]
 
 { #category : #accessing }
-PureGitRepository >> logFrom: startCommit [
-	| output commitLines |
-	output := self runGitWithArgsAsync: { 
+PureGitRepository >> logFrom: startCommit for: path [
+	| output commitLines args |
+	args := { 
 		'log'.
 		self commitLineFormat , '%n@@@'.
 		startCommit }.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self commitFromLines: each ]
-]
-
-{ #category : #accessing }
-PureGitRepository >> logFrom: startCommit for: path [
-	| output commitLines |
-	output := self runGitWithArgsAsync: { 
-		'log'.
-		self commitLineFormat , '%n@@@'.
-		startCommit.
-		path }.
+	path ifNotNil: [ args := args copyWith: path ].
+	output := self runGitWithArgsAsync: args.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines := commitLines select: [ :lines | lines notEmpty ].
 	^ commitLines collect: [ :each | self commitFromLines: each ]
@@ -450,19 +439,16 @@ PureGitRepository >> stagedChanges [
 
 { #category : #accessing }
 PureGitRepository >> status [
-	| lines |
-	self exists ifFalse: [ ^ #() ].
-	lines := self runGitWithArgs: { 'status' . '--porcelain' }.
-	^ lines collect: [ :each |
-		(PureGitFileStatus inRepository: self)
-			fromLine: each ]
+	^ self statusFor: nil
 ]
 
 { #category : #accessing }
 PureGitRepository >> statusFor: path [
-	| lines |
+	| lines args |
 	self exists ifFalse: [ ^ #() ].
-	lines := self runGitWithArgs: { 'status' . '--porcelain' . path }.
+	args := { 'status' . '--porcelain' }.
+	path ifNotNil: [ args := args copyWith: path ].
+	lines := self runGitWithArgs: args.
 	^ lines collect: [ :each |
 		(PureGitFileStatus inRepository: self)
 			fromLine: each ]
