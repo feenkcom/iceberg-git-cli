@@ -29,6 +29,11 @@ PureGitDirectory >> children [
 ]
 
 { #category : #accessing }
+PureGitDirectory >> creationTime [
+	^ self fileReference creationTime
+]
+
+{ #category : #accessing }
 PureGitDirectory >> fileReference [
 	^ self isRoot
 		ifTrue: [ self repository location ]
