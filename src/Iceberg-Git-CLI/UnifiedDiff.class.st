@@ -107,7 +107,9 @@ UnifiedDiff >> readFrom: stream [
 	[ savedPosition := stream position.
 	peekedLine := lineReader nextLine.
 	stream position: savedPosition.
-	(peekedLine beginsWith: '@@') or: [ peekedLine beginsWith: 'diff' ] ]
+	(stream atEnd 
+		or: [ (peekedLine beginsWith: '@@') 
+			or: [ peekedLine beginsWith: 'diff' ] ]) ]
 		whileFalse: [ self readHeaderFrom: lineReader nextLine ].
 	changeChunks := Array streamContents: [ :out |
 		[ lineReader atEnd or: [ (stream peek = $@) not ] ]
