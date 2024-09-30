@@ -87,7 +87,8 @@ PureGitRepository >> branch [
 
 { #category : #operations }
 PureGitRepository >> checkout: commitish [
-	self runGitWithArgs: { 'checkout' . commitish }
+	self runGitWithArgs: { 'checkout' . commitish }.
+	self announceRepositoryModified
 ]
 
 { #category : #operations }
@@ -149,6 +150,15 @@ PureGitRepository >> contentsOfBlob: aHash [
 	^ executor 
 		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
 		for: #contentsOfFile:
+]
+
+{ #category : #operations }
+PureGitRepository >> createBranch: branchName [
+	| newBranch |
+	self runGitWithArgs: { 'branch' . branchName }.
+	newBranch := self localBranches detect: [ :branch | branch name = branchName ].
+	newBranch checkout. "will trigger announceRepositoryModified"
+	^ newBranch
 ]
 
 { #category : #accessing }
