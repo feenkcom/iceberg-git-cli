@@ -12,6 +12,11 @@ PureGitLocalBranch >> branchType [
 	^ #local
 ]
 
+{ #category : #operations }
+PureGitLocalBranch >> checkout [
+	self repository checkout: self name
+]
+
 { #category : #testing }
 PureGitLocalBranch >> hasUpstream [
 	^ self upstreamName notNil

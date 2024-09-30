@@ -1,5 +1,6 @@
 "
 I represent a specific file in a repository, defined by a relative path string.
+I hold/cache my file status in the repository.
 "
 Class {
 	#name : #PureGitFile,
@@ -26,6 +27,11 @@ PureGitFile >> basename [
 { #category : #accessing }
 PureGitFile >> children [
 	^ #()
+]
+
+{ #category : #accessing }
+PureGitFile >> creationTime [
+	^ self fileReference creationTime
 ]
 
 { #category : #operations }
@@ -97,8 +103,19 @@ PureGitFile >> printOn: stream [
 ]
 
 { #category : #operations }
+PureGitFile >> resetStatus [
+	status := nil
+]
+
+{ #category : #accessing }
+PureGitFile >> size [
+	^ self fileReference size
+]
+
+{ #category : #operations }
 PureGitFile >> stage [
-	self repository stage: self path
+	self repository stage: self path.
+	self resetStatus
 ]
 
 { #category : #accessing }
@@ -114,5 +131,6 @@ PureGitFile >> status [
 
 { #category : #operations }
 PureGitFile >> unstage [
-	self repository unstage: self path
+	self repository unstage: self path.
+	self resetStatus
 ]

@@ -61,6 +61,11 @@ PureGitFileStatus >> fromLine: line [
 ]
 
 { #category : #accessing }
+PureGitFileStatus >> gitFile [
+	^ self repository resolveFilePath: self path
+]
+
+{ #category : #accessing }
 PureGitFileStatus >> originalPath [
 	^ originalPath
 ]
