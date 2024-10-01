@@ -22,10 +22,14 @@ PureGitExtendedFileCommit >> author [
 { #category : #accessing }
 PureGitExtendedFileCommit >> authorTop3Description [
 	| selection |
-	selection := self authors associations sort: #value descending.
+	selection := self sortedAuthors.
 	selection := selection copyFrom: 1 to: (3 min: selection size).
-	^ ', ' join: (selection collect: [ :each |
-		'{1} {2}' format: { each key. each value printShowingDecimalPlaces: 2 } ])
+	^ ', '
+		join: (selection
+				collect: [ :each | 
+					'{1} {2}'
+						format: {each key.
+								each value printShowingDecimalPlaces: 2} ])
 ]
 
 { #category : #accessing }
@@ -119,6 +123,11 @@ PureGitExtendedFileCommit >> printOn: stream [
 { #category : #accessing }
 PureGitExtendedFileCommit >> shortId [
 	^ commit shortCommitId
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> sortedAuthors [
+	^ self authors associations sort: #value descending
 ]
 
 { #category : #accessing }
