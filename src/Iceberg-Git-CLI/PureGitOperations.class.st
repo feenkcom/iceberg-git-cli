@@ -26,7 +26,12 @@ PureGitOperations >> clone: gitUrl [
 
 { #category : #operations }
 PureGitOperations >> commit: comment [
-	self runGitWithArgs: { 'commit' . '-m' . comment }.
+	| args |
+	args := OrderedCollection with: 'commit'.
+	IceGitCliPlatform current signCommits
+		ifTrue: [ args add: '-S' ].
+	args add: '-m'; add: comment.
+	self runGitWithArgs: args.
 	self announceRepositoryModified
 ]
 
