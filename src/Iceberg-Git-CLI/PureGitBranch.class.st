@@ -42,9 +42,19 @@ PureGitBranch >> commitId [
 		ifFalse: [ commit id ]
 ]
 
+{ #category : #operations }
+PureGitBranch >> fetch [
+	self repository operations fetch: { self name }
+]
+
 { #category : #comparing }
 PureGitBranch >> hash [
 	^ self name hash bitXor: self commitId hash
+]
+
+{ #category : #operations }
+PureGitBranch >> merge [
+	self repository operations merge: { self name }
 ]
 
 { #category : #accessing }
@@ -63,6 +73,16 @@ PureGitBranch >> printOn: stream [
 	stream nextPut: $(.
 	name ifNotNil: [ stream nextPutAll: name ].
 	stream nextPut: $)
+]
+
+{ #category : #operations }
+PureGitBranch >> pull [
+	self repository operations pull: { self name }
+]
+
+{ #category : #operations }
+PureGitBranch >> push [
+	self repository operations push: { self name }
 ]
 
 { #category : #accessing }

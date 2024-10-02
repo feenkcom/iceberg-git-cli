@@ -17,6 +17,11 @@ PureGitRemote >> branches [
 		select: [ :each | each remoteName = self name ]
 ]
 
+{ #category : #operations }
+PureGitRemote >> fetch [
+	self repository fetch: { self name }
+]
+
 { #category : #accessing }
 PureGitRemote >> name [
 	^ name
@@ -31,6 +36,16 @@ PureGitRemote >> name: aString [
 PureGitRemote >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(; print: name; nextPut: $)
+]
+
+{ #category : #operations }
+PureGitRemote >> pull [
+	self repository pull: { self name }
+]
+
+{ #category : #operations }
+PureGitRemote >> push [
+	self repository push: { self name }
 ]
 
 { #category : #accessing }

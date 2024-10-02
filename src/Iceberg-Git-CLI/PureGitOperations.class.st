@@ -54,8 +54,32 @@ PureGitOperations >> delete [
 ]
 
 { #category : #operations }
+PureGitOperations >> fetch: args [
+	self runGitWithArgs: #('fetch') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
 PureGitOperations >> init [
 	self runGitWithArgs: { 'init' }.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
+PureGitOperations >> merge: args [
+	self runGitWithArgs: #('merge') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
+PureGitOperations >> pull: args [
+	self runGitWithArgs: #('pull') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
+PureGitOperations >> push: args [
+	self runGitWithArgs: #('push') , args.
 	self announceRepositoryModified
 ]
 
