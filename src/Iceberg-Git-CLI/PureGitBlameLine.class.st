@@ -1,3 +1,7 @@
+"
+I match a text line at a line number with the commit that last changed it.
+I am the result of git blame. 
+"
 Class {
 	#name : #PureGitBlameLine,
 	#superclass : #Object,

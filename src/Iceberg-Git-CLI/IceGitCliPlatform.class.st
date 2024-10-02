@@ -106,7 +106,7 @@ IceGitCliPlatform >> repositoryClass [
 	^ IceGitCliRepository
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 IceGitCliPlatform >> resolveGitPath [
 	| builder output path |
 	builder := GtExternalProcessBuilder new

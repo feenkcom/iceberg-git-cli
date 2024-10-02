@@ -1,3 +1,6 @@
+"
+I am a collection of UnifiedDiffs with changes to different files
+"
 Class {
 	#name : #UnifiedDiffCollection,
 	#superclass : #Object,
