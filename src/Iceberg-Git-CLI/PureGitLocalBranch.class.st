@@ -17,6 +17,16 @@ PureGitLocalBranch >> checkout [
 	self repository operations checkout: self name
 ]
 
+{ #category : #accessing }
+PureGitLocalBranch >> commitsAhead [
+	^ self outgoingCommits toArray wait size
+]
+
+{ #category : #accessing }
+PureGitLocalBranch >> commitsBehind [
+	^ self incomingCommits toArray wait size
+]
+
 { #category : #testing }
 PureGitLocalBranch >> hasUpstream [
 	^ self upstreamName notNil
