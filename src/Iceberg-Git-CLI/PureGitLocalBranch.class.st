@@ -22,6 +22,17 @@ PureGitLocalBranch >> hasUpstream [
 	^ self upstreamName notNil
 ]
 
+{ #category : #accessing }
+PureGitLocalBranch >> incomingCommits [
+	| upstream |
+	upstream := self upstream.
+	(upstream isNil or: [ self commit = upstream commit ])
+		ifTrue: [ ^ #() asAsyncStream ].
+	^ self repository queries 
+		logFrom: self name , '..' , upstream remote name
+		for: nil
+]
+
 { #category : #testing }
 PureGitLocalBranch >> isCurrent [
 	| currentBranchName |
@@ -29,6 +40,17 @@ PureGitLocalBranch >> isCurrent [
 	^ self name = currentBranchName
 		or: [ currentBranchName isEmpty
 				and: [ self name includesSubstring: 'HEAD detached' ] ]
+]
+
+{ #category : #accessing }
+PureGitLocalBranch >> outgoingCommits [
+	| upstream |
+	upstream := self upstream.
+	(upstream isNil or: [ self commit = upstream commit ])
+		ifTrue: [ ^ #() asAsyncStream ].
+	^ self repository queries 
+		logFrom: upstream remote name , '..' , self name
+		for: nil
 ]
 
 { #category : #accessing }

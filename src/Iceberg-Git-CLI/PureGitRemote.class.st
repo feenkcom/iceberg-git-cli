@@ -19,7 +19,7 @@ PureGitRemote >> branches [
 
 { #category : #operations }
 PureGitRemote >> fetch [
-	self repository fetch: { self name }
+	self repository operations fetch: { self name }
 ]
 
 { #category : #accessing }
