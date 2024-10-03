@@ -9,7 +9,10 @@ Class {
 		'changesToParent',
 		'authors',
 		'lineCount',
-		'changedLines'
+		'changedLines',
+		'addedLines',
+		'removedLines',
+		'modifiedLines'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -22,10 +25,14 @@ PureGitExtendedFileCommit >> author [
 { #category : #accessing }
 PureGitExtendedFileCommit >> authorTop3Description [
 	| selection |
-	selection := self authors associations sort: #value descending.
+	selection := self sortedAuthors.
 	selection := selection copyFrom: 1 to: (3 min: selection size).
-	^ ', ' join: (selection collect: [ :each |
-		'{1} {2}' format: { each key. each value printShowingDecimalPlaces: 2 } ])
+	^ ', '
+		join: (selection
+				collect: [ :each | 
+					'{1} {2}'
+						format: {each key.
+								each value printShowingDecimalPlaces: 2} ])
 ]
 
 { #category : #accessing }
@@ -68,15 +75,17 @@ PureGitExtendedFileCommit >> initializeAsFirst [
 
 { #category : #operations }
 PureGitExtendedFileCommit >> initializeFromParent: parent [
-	| reduction authorFraction |
+	| authorFraction |
 	self numberOfLines: parent numberOfLines + self numberOfLinesChanged.
-	reduction := parent numberOfLines / self numberOfLines.
 	parent authors keysAndValuesDo: [ :author :fraction |
-		self authors at: author put: fraction * reduction ].
-	authorFraction := self authors at: self author ifAbsent: [ 0.0 ].
+		self authors 
+			at: author 
+			put: fraction * (self numberOfLines - self numberOfLinesAdded) / self numberOfLines  ].
+	authorFraction := self authors 
+		at: self author ifAbsent: [ 0.0 ].
 	self authors
 		at: self author
-		put: authorFraction + (self numberOfLinesChanged / self numberOfLines).
+		put: authorFraction + (self numberOfLinesAdded / self numberOfLines).
 ]
 
 { #category : #accessing }
@@ -90,6 +99,12 @@ PureGitExtendedFileCommit >> numberOfLines: count [
 ]
 
 { #category : #accessing }
+PureGitExtendedFileCommit >> numberOfLinesAdded [
+	^ addedLines ifNil: [ 
+		addedLines := self changesToParent numberOfLinesAdded ]
+]
+
+{ #category : #accessing }
 PureGitExtendedFileCommit >> numberOfLinesChanged [
 	^ changedLines ifNil: [ 
 		changedLines := self changesToParent numberOfLinesChanged ]
@@ -99,6 +114,18 @@ PureGitExtendedFileCommit >> numberOfLinesChanged [
 PureGitExtendedFileCommit >> numberOfLinesChangedDescription [
 	^ (self numberOfLinesChanged signBit = 1 ifTrue: [ '-' ] ifFalse: [ '+' ])
 		, self numberOfLinesChanged abs printString
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> numberOfLinesModified [
+	^ modifiedLines ifNil: [ 
+		modifiedLines := self changesToParent numberOfLinesModified ]
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> numberOfLinesRemoved [
+	^ removedLines ifNil: [ 
+		removedLines := self changesToParent numberOfLinesRemoved ]
 ]
 
 { #category : #accessing }
@@ -119,6 +146,11 @@ PureGitExtendedFileCommit >> printOn: stream [
 { #category : #accessing }
 PureGitExtendedFileCommit >> shortId [
 	^ commit shortCommitId
+]
+
+{ #category : #accessing }
+PureGitExtendedFileCommit >> sortedAuthors [
+	^ self authors associations sort: #value descending
 ]
 
 { #category : #accessing }

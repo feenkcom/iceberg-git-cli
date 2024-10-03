@@ -26,7 +26,12 @@ PureGitOperations >> clone: gitUrl [
 
 { #category : #operations }
 PureGitOperations >> commit: comment [
-	self runGitWithArgs: { 'commit' . '-m' . comment }.
+	| args |
+	args := OrderedCollection with: 'commit'.
+	IceGitCliPlatform current signCommits
+		ifTrue: [ args add: '-S' ].
+	args add: '-m'; add: comment.
+	self runGitWithArgs: args.
 	self announceRepositoryModified
 ]
 
@@ -49,8 +54,42 @@ PureGitOperations >> delete [
 ]
 
 { #category : #operations }
+PureGitOperations >> fetch: args [
+	self runGitWithArgs: #('fetch') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
 PureGitOperations >> init [
 	self runGitWithArgs: { 'init' }.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
+PureGitOperations >> merge: args [
+	self runGitWithArgs: #('merge') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #convenience }
+PureGitOperations >> pull [
+	self pull: #()
+]
+
+{ #category : #operations }
+PureGitOperations >> pull: args [
+	self runGitWithArgs: #('pull') , args.
+	self announceRepositoryModified
+]
+
+{ #category : #convenience }
+PureGitOperations >> push [
+	self push: #()
+]
+
+{ #category : #operations }
+PureGitOperations >> push: args [
+	self runGitWithArgs: #('push') , args.
 	self announceRepositoryModified
 ]
 

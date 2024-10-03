@@ -49,6 +49,27 @@ PureGitQueries >> allCommits [
 	^ commitLines collect: [ :each | self commitFromLines: each ]
 ]
 
+{ #category : #queries }
+PureGitQueries >> blame: path [
+	| lines commits |
+	lines := (self runGitWithArgs: { 'blame' . '--porcelain' . path }) readStream.
+	commits := Dictionary new.
+	^ Array streamContents: [ :out |
+		[ lines atEnd ] whileFalse: [ | header line blameLine commit |
+			header := Character space split: lines next.
+			[ (line := lines next) first = Character tab ] whileFalse.
+			blameLine := PureGitBlameLine new
+				commit: header first;
+				line: line allButFirst;
+				lineNumber: header third asInteger;
+				yourself.
+			commit := commits 
+				at: blameLine commit 
+				ifAbsentPut: [ self resolveCommit: blameLine commit ].
+			blameLine commit: commit.
+			out nextPut: blameLine ] ]
+]
+
 { #category : #convenience }
 PureGitQueries >> branch [
 	| currentBranchName |

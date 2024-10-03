@@ -25,6 +25,11 @@ PureGitFile >> basename [
 ]
 
 { #category : #accessing }
+PureGitFile >> blame [
+	^ self repository queries blame: self path
+]
+
+{ #category : #accessing }
 PureGitFile >> children [
 	^ #()
 ]
@@ -102,7 +107,7 @@ PureGitFile >> printOn: stream [
 	stream nextPut: $(; nextPutAll: self path; nextPut: $)
 ]
 
-{ #category : #operations }
+{ #category : #private }
 PureGitFile >> resetStatus [
 	status := nil
 ]

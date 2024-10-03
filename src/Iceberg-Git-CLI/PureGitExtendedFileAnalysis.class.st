@@ -1,3 +1,6 @@
+"
+I am a collection of PureGitExtendedFileCommits, the result of an analysis of the historic evolution of one file.
+"
 Class {
 	#name : #PureGitExtendedFileAnalysis,
 	#superclass : #Object,
