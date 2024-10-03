@@ -40,12 +40,12 @@ PureGitRemote >> printOn: stream [
 
 { #category : #operations }
 PureGitRemote >> pull [
-	self repository pull: { self name }
+	self repository operations pull: { self name }
 ]
 
 { #category : #operations }
 PureGitRemote >> push [
-	self repository push: { self name }
+	self repository operations push: { self name }
 ]
 
 { #category : #accessing }

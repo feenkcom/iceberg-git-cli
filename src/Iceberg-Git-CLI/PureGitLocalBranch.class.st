@@ -48,6 +48,6 @@ PureGitLocalBranch >> upstreamName [
 
 { #category : #accessing }
 PureGitLocalBranch >> upstreamRemoteName [
-	^ (self repository queries upstreamNameForBranch: self name)
+	^ self upstreamName
 		ifNotNil: [ :fullName | ($/ split: fullName) first ]
 ]
