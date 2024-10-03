@@ -17,9 +17,30 @@ PureGitLocalBranch >> checkout [
 	self repository operations checkout: self name
 ]
 
+{ #category : #accessing }
+PureGitLocalBranch >> commitsAhead [
+	^ self outgoingCommits toArray wait size
+]
+
+{ #category : #accessing }
+PureGitLocalBranch >> commitsBehind [
+	^ self incomingCommits toArray wait size
+]
+
 { #category : #testing }
 PureGitLocalBranch >> hasUpstream [
 	^ self upstreamName notNil
+]
+
+{ #category : #accessing }
+PureGitLocalBranch >> incomingCommits [
+	| upstream |
+	upstream := self upstream.
+	(upstream isNil or: [ self commit = upstream commit ])
+		ifTrue: [ ^ #() asAsyncStream ].
+	^ self repository queries 
+		logFrom: self name , '..' , upstream remote name
+		for: nil
 ]
 
 { #category : #testing }
@@ -29,6 +50,17 @@ PureGitLocalBranch >> isCurrent [
 	^ self name = currentBranchName
 		or: [ currentBranchName isEmpty
 				and: [ self name includesSubstring: 'HEAD detached' ] ]
+]
+
+{ #category : #accessing }
+PureGitLocalBranch >> outgoingCommits [
+	| upstream |
+	upstream := self upstream.
+	(upstream isNil or: [ self commit = upstream commit ])
+		ifTrue: [ ^ #() asAsyncStream ].
+	^ self repository queries 
+		logFrom: upstream remote name , '..' , self name
+		for: nil
 ]
 
 { #category : #accessing }
