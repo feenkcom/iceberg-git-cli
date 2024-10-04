@@ -71,20 +71,10 @@ PureGitOperations >> merge: args [
 	self announceRepositoryModified
 ]
 
-{ #category : #convenience }
-PureGitOperations >> pull [
-	self pull: #()
-]
-
 { #category : #operations }
 PureGitOperations >> pull: args [
 	self runGitWithArgs: #('pull') , args.
 	self announceRepositoryModified
-]
-
-{ #category : #convenience }
-PureGitOperations >> push [
-	self push: #()
 ]
 
 { #category : #operations }
