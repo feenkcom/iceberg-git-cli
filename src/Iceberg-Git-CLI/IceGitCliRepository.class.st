@@ -777,7 +777,7 @@ IceGitCliRepository >> runGitWithArgs: args [
 	^ executor runGitWithArgs: args for: operation
 ]
 
-{ #category : #accessing }
+{ #category : #'API - branches' }
 IceGitCliRepository >> setBranch: branchName to: aCommitId [
 	self runGitWithArgs: {
 		'branch'.
@@ -785,6 +785,16 @@ IceGitCliRepository >> setBranch: branchName to: aCommitId [
 		branchName.
 		aCommitId
 	} 
+]
+
+{ #category : #'API - branches' }
+IceGitCliRepository >> setBranch: branchName upstreamTo: remoteBranchName [
+	self runGitWithArgs: {
+		'branch'.
+		'-u'.
+		remoteBranchName.
+		branchName
+	}
 ]
 
 { #category : #'API - accessing' }

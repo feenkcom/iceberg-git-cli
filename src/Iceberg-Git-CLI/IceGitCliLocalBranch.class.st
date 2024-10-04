@@ -89,6 +89,11 @@ IceGitCliLocalBranch >> remoteBranchFor: aRemote ifNone: aBlock [
 		ifNotNil: [ repository basicNewRemoteBranchNamed: remoteName ]
 ]
 
+{ #category : #'API - remotes' }
+IceGitCliLocalBranch >> setUpstream: anUpstreamBranch [
+	repository setBranch: self name upstreamTo: anUpstreamBranch name
+]
+
 { #category : #accessing }
 IceGitCliLocalBranch >> setUpstreamIfMissing: aRemote [
 	self hasUpstream ifTrue: [ ^ self ].
