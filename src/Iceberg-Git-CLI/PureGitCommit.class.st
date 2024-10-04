@@ -79,6 +79,27 @@ PureGitCommit >> commitId [
 	^ id
 ]
 
+{ #category : #accessing }
+PureGitCommit >> gitHubURL [
+	| branch upstream remote path owner project |
+	(branch := self repository branch) ifNil: [ ^ nil ].
+	(upstream := branch upstream) ifNil: [ ^ nil ].
+	(remote := upstream remote) ifNil: [ ^ nil ].
+	(remote url includesSubstring: 'github.com') ifFalse: [ ^ nil ].
+	(remote url beginsWith: 'git@github.com')
+		ifTrue: [ path := ($: split: remote url) second ].
+	(remote url beginsWith: 'https://github.com')
+		ifTrue: [ remote url asUrl path ].
+	path ifNil: [ ^ nil ].
+	owner := ($/ split: path) first.
+	project :=  ($. split: ($/ split: path) second) first.
+	^ 'https://github.com' asUrl
+		/ owner
+		/ project
+		/ 'commit'
+		/ self commitId
+]
+
 { #category : #testing }
 PureGitCommit >> hasParents [
 	^ parentIds notEmpty
