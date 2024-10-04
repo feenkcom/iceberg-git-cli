@@ -43,7 +43,7 @@ PureGitQueries >> allCommits [
 		'log'.
 		self commitLineFormat , '%n@@@'.
 		'--all'.
-		'--remotes' }.
+		'--date-order' }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines := commitLines select: [ :lines | lines notEmpty ].
 	^ commitLines collect: [ :each | self commitFromLines: each ]

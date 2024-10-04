@@ -84,12 +84,12 @@ IceGitCliRepository >> allCommits [
 					'-s'.
 					'--format=format:%H%n%an%n%at%n%P%n%n%B%n@@@'.
 					'--all'.
-					'--remotes'}.
+					'--date-order'}.
 	commitLines := lines splitOn: [ :each | each = '@@@' ].
 	commitLines removeLast.
 	commits := commitLines collect: [ :each | self iceGitCommitFromLines: each ].
 	commits do: [:each | commitMap at: each id put: each].
-	^ commits asSortedCollection: [:a :b | a datetime > b datetime]
+	^ commits
 ]
 
 { #category : #'API - accessing' }
