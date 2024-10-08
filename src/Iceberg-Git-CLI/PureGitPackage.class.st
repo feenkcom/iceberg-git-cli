@@ -22,7 +22,7 @@ PureGitPackage >> isLoaded [
 
 { #category : #operations }
 PureGitPackage >> load [
-	self reader version load.
+	self reader snapshot install.
 	self repository announceRepositoryModified
 ]
 
