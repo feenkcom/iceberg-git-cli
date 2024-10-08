@@ -12,8 +12,7 @@ Class {
 
 { #category : #operations }
 PureGitPackage >> incomingChanges [
-	^ (TonelReader on: self srcDirectory fileName: self name) 
-		version changes
+	^ self reader version changes
 ]
 
 { #category : #testing }
@@ -45,7 +44,8 @@ PureGitPackage >> name: aString [
 
 { #category : #operations }
 PureGitPackage >> outgoingChanges [
-	^ #()
+	^ self mcPackage snapshot 
+		patchRelativeToBase: self reader snapshot
 ]
 
 { #category : #printing }
@@ -60,13 +60,22 @@ PureGitPackage >> rPackage [
 ]
 
 { #category : #operations }
+PureGitPackage >> reader [
+	^ TonelReader on: self srcDirectory fileName: self name
+]
+
+{ #category : #operations }
 PureGitPackage >> save [
-	(TonelWriter on: self srcDirectory) 
-		writeVersion: self mcPackage.
+	self writer writeVersion: self mcPackage.
 	self repository announceRepositoryModified
 ]
 
 { #category : #accessing }
 PureGitPackage >> srcDirectory [
 	^ self repository srcDirectory
+]
+
+{ #category : #operations }
+PureGitPackage >> writer [
+	^ TonelWriter on: self srcDirectory
 ]
