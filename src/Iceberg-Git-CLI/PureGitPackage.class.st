@@ -22,8 +22,7 @@ PureGitPackage >> isLoaded [
 
 { #category : #operations }
 PureGitPackage >> load [
-	(TonelReader on: self srcDirectory fileName: self name) 
-		version load.
+	self reader snapshot install.
 	self repository announceRepositoryModified
 ]
 
