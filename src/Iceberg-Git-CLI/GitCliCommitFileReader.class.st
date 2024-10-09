@@ -7,7 +7,7 @@ Class {
 	#name : #GitCliCommitFileReader,
 	#superclass : #Object,
 	#instVars : [
-		'workingDirectory',
+		'repository',
 		'externalProcess',
 		'stdout',
 		'stdin',
@@ -104,6 +104,11 @@ GitCliCommitFileReader >> readStreamFor: aString [
 	^ stream
 ]
 
+{ #category : #'initialize - release' }
+GitCliCommitFileReader >> repository: aRepository [
+	repository := aRepository
+]
+
 { #category : #private }
 GitCliCommitFileReader >> requestReadStreamFor: aString [
 	| line byteCount bytes |
@@ -118,7 +123,7 @@ GitCliCommitFileReader >> requestReadStreamFor: aString [
 { #category : #private }
 GitCliCommitFileReader >> startExternalProcess [
 	externalProcess := (GtExternalProcessBuilder new: IceGitCliPlatform current gitExecutable)
-			workingDirectory: workingDirectory;
+			workingDirectory: repository location;
 			args: { 'cat-file' . '--batch' };
 			pipeStdin;
 			pipeStdout;
@@ -153,9 +158,4 @@ GitCliCommitFileReader >> terminate [
 		ifNotNil: [ stdin release.
 			stdin := nil ].
 	watchDog ifNotNil: [ watchDog terminate ]
-]
-
-{ #category : #'initialize - release' }
-GitCliCommitFileReader >> workingDirectory: aFileRef [
-	workingDirectory := aFileRef 
 ]

@@ -265,7 +265,8 @@ IceGitCliRepository >> configureUpstreamIfNecessary [
 IceGitCliRepository >> contentsOfFile: aHash [
 	| executor |
 	executor := IceGitCliPlatform current executor.
-	executor workingDirectory: self validLocation.
+	self validLocation.
+	executor repository: self.
 	^ executor 
 		runGitRawWithArgs: { 'cat-file' . 'blob'. aHash }
 		for: #contentsOfFile:
@@ -773,7 +774,8 @@ IceGitCliRepository >> runGitWithArgs: args [
 	| operation executor |
 	operation := thisContext sender method selector.
 	executor := IceGitCliPlatform current executor.
-	executor workingDirectory: self validLocation.
+	self validLocation.
+	executor repository: self.
 	^ executor runGitWithArgs: args for: operation
 ]
 
