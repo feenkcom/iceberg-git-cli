@@ -2,7 +2,7 @@ Class {
 	#name : #IceGitCliExecutor,
 	#superclass : #Object,
 	#instVars : [
-		'workingDirectory'
+		'repository'
 	],
 	#category : #'Iceberg-Git-CLI-Support'
 }
@@ -12,8 +12,8 @@ IceGitCliExecutor >> git [
 	| processBuilder |
 	processBuilder := GtExternalProcessBuilder new.
 	processBuilder command: IceGitCliPlatform current gitExecutable.
-	self workingDirectory
-		ifNotNil: [ processBuilder workingDirectory: self workingDirectory ].
+	self repository
+		ifNotNil: [ processBuilder workingDirectory: self repository location ].
 	^ processBuilder
 ]
 
@@ -49,6 +49,7 @@ IceGitCliExecutor >> logEnded: operation args: args output: output [
 	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
 				operation: operation;
+				repository: self repository;
 				markAsEndSignal;
 				emit ]
 ]
@@ -58,8 +59,19 @@ IceGitCliExecutor >> logStarted: operation args: args [
 	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args)
 				operation: operation;
+				repository: self repository;
 				markAsStartSignal;
 				emit ]
+]
+
+{ #category : #accessing }
+IceGitCliExecutor >> repository [
+	^ repository
+]
+
+{ #category : #accessing }
+IceGitCliExecutor >> repository: aRepository [
+	repository := aRepository
 ]
 
 { #category : #public }
@@ -79,6 +91,8 @@ IceGitCliExecutor >> runGitRawWithArgs: args for: operation [
 				args: args;
 				stderr: result;
 				exitCode: output status code;
+				repository: self repository;
+				operation: operation;
 				signal ].
 	result := output stdoutBytes.
 	self logEnded: operation args: args output: { result size asString , ' bytes' }.
@@ -112,6 +126,8 @@ IceGitCliExecutor >> runGitWithArgs: args for: operation [
 				args: args;
 				stderr: lines;
 				exitCode: output status code;
+				repository: self repository;
+				operation: operation;
 				signal ].
 	lines := output stdout lines.
 	self logEnded: operation args: args output: lines.
@@ -176,14 +192,4 @@ IceGitCliExecutor >> waitForProcessAsync: processBuilder [
 		pipeStderr.
 	nativeProcess := processBuilder spawn.
 	^ nativeProcess waitAsyncWithOutput
-]
-
-{ #category : #accessing }
-IceGitCliExecutor >> workingDirectory [
-	^ workingDirectory
-]
-
-{ #category : #accessing }
-IceGitCliExecutor >> workingDirectory: aFileReference [
-	workingDirectory := aFileReference
 ]

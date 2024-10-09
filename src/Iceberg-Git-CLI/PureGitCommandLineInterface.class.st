@@ -9,9 +9,11 @@ Class {
 
 { #category : #private }
 PureGitCommandLineInterface >> executor [
-	^ (IceGitCliPlatform current executor)
-		workingDirectory: self repository ensureLocation;
-		yourself
+	| executor |
+	executor := IceGitCliPlatform current executor.
+	self repository ensureLocation.
+	executor repository: self repository.
+	^ executor
 ]
 
 { #category : #private }
