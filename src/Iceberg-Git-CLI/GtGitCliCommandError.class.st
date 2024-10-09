@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'stderr',
 		'args',
-		'exitCode'
+		'exitCode',
+		'repository',
+		'operation'
 	],
 	#category : #'Iceberg-Git-CLI-Support'
 }
@@ -50,6 +52,26 @@ GtGitCliCommandError >> messageText [
 				out 
 					space; 
 					nextPutAll: self errorLine ] ] ]
+]
+
+{ #category : #accessing }
+GtGitCliCommandError >> operation [
+	^ operation
+]
+
+{ #category : #accessing }
+GtGitCliCommandError >> operation: anObject [
+	operation := anObject
+]
+
+{ #category : #accessing }
+GtGitCliCommandError >> repository [
+	^ repository
+]
+
+{ #category : #accessing }
+GtGitCliCommandError >> repository: anObject [
+	repository := anObject
 ]
 
 { #category : #accessing }
