@@ -132,7 +132,7 @@ GitCliCommitStore >> gitFileReader [
 	^ gitFileReader
 		ifNil: [ self class register: self.
 			gitFileReader := GitCliCommitFileReader new
-					workingDirectory: repository location ]
+					repository: repository ]
 ]
 
 { #category : #accessing }
