@@ -80,6 +80,14 @@ PureGitCommit >> commitId [
 ]
 
 { #category : #accessing }
+PureGitCommit >> fileSystem [
+	| store fileSystem |
+	store := PureGitCommitFileSystemStore new commit: self.
+	fileSystem := FileSystem store: store.
+	^ fileSystem root
+]
+
+{ #category : #accessing }
 PureGitCommit >> gitHubURL [
 	| branch upstream remote gitUrl |
 	(branch := self repository branch) ifNil: [ ^ nil ].

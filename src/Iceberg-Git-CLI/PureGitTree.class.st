@@ -91,6 +91,11 @@ PureGitTree >> id: aString [
 	id := aString
 ]
 
+{ #category : #testing }
+PureGitTree >> isTree [
+	^ true
+]
+
 { #category : #printing }
 PureGitTree >> printOn: stream [
 	super printOn: stream.

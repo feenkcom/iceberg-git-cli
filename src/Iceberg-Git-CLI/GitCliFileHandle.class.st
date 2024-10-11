@@ -7,7 +7,7 @@ Class {
 	#category : #'Iceberg-Git-CLI-Core'
 }
 
-{ #category : #accessing }
+{ #category : #streams }
 GitCliFileHandle >> binaryReadStream [
 	^ reference fileSystem store binaryReadStreamOn: self
 ]
@@ -17,7 +17,7 @@ GitCliFileHandle >> entry [
 	^ entry
 ]
 
-{ #category : #accessing }
+{ #category : #public }
 GitCliFileHandle >> open [
 	entry := self basicOpen
 ]
