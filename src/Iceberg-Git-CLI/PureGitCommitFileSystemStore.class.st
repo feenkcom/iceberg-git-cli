@@ -10,6 +10,11 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> accessTimeOf: aPath [
+	^ commit timestamp asDateAndTime
+]
+
 { #category : #private }
 PureGitCommitFileSystemStore >> basenameFromEntry: aNode [
 	^ aNode name
@@ -36,6 +41,21 @@ PureGitCommitFileSystemStore >> basicIsFile: aNode [
 ]
 
 { #category : #private }
+PureGitCommitFileSystemStore >> basicIsWritable: aNode [
+	^ false
+]
+
+{ #category : #private }
+PureGitCommitFileSystemStore >> basicModificationTime: aNode [
+	^ commit timestamp asDateAndTime
+]
+
+{ #category : #private }
+PureGitCommitFileSystemStore >> basicModificationTimeOf: aNode [
+	^ commit timestamp asDateAndTime
+]
+
+{ #category : #private }
 PureGitCommitFileSystemStore >> basicOpen: aPath writable: isWriteable [
 	^ self
 		nodeAt: aPath
@@ -46,6 +66,11 @@ PureGitCommitFileSystemStore >> basicOpen: aPath writable: isWriteable [
 ]
 
 { #category : #private }
+PureGitCommitFileSystemStore >> basicPosixPermissions: aNode [
+	^ 8r444
+]
+
+{ #category : #private }
 PureGitCommitFileSystemStore >> basicSizeOf: aNode [
 	^ aNode size
 ]
@@ -53,6 +78,11 @@ PureGitCommitFileSystemStore >> basicSizeOf: aNode [
 { #category : #accessing }
 PureGitCommitFileSystemStore >> binaryReadStreamOn: aFileHandle [
 	^ aFileHandle entry contents readStream
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> changeTimeOf: aPath [
+	^ commit timestamp asDateAndTime
 ]
 
 { #category : #accessing }
@@ -76,8 +106,23 @@ PureGitCommitFileSystemStore >> forReferencePrintOn: aStream [
 ]
 
 { #category : #accessing }
+PureGitCommitFileSystemStore >> gidOf: aPath [
+	^ -1
+]
+
+{ #category : #accessing }
 PureGitCommitFileSystemStore >> handleClass [
 	^ PureGitCommitFileSystemHandle
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> inodeOf: aPath [
+	^ -1
+]
+
+{ #category : #testing }
+PureGitCommitFileSystemStore >> isReadable: aPath [
+	^ true
 ]
 
 { #category : #accessing }
@@ -94,4 +139,9 @@ PureGitCommitFileSystemStore >> nodeAt: aPath ifPresent: aPresentBlock ifAbsent:
 PureGitCommitFileSystemStore >> printOn: aStream [
 	super printOn: aStream.
 	aStream nextPut: $(; nextPutAll: commit id; nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> uidOf: aResolvable [
+	^ -1
 ]
