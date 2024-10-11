@@ -78,6 +78,7 @@ GitCliCommitFileReader >> logEnded: operation args: args output: output [
 	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
 				operation: operation;
+				repository: repository;
 				markAsEndSignal;
 				emit ]
 ]
@@ -87,6 +88,7 @@ GitCliCommitFileReader >> logStarted: operation args: args [
 	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args)
 				operation: operation;
+				repository: repository;
 				markAsStartSignal;
 				emit ]
 ]

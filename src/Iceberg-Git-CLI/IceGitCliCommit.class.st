@@ -25,7 +25,7 @@ IceGitCliCommit >> entryByPath: aString ifAbsent: aBlock [
 { #category : #'accessing - file' }
 IceGitCliCommit >> fileSystem [
 	filesystem
-		ifNil: [ filesystem := FileSystem store: (GitCliCommitStore on: id inRepo: repository) ].
+		ifNil: [ filesystem := FileSystem store: (GitCliCommitStore on: self) ].
 	^ filesystem root
 ]
 
@@ -43,6 +43,11 @@ IceGitCliCommit >> numberOfParents [
 { #category : #accessing }
 IceGitCliCommit >> project [
 	^project ifNil: [project := super project]
+]
+
+{ #category : #'accessing - file' }
+IceGitCliCommit >> resetFileSystem [
+	filesystem := nil
 ]
 
 { #category : #accessing }

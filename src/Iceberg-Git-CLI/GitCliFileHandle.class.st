@@ -18,11 +18,6 @@ GitCliFileHandle >> entry [
 ]
 
 { #category : #accessing }
-GitCliFileHandle >> entry: anObject [
-	entry := anObject
-]
-
-{ #category : #accessing }
 GitCliFileHandle >> open [
 	entry := self basicOpen
 ]
