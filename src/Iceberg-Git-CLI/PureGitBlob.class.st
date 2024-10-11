@@ -89,6 +89,13 @@ PureGitBlob >> shortId [
 ]
 
 { #category : #accessing }
+PureGitBlob >> size [
+	^ contents
+		ifNotNil: [ contents size ]
+		ifNil: [ self repository queries sizeOfBlob: self id ]
+]
+
+{ #category : #accessing }
 PureGitBlob >> text [
 	^ self contents utf8Decoded
 ]

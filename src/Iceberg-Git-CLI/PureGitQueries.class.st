@@ -255,6 +255,13 @@ PureGitQueries >> resolveHead [
 	^ self runGitWithArgs: #('show-ref' '--head' '-d' 'HEAD')
 ]
 
+{ #category : #queries }
+PureGitQueries >> sizeOfBlob: aHash [
+	^ (self executor 
+		runGitWithArgs: { 'cat-file' . '-s'. aHash }
+		for: #sizeOfFile:) first asInteger
+]
+
 { #category : #convenience }
 PureGitQueries >> stagedChanges [
 	^ self repository diffTool
