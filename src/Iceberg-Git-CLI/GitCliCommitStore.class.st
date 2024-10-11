@@ -2,8 +2,7 @@ Class {
 	#name : #GitCliCommitStore,
 	#superclass : #FileSystemStore,
 	#instVars : [
-		'id',
-		'repository',
+		'commit',
 		'entries',
 		'gitFileReader'
 	],
@@ -14,10 +13,9 @@ Class {
 }
 
 { #category : #'instance creation' }
-GitCliCommitStore class >> on: aCommitId inRepo: aGtIceGitRepository [
+GitCliCommitStore class >> on: aCommit [
 	^ self new
-		commit: aCommitId;
-		repository: aGtIceGitRepository;
+		commit: aCommit;
 		yourself
 ]
 
@@ -38,13 +36,13 @@ GitCliCommitStore >> basenameFromEntry: aNode [
 
 { #category : #accessing }
 GitCliCommitStore >> basicCreationTimeOf: anEntry [ 
-	^ DateAndTime now
+	^ commit datetime
 ]
 
 { #category : #accessing }
 GitCliCommitStore >> basicEntry: directoryEntry path: aPath nodesDo: aBlock [
 	| lines |
-	lines := repository runGitWithArgs: {
+	lines := commit repository runGitWithArgs: {
 		'ls-tree'.
 		'--format=%(objectmode) %(objecttype) %(objectname) %(objectsize)%x09%(path)'.
 		directoryEntry id }.
@@ -71,7 +69,7 @@ GitCliCommitStore >> basicOpen: path writable: aBoolean [
 				ifTrue: [ self shouldNotImplement ] ]
 ]
 
-{ #category : #abstract }
+{ #category : #accessing }
 GitCliCommitStore >> basicSizeOf: aNode [
 	^ aNode size
 ]
@@ -82,8 +80,8 @@ GitCliCommitStore >> binaryReadStreamOn: aGtGitFileHandle [
 ]
 
 { #category : #'instance creation' }
-GitCliCommitStore >> commit: aCommitId [
-	id := aCommitId
+GitCliCommitStore >> commit: aCommit [
+	commit := aCommit
 ]
 
 { #category : #accessing }
@@ -96,7 +94,7 @@ GitCliCommitStore >> entries [
 	| entryList lines |
 	entries ifNotNil: [ ^ entries ].
 	entries := Dictionary new.
-	lines := repository runGitWithArgs: {
+	lines := commit repository runGitWithArgs: {
 		'ls-tree'.
 		'-rt'.
 		'--format=%(objectmode) %(objecttype) %(objectname) %(objectsize)%x09%(path)'.
@@ -111,12 +109,12 @@ GitCliCommitStore >> entryByPath: aString ifAbsent: aBlock [
 	^ self entries at: aString ifAbsent: aBlock
 ]
 
-{ #category : #public }
+{ #category : #accessing }
 GitCliCommitStore >> entryFromNode: node path: path for: aFileSystem [
 	^ aFileSystem referenceTo: path / node path
 ]
 
-{ #category : #accessing }
+{ #category : #finalization }
 GitCliCommitStore >> finalize [
 	gitFileReader ifNotNil: [ :reader | reader terminate ].
 	super finalize
@@ -131,8 +129,7 @@ GitCliCommitStore >> forReferencePrintOn: aStream [
 GitCliCommitStore >> gitFileReader [
 	^ gitFileReader
 		ifNil: [ self class register: self.
-			gitFileReader := GitCliCommitFileReader new
-					repository: repository ]
+			gitFileReader := GitCliCommitFileReader new repository: commit repository ]
 ]
 
 { #category : #accessing }
@@ -141,22 +138,13 @@ GitCliCommitStore >> handleClass [
 ]
 
 { #category : #accessing }
-GitCliCommitStore >> nodeAt: anAbsolutePath ifPresent: aBlockClosure ifAbsent: aBlockClosure3 [
-	anAbsolutePath isRoot ifTrue: [ ^ aBlockClosure value: self rootEntry ].
-	^ aBlockClosure
+GitCliCommitStore >> nodeAt: anAbsolutePath ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
+	anAbsolutePath isRoot 
+		ifTrue: [ ^ aPresentBlock value: self rootEntry ].
+	^ aPresentBlock
 		value: (self
 				entryByPath: (anAbsolutePath relativeTo: Path root) pathString
-				ifAbsent: [ ^ aBlockClosure3 value ])
-]
-
-{ #category : #accessing }
-GitCliCommitStore >> repository [
-	^ repository
-]
-
-{ #category : #'instance creation' }
-GitCliCommitStore >> repository: aGtIceGitRepository [
-	repository := aGtIceGitRepository
+				ifAbsent: [ ^ anAbsentBlock value ])
 ]
 
 { #category : #accessing }
@@ -172,9 +160,9 @@ GitCliCommitStore >> rootEntry [
 
 { #category : #accessing }
 GitCliCommitStore >> treeIdFromCommit [
-	^ (repository runGitWithArgs: {
+	^ (commit repository runGitWithArgs: {
 		'show'.
 		'-s'.
 		'--format=format:%T'.
-		id }) first
+		commit id }) first
 ]
