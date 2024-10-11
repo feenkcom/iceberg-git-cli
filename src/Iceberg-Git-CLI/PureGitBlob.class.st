@@ -75,6 +75,11 @@ PureGitBlob >> id: aString [
 	id := aString
 ]
 
+{ #category : #testing }
+PureGitBlob >> isTree [
+	^ false
+]
+
 { #category : #printing }
 PureGitBlob >> printOn: stream [
 	super printOn: stream.
