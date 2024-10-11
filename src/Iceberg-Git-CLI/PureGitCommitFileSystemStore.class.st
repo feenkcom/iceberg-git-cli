@@ -100,6 +100,11 @@ PureGitCommitFileSystemStore >> delimiter [
 	^ $/
 ]
 
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> entryFromNode: aNode path: aPath for: aFileystem [
+	^ aFileystem referenceTo: aPath / aNode name
+]
+
 { #category : #printing }
 PureGitCommitFileSystemStore >> forReferencePrintOn: aStream [
 	aStream nextPutAll: 'git://'
