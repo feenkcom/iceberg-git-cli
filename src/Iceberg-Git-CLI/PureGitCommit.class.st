@@ -85,7 +85,7 @@ PureGitCommit >> gitHubURL [
 	(branch := self repository branch) ifNil: [ ^ nil ].
 	(upstream := branch upstream) ifNil: [ ^ nil ].
 	(remote := upstream remote) ifNil: [ ^ nil ].
-	gitUrl := PureGitUrl with: remote url.
+	gitUrl := remote gitUrl.
 	gitUrl isNetworkUrl ifFalse: [ ^ nil ].
 	gitUrl hostname = 'github.com' ifFalse: [ ^ nil ].
 	^ 'https://github.com' asUrl

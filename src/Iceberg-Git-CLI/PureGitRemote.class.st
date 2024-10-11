@@ -23,6 +23,11 @@ PureGitRemote >> fetch [
 ]
 
 { #category : #accessing }
+PureGitRemote >> gitUrl [
+	^ PureGitUrl with: self url
+]
+
+{ #category : #accessing }
 PureGitRemote >> name [
 	^ name
 ]
