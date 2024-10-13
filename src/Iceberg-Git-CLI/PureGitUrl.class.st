@@ -41,6 +41,7 @@ PureGitUrl class >> examples [
 		'git@bitbucket.org:teamsinspace/documentation-tests.git'
 		'https://bitbucket.org/teamsinspace/documentation-tests.git'
 		'ssh://user@host:8899/path/to/git/repo'
+		'git@gitlab.com:jantopgroup/middlegroup/innergroup/project.git'
 		'/path/to/repo'
 		'file:///path/to/repo'
 	) 
@@ -80,6 +81,11 @@ PureGitUrl >> fileReference [
 PureGitUrl >> fileUrl [
 	self assert: self isFileUrl.
 	^ ZnUrl fromString: url defaultScheme: #file
+]
+
+{ #category : #accessing }
+PureGitUrl >> groupName [
+	^ self ownerName
 ]
 
 { #category : #accessing }
@@ -125,15 +131,20 @@ PureGitUrl >> ownerName [
 		ifTrue: [ | path segments |
 			path := ($: split: self url) second.
 			segments := $/ split: path.
-			^ segments first ].
+			^ $/ join: segments allButLast ].
 	znUrl := ZnUrl fromString: self url.
-	^ znUrl pathSegments first
+	^ $/ join: znUrl pathSegments allButLast
 ]
 
 { #category : #printing }
 PureGitUrl >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(; nextPutAll: self url; nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitUrl >> projectName [
+	^ self repositoryName
 ]
 
 { #category : #accessing }
