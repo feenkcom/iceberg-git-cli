@@ -113,9 +113,12 @@ PureGitQueries >> commitLineFormat [
 
 { #category : #queries }
 PureGitQueries >> configAt: optionName ifAbsent: block [
-	| result |
-	result := self runGitWithArgs: { 'config'. optionName }.
-	^ result isEmpty ifTrue: block ifFalse: [ result first ]
+	| result missing|
+	missing := '__missing_value__'.
+	result := self runGitWithArgs: { 'config'. '--default' . missing . optionName }.
+	^ (result isEmpty or: [ result first = missing ])
+		ifTrue: block 
+		ifFalse: [ result first ]
 ]
 
 { #category : #queries }

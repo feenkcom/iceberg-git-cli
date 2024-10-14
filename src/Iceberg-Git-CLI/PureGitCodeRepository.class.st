@@ -21,6 +21,11 @@ PureGitCodeRepository >> initializeSrcDirectory [
 	self assert: (properties at: #format) equals: #tonel
 ]
 
+{ #category : #testing }
+PureGitCodeRepository >> isCodeRepository [
+	^ true
+]
+
 { #category : #initialization }
 PureGitCodeRepository >> location: aFileReference [
 	super location: aFileReference.

@@ -21,7 +21,7 @@ PureGitPackage class >> historyRecordLoadedCommitFor: packageName [
 
 { #category : #accessing }
 PureGitPackage class >> icebergLoadedCommitFor: packageName [
-	^ (IceRepository registry detect: [ :each | each includesPackageNamed: packageName ])
+	^ (IceRepository registry detect: [ :each | each includesPackageNamed: packageName ] ifNone: [ nil ])
 		ifNotNil: [ :repository | repository head commit id ]
 ]
 
