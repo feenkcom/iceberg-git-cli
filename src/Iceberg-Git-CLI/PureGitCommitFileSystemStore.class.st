@@ -136,7 +136,9 @@ PureGitCommitFileSystemStore >> nodeAt: aPath ifPresent: aPresentBlock ifAbsent:
 	^ aPath isRoot
 		ifTrue: [ aPresentBlock value: self commit tree ]
 		ifFalse: [ 
-			entry := self commit tree entryAtPath: aPath segments ifAbsent: anAbsentBlock.
+			entry := self commit tree 
+						entryAtPath: aPath segments 
+						ifAbsent: anAbsentBlock.
 			aPresentBlock value: entry resolve ]
 ]
 

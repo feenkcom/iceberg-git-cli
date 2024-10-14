@@ -90,6 +90,11 @@ PureGitRepository >> initialize [
 	announcer := Announcer new.
 ]
 
+{ #category : #testing }
+PureGitRepository >> isCodeRepository [
+	^ true
+]
+
 { #category : #accessing }
 PureGitRepository >> location [
 	^ location
