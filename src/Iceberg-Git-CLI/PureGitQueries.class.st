@@ -51,23 +51,23 @@ PureGitQueries >> allCommits [
 
 { #category : #queries }
 PureGitQueries >> blame: path [
-	| lines commits |
-	lines := (self runGitWithArgs: { 'blame' . '--porcelain' . path }) readStream.
-	commits := Dictionary new.
-	^ Array streamContents: [ :out |
-		[ lines atEnd ] whileFalse: [ | header line blameLine commit |
-			header := Character space split: lines next.
-			[ (line := lines next) first = Character tab ] whileFalse.
-			blameLine := PureGitBlameLine new
-				commit: header first;
-				line: line allButFirst;
-				lineNumber: header third asInteger;
-				yourself.
-			commit := commits 
-				at: blameLine commit 
-				ifAbsentPut: [ self resolveCommit: blameLine commit ].
-			blameLine commit: commit.
-			out nextPut: blameLine ] ]
+	| lines commitsCache |
+	lines := self runGitWithArgsAsync: { 'blame' . '-s' . '-l' . path }.
+	commitsCache := Dictionary new.
+	^ lines collect: [ :each | 
+		| space closingParenthesis commit lineNumber line blameLine|
+		space := each indexOf: $ .
+		commit := each copyFrom: 1 to: space - 1.
+		commit first = $^ ifTrue: [ commit := commit allButFirst ].
+		closingParenthesis := each indexOf: $) startingAt: space + 1.
+		lineNumber := (each copyFrom: space + 1 to: closingParenthesis  - 1) asInteger.
+		line := each copyFrom: closingParenthesis + 2 to: each size.
+		(blameLine := PureGitBlameLine new)
+			commit: commit;
+			line: line;
+			lineNumber: lineNumber.
+		blameLine resolveCommitIn: self using: commitsCache.
+		blameLine ]
 ]
 
 { #category : #convenience }
@@ -115,7 +115,7 @@ PureGitQueries >> commitLineFormat [
 PureGitQueries >> configAt: optionName ifAbsent: block [
 	| result missing|
 	missing := '__missing_value__'.
-	result := self runGitWithArgs: { 'config'. '--default' . missing . optionName }.
+	result := self runGitWithArgs: { 'config' . '--default' . missing . optionName }.
 	^ (result isEmpty or: [ result first = missing ])
 		ifTrue: block 
 		ifFalse: [ result first ]

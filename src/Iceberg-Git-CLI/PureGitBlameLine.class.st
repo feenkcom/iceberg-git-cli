@@ -48,6 +48,13 @@ PureGitBlameLine >> lineNumber: anInteger [
 	lineNumber := anInteger
 ]
 
+{ #category : #operations }
+PureGitBlameLine >> resolveCommitIn: repository using: cache [
+	commit := cache 
+		at: commit 
+		ifAbsentPut: [ repository resolveCommit: commit ]
+]
+
 { #category : #accessing }
 PureGitBlameLine >> shortId [
 	^ commit shortCommitId
