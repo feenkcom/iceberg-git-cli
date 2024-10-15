@@ -91,7 +91,7 @@ PureGitQueries >> commitFromLines: lines [
 	tree := lines fifth.
 	start := 7.
 	stop := lines size.
-	[ (lines at: start) isEmpty and: [ start <= stop ] ]
+	[ (lines at: start) isEmpty and: [ start < stop ] ]
 		whileTrue: [ start := start + 1 ].
 	[ (lines at: stop) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ stop := stop - 1 ].
