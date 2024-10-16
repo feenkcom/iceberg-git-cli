@@ -217,6 +217,21 @@ IceGitCliRepository >> commitishNamed: aName [
 				ifAbsent: [ self revparse: aName ] ]
 ]
 
+{ #category : #'API - branches' }
+IceGitCliRepository >> commits: args [
+	| lines commitLines commits |
+	lines := self
+			runGitWithArgs: {
+				'log'.
+				'--format=format:%H%n%an%n%at%n%P%n%n%B%n@@@'.
+			} , args.
+	commitLines := lines splitOn: [ :each | each = '@@@' ].
+	commitLines removeLast.
+	commits := commitLines collect: [ :each | self iceGitCommitFromLines: each ].
+	commits do: [:each | commitMap at: each id put: each].
+	^ commits
+]
+
 { #category : #'private - commits' }
 IceGitCliRepository >> commitsFromIds: idCollection [
 	| lines range commits |
