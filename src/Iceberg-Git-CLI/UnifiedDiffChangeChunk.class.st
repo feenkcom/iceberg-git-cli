@@ -15,6 +15,16 @@ Class {
 }
 
 { #category : #accessing }
+UnifiedDiffChangeChunk >> children [
+	^ #()
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> description [
+	^ self range
+]
+
+{ #category : #accessing }
 UnifiedDiffChangeChunk >> diffLinesWithPositions [
 	| oldPosition newPosition |
 	oldPosition := oldStart.
