@@ -234,7 +234,7 @@ IceGitCliRepository >> commits: args [
 
 { #category : #'private - commits' }
 IceGitCliRepository >> commitsFromIds: idCollection [
-	| lines range commits |
+	| lines range commits idSet |
 	idCollection isEmpty ifTrue: [ ^ #() ].
 	range := idCollection size = 1
 			ifTrue: [ idCollection first ]
@@ -244,10 +244,11 @@ IceGitCliRepository >> commitsFromIds: idCollection [
 		'-s'.
 		'--format=format:%H%n%an%n%at%n%P%n%n%B%n@@@'.
 		range }.
+	idSet := idCollection asSet.
 	commits := (lines splitOn: [ :each | each = '@@@' ])
 		removeLast;
 		select: [ :line | "Remove any commits not included in idCollection"
-				idCollection includes: line first ]
+				idSet includes: line first ]
 			thenCollect: [ :each | self iceGitCommitFromLines: each ].
 	"the last commit from the range query above is not resolved, fetch it individually"
 	idCollection size > 1
