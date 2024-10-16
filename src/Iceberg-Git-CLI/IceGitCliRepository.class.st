@@ -411,7 +411,7 @@ IceGitCliRepository >> iceGitCommitFromLines: lines [
 			ifNotEmpty: [ :line | line splitOn: ' ' ].
 	start := 6.
 	stop := lines size.
-	[ (lines at: start) isEmpty and: [ start <= stop ] ]
+	[ (lines at: start) isEmpty and: [ start < stop ] ]
 		whileTrue: [ start := start + 1 ].
 	[ (lines at: stop) isEmpty and: [ start <= stop ]]
 		whileTrue: [ stop := stop - 1 ].

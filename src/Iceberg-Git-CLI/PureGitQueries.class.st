@@ -91,7 +91,7 @@ PureGitQueries >> commitFromLines: lines [
 	tree := lines fifth.
 	start := 7.
 	stop := lines size.
-	[ (lines at: start) isEmpty and: [ start <= stop ] ]
+	[ (lines at: start) isEmpty and: [ start < stop ] ]
 		whileTrue: [ start := start + 1 ].
 	[ (lines at: stop) isEmpty and: [ start <= stop ] ]
 		whileTrue: [ stop := stop - 1 ].
@@ -240,6 +240,15 @@ PureGitQueries >> remotes [
 			name: each;
 			url: url;
 			yourself ]
+]
+
+{ #category : #convenience }
+PureGitQueries >> resolveBranchOrTag: aName [
+	^ self allBranches
+		detect: [ :each | each name = aName ]
+		ifNone: [ self tags toArray wait
+				detect: [ :each | each name = aName ]
+				ifNone: [ aName ] ]
 ]
 
 { #category : #queries }

@@ -22,6 +22,22 @@ UnifiedDiff >> changeChunks [
 ]
 
 { #category : #accessing }
+UnifiedDiff >> children [
+	^ self changeChunks
+]
+
+{ #category : #accessing }
+UnifiedDiff >> description [
+	^ String streamContents: [ :out |
+		self isNewFile ifTrue: [ out nextPutAll: 'new:' ].
+		self isDeletedFile ifTrue: [ out nextPutAll: 'deleted:' ].
+		self isRename ifTrue: [ out nextPutAll: 'renamed:' ].
+		self isModification ifTrue: [ out nextPutAll: 'modified:' ].
+		out space; nextPutAll: self header.
+		out space; nextPut: $+; print: self numberOfLinesAdded; space; nextPut: $-; print: self numberOfLinesRemoved ]
+]
+
+{ #category : #accessing }
 UnifiedDiff >> header [
 	^ self isRename 
 		ifTrue: [ oldPath , ' > ' , newPath ]
@@ -37,6 +53,11 @@ UnifiedDiff >> initialize [
 { #category : #testing }
 UnifiedDiff >> isDeletedFile [
 	^ deletedFile
+]
+
+{ #category : #testing }
+UnifiedDiff >> isModification [
+	^ (self isNewFile | self isDeletedFile | self isRename) not
 ]
 
 { #category : #testing }
@@ -61,22 +82,22 @@ UnifiedDiff >> numberOfChanges [
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesAdded [
-	^ self changeChunks sum: [ : each | each numberOfLinesAdded ]
+	^ self changeChunks sum: [ :each | each numberOfLinesAdded ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesChanged [
-	^ self changeChunks sum: [ : each | each numberOfLinesChanged ]
+	^ self changeChunks sum: [ :each | each numberOfLinesChanged ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesModified [
-	^ self changeChunks sum: [ : each | each numberOfLinesModified ]
+	^ self changeChunks sum: [ :each | each numberOfLinesModified ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesRemoved [
-	^ self changeChunks sum: [ : each | each numberOfLinesRemoved ]
+	^ self changeChunks sum: [ :each | each numberOfLinesRemoved ]
 ]
 
 { #category : #accessing }

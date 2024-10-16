@@ -16,6 +16,21 @@ UnifiedDiffCollection >> changedPaths [
 ]
 
 { #category : #accessing }
+UnifiedDiffCollection >> children [
+	^ self diffs
+]
+
+{ #category : #accessing }
+UnifiedDiffCollection >> description [
+	^ String streamContents: [ :out |
+		out nextPutAll: (self numberOfChanges pluralize: 'changed file').
+		out nextPutAll: ' with '.
+		out nextPutAll: (self numberOfLinesAdded pluralize: 'addition').
+		out nextPutAll: ' and '.
+		out nextPutAll: (self numberOfLinesRemoved pluralize: 'deletion') ]
+]
+
+{ #category : #accessing }
 UnifiedDiffCollection >> diffs [
 	^ diffs
 ]
@@ -34,6 +49,21 @@ UnifiedDiffCollection >> initialize [
 { #category : #testing }
 UnifiedDiffCollection >> isEmpty [
 	^ diffs isEmpty
+]
+
+{ #category : #accessing }
+UnifiedDiffCollection >> numberOfChanges [
+	^ self diffs size
+]
+
+{ #category : #accessing }
+UnifiedDiffCollection >> numberOfLinesAdded [
+	^ self diffs sum: [ :each | each numberOfLinesAdded ]
+]
+
+{ #category : #accessing }
+UnifiedDiffCollection >> numberOfLinesRemoved [
+	^ self diffs sum: [ :each | each numberOfLinesRemoved ]
 ]
 
 { #category : #printing }
