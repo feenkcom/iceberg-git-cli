@@ -242,6 +242,15 @@ PureGitQueries >> remotes [
 			yourself ]
 ]
 
+{ #category : #convenience }
+PureGitQueries >> resolveBranchOrTag: aName [
+	^ self allBranches
+		detect: [ :each | each name = aName ]
+		ifNone: [ self tags toArray wait
+				detect: [ :each | each name = aName ]
+				ifNone: [ aName ] ]
+]
+
 { #category : #queries }
 PureGitQueries >> resolveCommit: commitId [
 	| output |
