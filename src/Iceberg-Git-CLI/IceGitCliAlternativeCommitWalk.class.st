@@ -9,13 +9,12 @@ Class {
 
 { #category : #accessing }
 IceGitCliAlternativeCommitWalk >> commitStream [
-	^ self repository commits: args
+	^ self commits asAsyncStream
 ]
 
 { #category : #walking }
 IceGitCliAlternativeCommitWalk >> commitsDo: aBlock [
-	"(self commitStream do: aBlock) wait"
-	self commitStream toArray wait do: aBlock
+	(self repository commits: args) do: aBlock
 ]
 
 { #category : #'instance creation' }

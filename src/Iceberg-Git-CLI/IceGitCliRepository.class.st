@@ -219,14 +219,16 @@ IceGitCliRepository >> commitishNamed: aName [
 
 { #category : #'API - branches' }
 IceGitCliRepository >> commits: args [
-	| output commitLines |
-	output := self runGitWithArgsAsync: {
+	| lines commitLines commits |
+	lines := self runGitWithArgs: {
 		'log'.
 		'--format=format:%H%n%an%n%at%n%P%n%n%B%n@@@'.
 		} , args.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self iceGitCommitFromLines: each ]
+	commitLines := lines splitOn: [ :each | each = '@@@' ].
+	commitLines removeLast.
+	commits := commitLines collect: [ :each | self iceGitCommitFromLines: each ].
+	commits do: [:each | commitMap at: each id put: each].
+	^ commits
 ]
 
 { #category : #'private - commits' }
@@ -584,7 +586,7 @@ IceGitCliRepository >> name [
 
 { #category : #'API - accessing' }
 IceGitCliRepository >> newCommitWalk [
-	^ IceGitCliCommitWalk forRepository: self
+	^ IceGitCliAlternativeCommitWalk forRepository: self
 ]
 
 { #category : #'private - changes' }
