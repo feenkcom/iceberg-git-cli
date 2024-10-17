@@ -70,7 +70,7 @@ IceGitCliLocalBranch >> outgoingCommitsTo: aRemote [
 			remoteBranchFor: aRemote
 			ifNone: [ ^ self reducedOutgoingCommitsWhenNoRemote ].
 	walk := self newCommitWalk.
-	walk uptoCommit: remoteBranch.
+	walk uptoCommit: remoteBranch commit.
 	^ walk commits
 ]
 
