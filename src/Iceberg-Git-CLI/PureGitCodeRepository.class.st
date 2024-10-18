@@ -15,7 +15,7 @@ PureGitCodeRepository >> initializeSrcDirectory [
 	| project properties |
 	project := self location / '.project' 
 		readStreamDo: [ :stream | STON fromStream: stream ].
-	srcDirectory := self location / (project at: #srcDirectory).
+	srcDirectory := self location / (project at: #srcDirectory ifAbsent: [ 'src' ]).
 	properties := srcDirectory / '.properties' 
 		readStreamDo: [ :stream | STON fromStream: stream ].
 	self assert: (properties at: #format) equals: #tonel

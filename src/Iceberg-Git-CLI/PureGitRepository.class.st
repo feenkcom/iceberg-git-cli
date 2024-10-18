@@ -92,7 +92,7 @@ PureGitRepository >> initialize [
 
 { #category : #testing }
 PureGitRepository >> isCodeRepository [
-	^ true
+	^ false
 ]
 
 { #category : #accessing }
