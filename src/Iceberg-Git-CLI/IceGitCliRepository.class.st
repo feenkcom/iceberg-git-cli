@@ -217,6 +217,20 @@ IceGitCliRepository >> commitishNamed: aName [
 				ifAbsent: [ self revparse: aName ] ]
 ]
 
+{ #category : #'API - branches' }
+IceGitCliRepository >> commits: args [
+	| lines commitLines commits |
+	lines := self runGitWithArgs: {
+		'log'.
+		'--format=format:%H%n%an%n%at%n%P%n%n%B%n@@@'.
+		} , args.
+	commitLines := lines splitOn: [ :each | each = '@@@' ].
+	commitLines removeLast.
+	commits := commitLines collect: [ :each | self iceGitCommitFromLines: each ].
+	commits do: [:each | commitMap at: each id put: each].
+	^ commits
+]
+
 { #category : #'private - commits' }
 IceGitCliRepository >> commitsFromIds: idCollection [
 	| lines range commits idSet |
@@ -572,7 +586,7 @@ IceGitCliRepository >> name [
 
 { #category : #'API - accessing' }
 IceGitCliRepository >> newCommitWalk [
-	^ IceGitCliCommitWalk forRepository: self
+	^ IceGitCliAlternativeCommitWalk forRepository: self
 ]
 
 { #category : #'private - changes' }
@@ -780,6 +794,19 @@ IceGitCliRepository >> runGitWithArgs: args [
 	self validLocation.
 	executor repository: self.
 	^ executor runGitWithArgs: args for: operation
+]
+
+{ #category : #private }
+IceGitCliRepository >> runGitWithArgsAsync: args [
+	"Run CLI git with the passed arguments and return the lines from standard output as an asynchroneous stream..
+	Do not wait for the git command to complete. Signal an error when not successful."
+
+	| operation executor |
+	operation := thisContext sender method selector.
+	executor := IceGitCliPlatform current executor.
+	self validLocation.
+	executor repository: self.
+	^ executor runGitWithArgsAsync: args for: operation
 ]
 
 { #category : #'API - branches' }
