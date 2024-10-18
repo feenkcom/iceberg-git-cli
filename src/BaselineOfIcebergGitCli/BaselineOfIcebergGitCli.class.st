@@ -13,6 +13,6 @@ BaselineOfIcebergGitCli >> baseline: spec [
 				spec repository: 'github://feenkcom/gtoolkit-external-process:v0.6.119/src' ].
 
 		spec package: 'Iceberg-Git-CLI' with: [
-			spec requires: #('GToolkitExternalProcess') ].
+			spec requires: #(#GToolkitExternalProcess) ].
 	]
 ]
