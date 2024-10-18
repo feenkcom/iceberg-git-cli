@@ -139,6 +139,13 @@ PureGitCommit >> numberOfParents [
 ]
 
 { #category : #accessing }
+PureGitCommit >> packageNames [
+	self assert: self repository isCodeRepository.
+	^ (self fileSystem / self repository srcDirectory basename) directories
+		collect: #basename
+]
+
+{ #category : #accessing }
 PureGitCommit >> parent [
 	^ self repository queries resolveCommit: self parentIds first
 ]
@@ -169,6 +176,14 @@ PureGitCommit >> printOn: stream [
 	stream nextPut: $(.
 	self printDetailsOn: stream.
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitCommit >> readerForPackage: packageName [
+	self assert: self repository isCodeRepository.
+	^ TonelReader
+		on: self fileSystem / self repository srcDirectory basename
+		fileName: packageName
 ]
 
 { #category : #accessing }
