@@ -84,6 +84,12 @@ PureGitOperations >> push: args [
 ]
 
 { #category : #operations }
+PureGitOperations >> restore: filePath [
+	self runGitWithArgs: { 'restore' . '--worktree' . filePath }.
+	self announceRepositoryModified
+]
+
+{ #category : #operations }
 PureGitOperations >> stage: filePath [
 	self runGitWithArgs: { 'add' . filePath }.
 	self announceRepositoryModified

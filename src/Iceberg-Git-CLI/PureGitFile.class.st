@@ -112,6 +112,12 @@ PureGitFile >> resetStatus [
 	status := nil
 ]
 
+{ #category : #operations }
+PureGitFile >> restore [
+	self repository operations restore: self path.
+	self resetStatus
+]
+
 { #category : #accessing }
 PureGitFile >> size [
 	^ self fileReference size
