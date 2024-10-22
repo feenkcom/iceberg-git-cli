@@ -65,7 +65,8 @@ PureGitQueries >> blame: path [
 		(blameLine := PureGitBlameLine new)
 			commit: commit;
 			line: line;
-			lineNumber: lineNumber.
+			lineNumber: lineNumber;
+			path: path.
 		blameLine resolveCommitIn: self using: commitsCache.
 		blameLine ]
 ]
