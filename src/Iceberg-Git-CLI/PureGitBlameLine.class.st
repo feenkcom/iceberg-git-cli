@@ -30,6 +30,30 @@ PureGitBlameLine >> commit: aHash [
 ]
 
 { #category : #accessing }
+PureGitBlameLine >> history [
+	| spec commits |
+	spec := '-L{1},{1}:{2}' format: { self lineNumber . self path }.
+	commits := self commit repository 
+		queries logFrom: spec for: '--no-patch'.
+	^ commits
+		collect: [ :eachCommit | 
+			| diffs lines |
+			diffs := eachCommit changesToParent diffs
+					detect: [ :eachDiff | eachDiff oldPath = self path ].
+			lines := diffs changeChunks
+					collect: [ :changeChunk | changeChunk newContentsLineAt: self lineNumber ].
+			(lines
+				select: #notNil
+				thenCollect: [ :aLine | 
+					PureGitBlameLine new
+						commit: eachCommit;
+						line: aLine;
+						lineNumber: self lineNumber;
+						path: self path;
+						yourself ]) first ]
+]
+
+{ #category : #accessing }
 PureGitBlameLine >> line [
 	^ line
 ]
