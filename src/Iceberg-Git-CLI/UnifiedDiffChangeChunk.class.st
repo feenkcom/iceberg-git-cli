@@ -59,6 +59,25 @@ UnifiedDiffChangeChunk >> newContents [
 ]
 
 { #category : #accessing }
+UnifiedDiffChangeChunk >> newContentsLineAt: lineNumber [
+	^ self newContentsLineAt: lineNumber ifAbsent: [ nil ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> newContentsLineAt: lineNumber ifAbsent: absentBlock [
+	| newPosition |
+	(lineNumber between: newStart and: newStart + newCount - 1)
+		ifFalse: [ ^ absentBlock value ].
+	newPosition := newStart.
+	diffLines do: [ :line |
+		(line first = $+ and: [ newPosition = lineNumber ])
+			ifTrue: [ ^ line allButFirst ].
+		line first = $-
+			ifFalse: [ newPosition := newPosition + 1 ] ].
+	^ absentBlock value
+]
+
+{ #category : #accessing }
 UnifiedDiffChangeChunk >> newContentsLines [
 	^ diffLines reject: [ : line | line first = $- ]
 ]
@@ -101,6 +120,25 @@ UnifiedDiffChangeChunk >> oldContents [
 				putAll: line
 				startingAt: 2.
 			out cr ] ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldContentsLineAt: lineNumber [
+	^ self oldContentsLineAt: lineNumber ifAbsent: [ nil ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldContentsLineAt: lineNumber ifAbsent: absentBlock [
+	| oldPosition |
+	(lineNumber between: oldStart and: oldStart + oldCount - 1)
+		ifFalse: [ ^ absentBlock value ].
+	oldPosition := oldStart.
+	diffLines do: [ :line |
+		(line first = $- and: [ oldPosition = lineNumber ])
+			ifTrue: [ ^ line allButFirst ].
+		line first = $+
+			ifFalse: [ oldPosition := oldPosition + 1 ] ].
+	^ absentBlock value
 ]
 
 { #category : #accessing }
