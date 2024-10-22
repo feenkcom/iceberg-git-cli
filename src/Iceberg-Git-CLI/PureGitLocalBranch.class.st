@@ -63,6 +63,11 @@ PureGitLocalBranch >> outgoingCommits [
 		for: nil
 ]
 
+{ #category : #operations }
+PureGitLocalBranch >> push [
+	self repository operations push: { self upstreamRemoteName . self name }
+]
+
 { #category : #accessing }
 PureGitLocalBranch >> upstream [
 	| upstreamName |
