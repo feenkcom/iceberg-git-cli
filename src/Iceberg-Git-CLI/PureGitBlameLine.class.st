@@ -8,7 +8,8 @@ Class {
 	#instVars : [
 		'line',
 		'lineNumber',
-		'commit'
+		'commit',
+		'path'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -46,6 +47,26 @@ PureGitBlameLine >> lineNumber [
 { #category : #accessing }
 PureGitBlameLine >> lineNumber: anInteger [
 	lineNumber := anInteger
+]
+
+{ #category : #accessing }
+PureGitBlameLine >> path [
+	^ path
+]
+
+{ #category : #accessing }
+PureGitBlameLine >> path: aPathString [
+	path := aPathString
+]
+
+{ #category : #printing }
+PureGitBlameLine >> printOn: stream [
+	super printOn: stream.
+	stream nextPut: $(.
+	stream nextPutAll: path.
+	stream nextPut: $:.
+	stream print: lineNumber.
+	stream nextPut: $)
 ]
 
 { #category : #operations }
