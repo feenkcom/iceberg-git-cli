@@ -202,32 +202,34 @@ PureGitQueries >> log [
 
 { #category : #queries }
 PureGitQueries >> log: args [
-	| output commitLines  |
+	| output commitsLines |
 	output := self runGitWithArgsAsync: { 
 		'log'.
 		'--format=' , self commitLineFormat , '%n@@@' 
 		} , args.
-	commitLines := output splitOn: [ :line | line = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self commitFromLines: each ]
+	commitsLines := output splitOn: [ :line | line = '@@@' ].
+	commitsLines := commitsLines select: [ :lines | lines notEmpty ].
+	^ commitsLines collect: [ :lines | self commitFromLines: lines ]
 ]
 
 { #category : #queries }
 PureGitQueries >> logPatch: args [
-	| output commitLines elements |
+	| output commitsLines elements |
 	output := self runGitWithArgsAsync: { 
 		'log'.
 		'--format=' , '@@@%n' , self commitLineFormat , '%n###'.
 		'--patch'.
 		} , args.
-	commitLines := output splitOn: [ :line | line = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :lines | 
+	commitsLines := output splitOn: [ :line | line = '@@@' ].
+	commitsLines := commitsLines select: [ :lines | lines notEmpty ].
+	^ commitsLines collect: [ :lines | | commitLines diffLines |
 		elements := lines splitOn: [ :line | line = '###' ].
+		commitLines := elements first.
+		diffLines := elements second readStream.
+		diffLines next. "skip empty line"
 		{ 
-			self commitFromLines: elements first.
-			UnifiedDiffCollection new 
-				readFrom: (Character cr join: elements second allButFirst) readStream
+			self commitFromLines: commitLines.
+			UnifiedDiffCollection new readFromLines: diffLines
 		} ]
 ]
 
