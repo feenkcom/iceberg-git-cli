@@ -87,6 +87,12 @@ PureGitFile >> log [
 ]
 
 { #category : #accessing }
+PureGitFile >> logPatch [
+	^ self repository queries 
+		logPatch: { '--follow' . 'HEAD' . '--' . self path}
+]
+
+{ #category : #accessing }
 PureGitFile >> parent [
 	^ self repository resolveFileReference: self fileReference parent
 ]
