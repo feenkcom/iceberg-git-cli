@@ -34,7 +34,7 @@ PureGitBlameLine >> history [
 	| spec commits |
 	spec := '-L{1},{1}:{2}' format: { self lineNumber . self path }.
 	commits := self commit repository 
-		queries logFrom: spec for: '--no-patch'.
+		queries log: { spec . '--no-patch' }.
 	^ commits
 		collect: [ :eachCommit | 
 			| diffs lines |
