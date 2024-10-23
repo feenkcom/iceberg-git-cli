@@ -201,14 +201,12 @@ PureGitQueries >> log [
 ]
 
 { #category : #queries }
-PureGitQueries >> logFrom: startCommit for: path [
-	| output commitLines args |
-	args := { 
+PureGitQueries >> log: args [
+	| output commitLines  |
+	output := self runGitWithArgsAsync: { 
 		'log'.
-		self commitLineFormat , '%n@@@'.
-		startCommit }.
-	path ifNotNil: [ args := args copyWith: path ].
-	output := self runGitWithArgsAsync: args.
+		self commitLineFormat , '%n@@@' 
+		} , args.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
 	commitLines := commitLines select: [ :lines | lines notEmpty ].
 	^ commitLines collect: [ :each | self commitFromLines: each ]

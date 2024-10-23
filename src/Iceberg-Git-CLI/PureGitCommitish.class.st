@@ -24,7 +24,7 @@ PureGitCommitish >> commitId [
 
 { #category : #accessing }
 PureGitCommitish >> log [
-	^ self repository queries logFrom: self commitId for: nil
+	^ self repository queries log: { self commitId }
 ]
 
 { #category : #accessing }

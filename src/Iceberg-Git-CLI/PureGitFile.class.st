@@ -78,7 +78,7 @@ PureGitFile >> isTracked [
 
 { #category : #accessing }
 PureGitFile >> log [
-	^ (self repository queries logFrom: 'HEAD' for: self path)
+	^ (self repository queries log: { 'HEAD' . '--' . self path })
 		collect: [ :each |
 			PureGitFileCommit new
 				copyFrom: each;

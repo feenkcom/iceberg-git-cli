@@ -80,8 +80,7 @@ PureGitDirectory >> isTracked [
 PureGitDirectory >> log [
 	| commits |
 	commits := self repository queries
-		logFrom: 'HEAD' 
-		for: (self isRoot ifTrue: [ nil ] ifFalse: [ self path ]).
+		log: (self isRoot ifTrue: [ { 'HEAD' } ] ifFalse: [ { 'HEAD' . '--' . self path } ]).
 	^ commits collect: [ :each |
 			PureGitFileCommit new
 				copyFrom: each;

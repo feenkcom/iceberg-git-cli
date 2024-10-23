@@ -42,7 +42,7 @@ PureGitFileCommit >> gtContentsFor: composite [
 
 { #category : #accessing }
 PureGitFileCommit >> log [
-	^ (self repository queries logFrom: self commitId for: self path)
+	^ (self repository queries log: { self commitId . '--' . self path })
 		collect: [ :each |
 			PureGitFileCommit new
 				copyFrom: each;

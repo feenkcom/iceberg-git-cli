@@ -34,13 +34,12 @@ PureGitLocalBranch >> hasUpstream [
 
 { #category : #accessing }
 PureGitLocalBranch >> incomingCommits [
-	| upstream |
+	| upstream spec |
 	upstream := self upstream.
 	(upstream isNil or: [ self commit = upstream commit ])
 		ifTrue: [ ^ #() asAsyncStream ].
-	^ self repository queries 
-		logFrom: self name , '..' , upstream remote name
-		for: nil
+	spec := self name , '..' , upstream remote name.
+	^ self repository queries log: {spec}
 ]
 
 { #category : #testing }
@@ -54,13 +53,12 @@ PureGitLocalBranch >> isCurrent [
 
 { #category : #accessing }
 PureGitLocalBranch >> outgoingCommits [
-	| upstream |
+	| upstream spec |
 	upstream := self upstream.
 	(upstream isNil or: [ self commit = upstream commit ])
 		ifTrue: [ ^ #() asAsyncStream ].
-	^ self repository queries 
-		logFrom: upstream remote name , '..' , self name
-		for: nil
+	spec := upstream remote name , '..' , self name.
+	^ self repository queries log: { spec }
 ]
 
 { #category : #operations }
