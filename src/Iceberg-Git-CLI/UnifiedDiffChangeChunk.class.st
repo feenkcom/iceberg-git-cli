@@ -161,40 +161,57 @@ UnifiedDiffChangeChunk >> range [
 ]
 
 { #category : #parsing }
-UnifiedDiffChangeChunk >> readFrom: stream [
-	self readRangeFrom: stream.
-	self readLinesFrom: stream
-]
-
-{ #category : #parsing }
-UnifiedDiffChangeChunk >> readLinesFrom: stream [
+UnifiedDiffChangeChunk >> readDiffLinesFrom: characterStream [
 	| lineReader |
-	lineReader := ZnFastLineReader on: stream.
+	lineReader := ZnFastLineReader on: characterStream.
 	"skip the range line"
 	lineReader nextLine.
 	diffLines := Array streamContents: [ :out |
-		[ stream atEnd or: [ (' +-\' includes: stream peek) not ] ] whileFalse: [ 
+		[ characterStream atEnd or: [ (' +-\' includes: characterStream peek) not ] ] whileFalse: [ 
 			lineReader nextLine ifNotNil: [ :line | 
 				line first = $\ ifFalse: [ out nextPut: line ] ] ] ]
 ]
 
 { #category : #parsing }
-UnifiedDiffChangeChunk >> readRangeFrom: stream [
+UnifiedDiffChangeChunk >> readDiffLinesFromLines: lineStream [
+	diffLines := Array streamContents: [ :out |
+		[ lineStream atEnd 
+			or: [ lineStream peek isEmptyOrNil not
+					and: [ (' +-\' includes: lineStream peek first) not ] ] ] 
+			whileFalse: [ 
+				lineStream next ifNotNil: [ :line | 
+					line first = $\ ifFalse: [ out nextPut: line ] ] ] ]
+]
+
+{ #category : #parsing }
+UnifiedDiffChangeChunk >> readFrom: characterStream [
+	self readRangeFrom: characterStream.
+	self readDiffLinesFrom: characterStream
+]
+
+{ #category : #parsing }
+UnifiedDiffChangeChunk >> readFromLines: lineStream [
+	self readRangeFrom: lineStream next readStream.
+	self readDiffLinesFromLines: lineStream
+]
+
+{ #category : #parsing }
+UnifiedDiffChangeChunk >> readRangeFrom: characterStream [
 	"@@ -s,l +s,l @@ optional section heading"
 
 	| parentCount |
 	parentCount := -1.
-	[ stream peekFor: $@ ]
+	[ characterStream peekFor: $@ ]
 		whileTrue: [ parentCount := parentCount + 1 ].
 	self assert: parentCount = 1.
-	stream skipSeparators.
-	self assert: (stream peekFor: $-).
-	oldStart := Integer readFrom: stream.
-	(stream peekFor: $,)
-		ifTrue: [ oldCount := Integer readFrom: stream ].
-	stream skipSeparators.
-	self assert: (stream peekFor: $+).
-	newStart := Integer readFrom: stream.
-	(stream peekFor: $,)
-		ifTrue: [ newCount := Integer readFrom: stream ].
+	characterStream skipSeparators.
+	self assert: (characterStream peekFor: $-).
+	oldStart := Integer readFrom: characterStream.
+	(characterStream peekFor: $,)
+		ifTrue: [ oldCount := Integer readFrom: characterStream ].
+	characterStream skipSeparators.
+	self assert: (characterStream peekFor: $+).
+	newStart := Integer readFrom: characterStream.
+	(characterStream peekFor: $,)
+		ifTrue: [ newCount := Integer readFrom: characterStream ].
 ]

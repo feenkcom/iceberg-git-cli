@@ -12,10 +12,24 @@ UnifiedDiffExamples >> exampleGitUnifiedDiff [
 ]
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleGitUnifiedDiffByLine [
+	<gtExample>
+	^ UnifiedDiff new
+		readFromLines: self exampleGitUnifiedDiffOutput lines readStream
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffCollection [
 	<gtExample>
 	^ UnifiedDiffCollection new
 		readFrom: self exampleGitUnifiedDiffCollectionOutput readStream
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleGitUnifiedDiffCollectionByLine [
+	<gtExample>
+	^ UnifiedDiffCollection new
+		readFromLines: self exampleGitUnifiedDiffCollectionOutput lines readStream
 ]
 
 { #category : #accessing }

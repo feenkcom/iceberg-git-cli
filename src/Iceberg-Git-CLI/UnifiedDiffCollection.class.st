@@ -75,7 +75,13 @@ UnifiedDiffCollection >> printOn: stream [
 ]
 
 { #category : #parsing }
-UnifiedDiffCollection >> readFrom: stream [
-	[ stream atEnd ] whileFalse: [
-		diffs add: (UnifiedDiff new readFrom: stream) ]
+UnifiedDiffCollection >> readFrom: characterStream [
+	[ characterStream atEnd ] whileFalse: [
+		diffs add: (UnifiedDiff new readFrom: characterStream) ]
+]
+
+{ #category : #parsing }
+UnifiedDiffCollection >> readFromLines: lineStream [
+	[ lineStream atEnd ] whileFalse: [
+		diffs add: (UnifiedDiff new readFromLines: lineStream) ]
 ]

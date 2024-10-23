@@ -121,20 +121,32 @@ UnifiedDiff >> printOn: stream [
 ]
 
 { #category : #parsing }
-UnifiedDiff >> readFrom: stream [
+UnifiedDiff >> readFrom: characterStream [
 	| lineReader savedPosition peekedLine |
-	lineReader := ZnFastLineReader on: stream.
+	lineReader := ZnFastLineReader on: characterStream.
 	self readHeaderFrom: lineReader nextLine.
-	[ savedPosition := stream position.
+	[ savedPosition := characterStream position.
 	peekedLine := lineReader nextLine.
-	stream position: savedPosition.
-	(stream atEnd 
+	characterStream position: savedPosition.
+	(characterStream atEnd 
 		or: [ (peekedLine beginsWith: '@@') 
 			or: [ peekedLine beginsWith: 'diff' ] ]) ]
 		whileFalse: [ self readHeaderFrom: lineReader nextLine ].
 	changeChunks := Array streamContents: [ :out |
-		[ lineReader atEnd or: [ (stream peek = $@) not ] ]
-			whileFalse: [ out nextPut: (UnifiedDiffChangeChunk new readFrom: stream) ] ]
+		[ lineReader atEnd or: [ (characterStream peek = $@) not ] ]
+			whileFalse: [ out nextPut: (UnifiedDiffChangeChunk new readFrom: characterStream) ] ]
+]
+
+{ #category : #parsing }
+UnifiedDiff >> readFromLines: lineStream [
+	self readHeaderFrom: lineStream next.
+	[ lineStream atEnd
+		or: [ (lineStream peek beginsWith: '@@')
+			or: [ lineStream peek beginsWith: 'diff' ] ] ]
+		whileFalse: [ self readHeaderFrom: lineStream next ].
+	changeChunks := Array streamContents: [ :out | 
+		[ lineStream atEnd or: [ (lineStream peek beginsWith: '@@') not ] ]
+			whileFalse: [ out nextPut: (UnifiedDiffChangeChunk new readFromLines: lineStream) ] ]
 ]
 
 { #category : #parsing }
