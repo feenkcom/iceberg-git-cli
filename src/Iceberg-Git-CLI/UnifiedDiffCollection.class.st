@@ -70,7 +70,7 @@ UnifiedDiffCollection >> numberOfLinesRemoved [
 UnifiedDiffCollection >> printOn: stream [
 	super printOn: stream.
 	stream nextPut: $(.
-	stream nextPutAll: (diffs size pluralize: 'diffs').
+	stream nextPutAll: (diffs size pluralize: 'diff').
 	stream nextPut: $)
 ]
 
