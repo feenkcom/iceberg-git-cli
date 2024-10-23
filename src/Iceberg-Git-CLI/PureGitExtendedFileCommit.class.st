@@ -48,6 +48,11 @@ PureGitExtendedFileCommit >> changesToParent [
 ]
 
 { #category : #accessing }
+PureGitExtendedFileCommit >> changesToParent: aUnifiedDiff [
+	changesToParent := aUnifiedDiff
+]
+
+{ #category : #accessing }
 PureGitExtendedFileCommit >> comment [
 	^ commit comment
 ]

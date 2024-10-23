@@ -41,7 +41,7 @@ PureGitQueries >> allCommits [
 	self repository exists ifFalse: [ ^ #() asAsyncStream ].
 	output := self runGitWithArgsAsync: { 
 		'log'.
-		self commitLineFormat , '%n@@@'.
+		'--format=' , self commitLineFormat , '%n@@@'.
 		'--all'.
 		'--date-order' }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
@@ -109,7 +109,7 @@ PureGitQueries >> commitFromLines: lines [
 
 { #category : #private }
 PureGitQueries >> commitLineFormat [
-	^ '--format=%H%n%an%n%at%n%P%n%T%n%n%B'
+	^ '%H%n%an%n%at%n%P%n%T%n%n%B'
 ]
 
 { #category : #queries }
@@ -202,14 +202,35 @@ PureGitQueries >> log [
 
 { #category : #queries }
 PureGitQueries >> log: args [
-	| output commitLines  |
+	| output commitsLines |
 	output := self runGitWithArgsAsync: { 
 		'log'.
-		self commitLineFormat , '%n@@@' 
+		'--format=' , self commitLineFormat , '%n@@@' 
 		} , args.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
-	commitLines := commitLines select: [ :lines | lines notEmpty ].
-	^ commitLines collect: [ :each | self commitFromLines: each ]
+	commitsLines := output splitOn: [ :line | line = '@@@' ].
+	commitsLines := commitsLines select: [ :lines | lines notEmpty ].
+	^ commitsLines collect: [ :lines | self commitFromLines: lines ]
+]
+
+{ #category : #queries }
+PureGitQueries >> logPatch: args [
+	| output commitsLines elements |
+	output := self runGitWithArgsAsync: { 
+		'log'.
+		'--format=' , '@@@%n' , self commitLineFormat , '%n###'.
+		'--patch'.
+		} , args.
+	commitsLines := output splitOn: [ :line | line = '@@@' ].
+	commitsLines := commitsLines select: [ :lines | lines notEmpty ].
+	^ commitsLines collect: [ :lines | | commitLines diffLines |
+		elements := lines splitOn: [ :line | line = '###' ].
+		commitLines := elements first.
+		diffLines := elements second readStream.
+		diffLines next. "skip empty line"
+		{ 
+			self commitFromLines: commitLines.
+			UnifiedDiffCollection new readFromLines: diffLines
+		} ]
 ]
 
 { #category : #queries }
@@ -256,7 +277,7 @@ PureGitQueries >> resolveCommit: commitId [
 	output := self runGitWithArgs: {
 		'show'.
 		'--no-patch'.
-		self commitLineFormat.
+		'--format=' , self commitLineFormat.
 		commitId }.
 	^ self commitFromLines: output
 ]

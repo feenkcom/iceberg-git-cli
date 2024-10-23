@@ -16,7 +16,7 @@ PureGitDiffTool >> asText [
 
 { #category : #accessing }
 PureGitDiffTool >> asUnifiedDiff [
-	^ UnifiedDiffCollection new readFrom: self asText readStream
+	^ UnifiedDiffCollection new readFromLines: self diffLines readStream
 ]
 
 { #category : #accessing }
