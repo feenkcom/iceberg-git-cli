@@ -213,6 +213,25 @@ PureGitQueries >> log: args [
 ]
 
 { #category : #queries }
+PureGitQueries >> logPatch: args [
+	| output commitLines elements |
+	output := self runGitWithArgsAsync: { 
+		'log'.
+		'--format=' , '@@@%n' , self commitLineFormat , '%n###'.
+		'--patch'.
+		} , args.
+	commitLines := output splitOn: [ :line | line = '@@@' ].
+	commitLines := commitLines select: [ :lines | lines notEmpty ].
+	^ commitLines collect: [ :lines | 
+		elements := lines splitOn: [ :line | line = '###' ].
+		{ 
+			self commitFromLines: elements first.
+			UnifiedDiffCollection new 
+				readFrom: (Character cr join: elements second allButFirst) readStream
+		} ]
+]
+
+{ #category : #queries }
 PureGitQueries >> remoteBranches [
 	| output |
 	self repository exists ifFalse: [ ^ #() ].
