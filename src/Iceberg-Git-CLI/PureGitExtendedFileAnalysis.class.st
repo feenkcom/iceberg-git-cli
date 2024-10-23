@@ -14,11 +14,7 @@ Class {
 { #category : #operations }
 PureGitExtendedFileAnalysis >> analyze [
 	| first |
-	extendedCommits := self file log collect: [ :each |
-		PureGitExtendedFileCommit new
-			commit: each;
-			changesToParent;
-			yourself ].
+	extendedCommits := self file logPatch.
 	extendedCommits := extendedCommits toArray wait reverse.
 	first := true.
 	extendedCommits overlappingPairsDo: [ :parent :each |
