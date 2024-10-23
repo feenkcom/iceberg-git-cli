@@ -88,8 +88,18 @@ PureGitFile >> log [
 
 { #category : #accessing }
 PureGitFile >> logPatch [
-	^ self repository queries 
-		logPatch: { '--follow' . 'HEAD' . '--' . self path}
+	| commitDiffPairs |
+	commitDiffPairs := self repository queries 
+		logPatch: { '--follow' . 'HEAD' . '--' . self path}.
+	^ commitDiffPairs collect: [ :commitDiffPair |
+		| fileCommit |
+		(fileCommit := PureGitFileCommit new)
+			copyFrom: commitDiffPair first;
+			path: self path.
+		PureGitExtendedFileCommit new
+			commit: fileCommit;
+			changesToParent: commitDiffPair second firstDiff;
+			yourself ]
 ]
 
 { #category : #accessing }
