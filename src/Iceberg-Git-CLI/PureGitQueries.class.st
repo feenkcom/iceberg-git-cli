@@ -41,7 +41,7 @@ PureGitQueries >> allCommits [
 	self repository exists ifFalse: [ ^ #() asAsyncStream ].
 	output := self runGitWithArgsAsync: { 
 		'log'.
-		self commitLineFormat , '%n@@@'.
+		'--format=' , self commitLineFormat , '%n@@@'.
 		'--all'.
 		'--date-order' }.
 	commitLines := output splitOn: [ :each | each = '@@@' ].
@@ -109,7 +109,7 @@ PureGitQueries >> commitFromLines: lines [
 
 { #category : #private }
 PureGitQueries >> commitLineFormat [
-	^ '--format=%H%n%an%n%at%n%P%n%T%n%n%B'
+	^ '%H%n%an%n%at%n%P%n%T%n%n%B'
 ]
 
 { #category : #queries }
@@ -205,9 +205,9 @@ PureGitQueries >> log: args [
 	| output commitLines  |
 	output := self runGitWithArgsAsync: { 
 		'log'.
-		self commitLineFormat , '%n@@@' 
+		'--format=' , self commitLineFormat , '%n@@@' 
 		} , args.
-	commitLines := output splitOn: [ :each | each = '@@@' ].
+	commitLines := output splitOn: [ :line | line = '@@@' ].
 	commitLines := commitLines select: [ :lines | lines notEmpty ].
 	^ commitLines collect: [ :each | self commitFromLines: each ]
 ]
@@ -256,7 +256,7 @@ PureGitQueries >> resolveCommit: commitId [
 	output := self runGitWithArgs: {
 		'show'.
 		'--no-patch'.
-		self commitLineFormat.
+		'--format=' , self commitLineFormat.
 		commitId }.
 	^ self commitFromLines: output
 ]
