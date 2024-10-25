@@ -63,10 +63,20 @@ GtIceRepositorySwitcher class >> switchAll [
 	This script does not use me, I am a tool to manipulate repositories individually.
 	Notes: also defunct repositories are switched."
 	
-	| repositories |
-	IceRepository repositoryClass: IceGitCliRepository.
+	| platform repositories |
+
+	platform := IceGitCliPlatform current.
+
+	"throw an assertion failure when no suitable git is found"
+	platform validateGit.
+	"throw an assertion failure when git is not properly configured"
+	platform validateGitSetup.
+
+	platform install.
+
 	repositories := IceRepository registry
 		collect: [ :each | IceGitCliRepository fromLibGitRepository: each ].
+
 	IceRepository registry
 		removeAll;
 		addAll: repositories
