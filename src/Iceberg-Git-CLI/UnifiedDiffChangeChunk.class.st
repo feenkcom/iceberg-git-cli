@@ -14,6 +14,23 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #operations }
+UnifiedDiffChangeChunk >> applyTo: input [
+	| lineNumber newContentsLines |
+	lineNumber := 0.
+	newContentsLines := self newContentsLines.
+	^ String streamContents: [ :out |
+		input linesDo: [ :line |
+			lineNumber := lineNumber + 1.
+			(lineNumber between: self oldStart and: self oldEnd)
+				ifTrue: [
+					| diffLine |
+					diffLine := newContentsLines at: lineNumber - self oldStart + 1.
+					out next: diffLine size - 1 putAll: diffLine startingAt: 2; cr ]
+				ifFalse: [
+					out nextPutAll: line; cr ] ] ]
+]
+
 { #category : #accessing }
 UnifiedDiffChangeChunk >> children [
 	^ #()
@@ -66,9 +83,9 @@ UnifiedDiffChangeChunk >> newContentsLineAt: lineNumber [
 { #category : #accessing }
 UnifiedDiffChangeChunk >> newContentsLineAt: lineNumber ifAbsent: absentBlock [
 	| newPosition |
-	(lineNumber between: newStart and: newStart + newCount - 1)
+	(lineNumber between: self newStart and: self newEnd)
 		ifFalse: [ ^ absentBlock value ].
-	newPosition := newStart.
+	newPosition := self newStart.
 	diffLines do: [ :line |
 		(line first = $+ and: [ newPosition = lineNumber ])
 			ifTrue: [ ^ line allButFirst ].
@@ -80,6 +97,21 @@ UnifiedDiffChangeChunk >> newContentsLineAt: lineNumber ifAbsent: absentBlock [
 { #category : #accessing }
 UnifiedDiffChangeChunk >> newContentsLines [
 	^ diffLines reject: [ : line | line first = $- ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> newCount [
+	^ newCount
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> newEnd [
+	^ newStart + newCount - 1
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> newStart [
+	^ newStart
 ]
 
 { #category : #accessing }
@@ -130,9 +162,9 @@ UnifiedDiffChangeChunk >> oldContentsLineAt: lineNumber [
 { #category : #accessing }
 UnifiedDiffChangeChunk >> oldContentsLineAt: lineNumber ifAbsent: absentBlock [
 	| oldPosition |
-	(lineNumber between: oldStart and: oldStart + oldCount - 1)
+	(lineNumber between: self oldStart and: self oldEnd)
 		ifFalse: [ ^ absentBlock value ].
-	oldPosition := oldStart.
+	oldPosition := self oldStart.
 	diffLines do: [ :line |
 		(line first = $- and: [ oldPosition = lineNumber ])
 			ifTrue: [ ^ line allButFirst ].
@@ -144,6 +176,21 @@ UnifiedDiffChangeChunk >> oldContentsLineAt: lineNumber ifAbsent: absentBlock [
 { #category : #accessing }
 UnifiedDiffChangeChunk >> oldContentsLines [
 	^ diffLines reject: [ : line | line first = $+ ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldCount [
+	^ oldCount
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldEnd [
+	^ oldStart + oldCount - 1
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> oldStart [
+	^ oldStart
 ]
 
 { #category : #printing }
