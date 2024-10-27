@@ -5,7 +5,8 @@ Class {
 	#name : #PureGitCommitFileSystemStore,
 	#superclass : #FileSystemStore,
 	#instVars : [
-		'commit'
+		'commit',
+		'cache'
 	],
 	#category : #'Iceberg-Git-CLI-Pure'
 }
@@ -72,7 +73,7 @@ PureGitCommitFileSystemStore >> basicPosixPermissions: aNode [
 
 { #category : #private }
 PureGitCommitFileSystemStore >> basicSizeOf: aNode [
-	^ aNode size
+	^ self resolveBlobSize: aNode
 ]
 
 { #category : #accessing }
@@ -132,14 +133,13 @@ PureGitCommitFileSystemStore >> isReadable: aPath [
 
 { #category : #accessing }
 PureGitCommitFileSystemStore >> nodeAt: aPath ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
-	| entry |
+	| tree entry |
+	tree := self resolveCommitTree: self commit.
 	^ aPath isRoot
-		ifTrue: [ aPresentBlock value: self commit tree ]
+		ifTrue: [ aPresentBlock value: tree ]
 		ifFalse: [ 
-			entry := self commit tree 
-						entryAtPath: aPath segments 
-						ifAbsent: anAbsentBlock.
-			aPresentBlock value: entry resolve ]
+			entry := self resolveTreeEntry: tree atPath: aPath segments ifAbsent: anAbsentBlock.
+			aPresentBlock value: (self resolveTreeEntry: entry) ]
 ]
 
 { #category : #printing }
@@ -149,6 +149,47 @@ PureGitCommitFileSystemStore >> printOn: aStream [
 ]
 
 { #category : #accessing }
+PureGitCommitFileSystemStore >> resolveBlobSize: aBlob [
+	^ cache
+		ifNil: [ aBlob size ]
+		ifNotNil: [
+			aBlob hasResolvedContents 
+				ifTrue: [ aBlob size ]
+				ifFalse: [ cache at: aBlob id , '.s' ifAbsentPut: [ aBlob size ] ] ]
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> resolveCommitTree: aCommit [
+	^ cache
+		ifNil: [ aCommit tree ]
+		ifNotNil: [ cache at: aCommit treeId ifAbsentPut: [ aCommit tree ] ]
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> resolveTreeEntry: aTreeEntry [
+	^ cache
+		ifNil: [ aTreeEntry resolve ]
+		ifNotNil: [ cache at: aTreeEntry id ifAbsentPut: [ aTreeEntry resolve ] ]
+]
+
+{ #category : #accessing }
+PureGitCommitFileSystemStore >> resolveTreeEntry: aTree atPath: path ifAbsent: anAbsentBlock [
+	| subTreeEntry subTree |
+	^ path size = 1
+		ifTrue: [ aTree entryNamed: path first ifAbsent: anAbsentBlock ]
+		ifFalse: [
+			subTreeEntry := aTree entryNamed: path first ifAbsent: anAbsentBlock.
+			subTreeEntry isTree ifFalse: anAbsentBlock.
+			subTree := self resolveTreeEntry: subTreeEntry.
+			self resolveTreeEntry: subTree atPath: path allButFirst ifAbsent: anAbsentBlock ] 
+]
+
+{ #category : #accessing }
 PureGitCommitFileSystemStore >> uidOf: aResolvable [
 	^ -1
+]
+
+{ #category : #public }
+PureGitCommitFileSystemStore >> useCache [
+	cache := LRUCache new
 ]
