@@ -25,6 +25,11 @@ PureGitFileCommit >> contents [
 	^ entry resolve text
 ]
 
+{ #category : #accessing }
+PureGitFileCommit >> contentsByFilesystem [
+	^ (self fileSystem / self path) contents
+]
+
 { #category : #'as yet unclassified' }
 PureGitFileCommit >> gtContentsFor: composite [
 	<gtView>
