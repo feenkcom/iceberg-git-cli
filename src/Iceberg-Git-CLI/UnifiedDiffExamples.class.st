@@ -5,6 +5,94 @@ Class {
 }
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleBarContents [
+	<gtExample>
+	^ 'A
+B
+C
+D
+e
+F
+x
+G
+I
+J
+K
+L
+'
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleFooBarGitUnifiedDiff [
+	<gtExample>
+
+	| unifiedDiff changeChunk output |
+
+	unifiedDiff := UnifiedDiff new
+		readFrom: self exampleFooBarGitUnifiedDiffOutput readStream.
+
+	changeChunk := unifiedDiff changeChunks first.
+
+	self 
+		assert: changeChunk oldContents 
+		equals: ((self exampleFooContents lines copyFrom: changeChunk oldStart to: changeChunk oldEnd)
+			flatCollect: [ :each | each , String cr ] as: String).
+	self
+		assert: changeChunk newContents
+		equals: ((self exampleBarContents lines copyFrom: changeChunk newStart to: changeChunk newEnd)
+			flatCollect: [ :each | each , String cr ] as: String).
+
+	output := changeChunk applyTo: self exampleFooContents.
+
+	self assert: output equals: self exampleBarContents.
+
+	^ unifiedDiff
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleFooBarGitUnifiedDiffOutput [
+	<gtExample>
+
+	"git diff foo.txt bar.txt"
+
+	^ 'diff --git a/foo.txt b/bar.txt
+index 475f87b..d7f6539 100644
+--- a/foo.txt
++++ b/bar.txt
+@@ -2,10 +2,10 @@ A
+ B
+ C
+ D
+-E
++e
+ F
++x
+ G
+-H
+ I
+ J
+ K'
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleFooContents [
+	<gtExample>
+	^ 'A
+B
+C
+D
+E
+F
+G
+H
+I
+J
+K
+L
+'
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiff [
 	<gtExample>
 	^ UnifiedDiff new
@@ -148,6 +236,65 @@ to this document.
 ]
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleOneContents [
+	<gtExample>
+	^ ($A to: $Z) flatCollect: [ :each | String with: each with: Character cr ] as: String
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleOneTwoGitUnifiedDiff [
+	<gtExample>
+	
+	| unifiedDiff output |
+	unifiedDiff := UnifiedDiff new
+		readFromLines: self exampleOneTwoGitUnifiedDiffOutput lines readStream.
+
+	output := unifiedDiff applyTo: self exampleOneContents.
+
+	self assert: output equals: self exampleTwoContents.
+
+	^ unifiedDiff
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleOneTwoGitUnifiedDiffOutput [
+	<gtExample>
+
+	"git diff foo.txt bar.txt"
+
+	^ 'diff --git a/foo.txt b/bar.txt
+index a6f1d23..c5f54f4 100644
+--- a/foo.txt
++++ b/bar.txt
+@@ -2,7 +2,7 @@ A
+ B
+ C
+ D
+-E
++e
+ F
+ G
+ H
+@@ -10,6 +10,7 @@ I
+ J
+ K
+ L
++x
+ M
+ N
+ O
+@@ -18,7 +19,6 @@ Q
+ R
+ S
+ T
+-U
+ V
+ W
+ X
+'
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleOriginalContents [
 	<gtExample>
 	^ 'This part of the
@@ -223,4 +370,18 @@ UnifiedDiffExamples >> exampleStandardUnifiedDiffOutput [
 +important new additions
 +to this document.
 '
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleTwoContents [
+	<gtExample>
+	| alphabet |
+	alphabet := ($A to: $Z) asOrderedCollection.
+	"modify: $E -> $e"
+	alphabet at: 5 put: $e.
+	"delete: $U"
+	alphabet removeAt: 21.
+	"add: $x after $L"
+	alphabet add: $x afterIndex: 12.
+	^ alphabet flatCollect: [ :each | String with: each with: Character cr ] as: String
 ]

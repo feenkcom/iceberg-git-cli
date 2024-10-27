@@ -82,7 +82,9 @@ PureGitCommit >> commitId [
 { #category : #accessing }
 PureGitCommit >> fileSystem [
 	| store fileSystem |
-	store := PureGitCommitFileSystemStore new commit: self.
+	store := PureGitCommitFileSystemStore new.
+	store commit: self.
+	store useCache.
 	fileSystem := FileSystem store: store.
 	^ fileSystem root
 ]

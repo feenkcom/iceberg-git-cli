@@ -16,6 +16,26 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #operations }
+UnifiedDiff >> applyTo: input [
+	| lines lineNumber|
+	lines := input lines.
+	lineNumber := 1.
+	^ String streamContents: [ :out |
+		self changeChunks do: [ :changeChunk | 
+			[ lineNumber < changeChunk oldStart ]
+				whileTrue: [
+					out nextPutAll: (lines at: lineNumber); cr.
+					lineNumber := lineNumber + 1 ].
+			changeChunk newContentsLines do: [ :line |
+				out next: line size - 1 putAll: line startingAt: 2; cr ].
+			lineNumber := lineNumber + changeChunk oldCount ].
+		[ lineNumber <= lines size ]
+			whileTrue: [
+				out nextPutAll: (lines at: lineNumber); cr.
+				lineNumber := lineNumber + 1 ] ]
+]
+
 { #category : #accessing }
 UnifiedDiff >> changeChunks [
 	^ changeChunks

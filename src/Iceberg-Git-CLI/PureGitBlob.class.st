@@ -53,16 +53,9 @@ PureGitBlob >> contents: aByteArray [
 	contents := aByteArray
 ]
 
-{ #category : #'as yet unclassified' }
-PureGitBlob >> gtDetails [
-	^ super gtDetails , {
-		{ 'blob' 
-			. self shortId
-			. self id }.
-		{ 'contents'
-			. '{1} bytes' format: { self contents size }
-			. self contents }
-	}
+{ #category : #testing }
+PureGitBlob >> hasResolvedContents [
+	^ contents notNil
 ]
 
 { #category : #accessing }
