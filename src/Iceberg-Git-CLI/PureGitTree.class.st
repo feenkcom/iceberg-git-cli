@@ -81,6 +81,11 @@ PureGitTree >> hasEntryNamed: name [
 	^ self entries anySatisfy: [ :each | each name = name ]
 ]
 
+{ #category : #testing }
+PureGitTree >> hasResolvedEntries [
+	^ entries notNil
+]
+
 { #category : #accessing }
 PureGitTree >> id [
 	^ id

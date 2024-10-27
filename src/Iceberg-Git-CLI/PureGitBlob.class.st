@@ -53,6 +53,11 @@ PureGitBlob >> contents: aByteArray [
 	contents := aByteArray
 ]
 
+{ #category : #testing }
+PureGitBlob >> hasResolvedContents [
+	^ contents notNil
+]
+
 { #category : #accessing }
 PureGitBlob >> id [
 	^ id
