@@ -13,20 +13,20 @@ Class {
 
 { #category : #operations }
 PureGitExtendedFileAnalysis >> analyze [
-	| first |
-	extendedCommits := self file logPatch.
-	extendedCommits := extendedCommits toArray wait reverse.
-	first := true.
-	extendedCommits overlappingPairsDo: [ :parent :each |
-		first ifTrue: [
-			parent initializeAsFirst.
-			first := false ].
-		each initializeFromParent: parent ]
+	| previous |
+	extendedCommits := self file logPatchReverse.
+	previous := nil.
+	extendedCommits := (extendedCommits
+			collect: [ :each | 
+				previous
+					ifNil: [ each initializeAsFirst ]
+					ifNotNil: [ each initializeFromParent: previous ].
+				previous := each ]) cached
 ]
 
 { #category : #accessing }
 PureGitExtendedFileAnalysis >> commits [
-	^ extendedCommits
+	^ extendedCommits asyncSimilarCopy
 ]
 
 { #category : #accessing }
