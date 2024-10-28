@@ -19,7 +19,8 @@ PureGitRepositoryStatistics >> describeTimestamp: timestamp [
 		dateFormat format: timestamp on: out.
 		out nextPutAll: ' - '.
 		out nextPutAll: (self renderDuration: duration).
-		out nextPutAll: ' ago' ]
+		duration < 1 hour 
+			ifFalse: [ out nextPutAll: ' ago' ] ]
 ]
 
 { #category : #accessing }
@@ -47,6 +48,8 @@ PureGitRepositoryStatistics >> printOn: stream [
 
 { #category : #private }
 PureGitRepositoryStatistics >> renderDuration: duration [
+	duration < 1 hour
+		ifTrue: [ ^ 'just now' ].
 	duration < 1 day
 		ifTrue: [ ^ duration hours pluralize: 'hour' ].
 	duration < 1 week
