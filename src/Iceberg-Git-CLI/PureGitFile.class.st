@@ -34,6 +34,11 @@ PureGitFile >> children [
 	^ #()
 ]
 
+{ #category : #'as yet unclassified' }
+PureGitFile >> contents [
+	^ self fileReference contents
+]
+
 { #category : #accessing }
 PureGitFile >> creationTime [
 	^ self fileReference creationTime
@@ -44,6 +49,11 @@ PureGitFile >> delete [
 	self fileReference ensureDelete.
 	"should we also delete empty parent directories as they do not exist in git ?"
 	self repository announceRepositoryModified
+]
+
+{ #category : #testing }
+PureGitFile >> exists [
+	^ self fileReference exists
 ]
 
 { #category : #accessing }
