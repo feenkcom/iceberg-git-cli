@@ -1,5 +1,5 @@
 "
-I compute a number of statistics about a git repository
+I compute a number of statistics about a git repository.
 "
 Class {
 	#name : #PureGitRepositoryStatistics,

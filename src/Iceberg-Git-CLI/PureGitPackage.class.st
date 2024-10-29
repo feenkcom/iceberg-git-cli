@@ -1,5 +1,7 @@
 "
-I model a Pharo Smalltalk code package in a repository
+I model a Pharo Smalltalk code package in a repository.
+
+I track loaded commits.
 "
 Class {
 	#name : #PureGitPackage,

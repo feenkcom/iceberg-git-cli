@@ -1,5 +1,5 @@
 "
-I support the implementation of a file system on an entry of a specific git commit
+I support the implementation of a file system on an entry of a specific git commit.
 "
 Class {
 	#name : #PureGitCommitFileSystemHandle,
