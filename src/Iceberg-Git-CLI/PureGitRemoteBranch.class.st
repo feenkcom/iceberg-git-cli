@@ -1,5 +1,7 @@
 "
 I am a remote git branch.
+
+I exist in a remote.
 "
 Class {
 	#name : #PureGitRemoteBranch,

@@ -1,9 +1,11 @@
 "
-A git file status for a path
+A git file status for a path.
 
 Any of #typeChange #deleted #renamed #copied #updatedUnmerged #modified #unknown #added #unmodified #ignored
 
-For #renamed and #copied there is an original path as well
+For #renamed and #copied there is an original path as well.
+
+I hold both a status of my path in the index or staging area as well as in the work tree.
 "
 Class {
 	#name : #PureGitFileStatus,

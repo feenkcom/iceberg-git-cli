@@ -26,7 +26,10 @@ PureGitRepository class >> on: aFileReference [
 
 { #category : #private }
 PureGitRepository >> announceRepositoryModified [
-	self announcer announce: PureGitRepositoryModified new
+	self announcer
+		announce: (PureGitRepositoryModified new
+				repository: self;
+				yourself)
 ]
 
 { #category : #accessing }

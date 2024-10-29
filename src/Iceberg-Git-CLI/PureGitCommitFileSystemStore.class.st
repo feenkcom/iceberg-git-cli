@@ -1,5 +1,7 @@
 "
-I support the implementation of a file system on a specific git commit
+I support the implementation of a file system on a specific git commit.
+
+I can use an LRU cache to speed up recurring operations.
 "
 Class {
 	#name : #PureGitCommitFileSystemStore,

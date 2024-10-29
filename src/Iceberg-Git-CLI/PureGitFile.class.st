@@ -88,8 +88,10 @@ PureGitFile >> isTracked [
 
 { #category : #accessing }
 PureGitFile >> log [
-	^ (self repository queries log: { 'HEAD' . '--' . self path })
-		collect: [ :each |
+	| commits |
+	commits := self repository queries
+			log: { '--first-parent' . 'HEAD' . '--' . self path }.
+	^ commits collect: [ :each | 
 			PureGitFileCommit new
 				copyFrom: each;
 				path: self path;
@@ -100,7 +102,7 @@ PureGitFile >> log [
 PureGitFile >> logPatch [
 	| commitDiffPairs |
 	commitDiffPairs := self repository queries 
-		logPatch: { '--follow' . 'HEAD' . '--' . self path}.
+		logPatch: { '--first-parent' . 'HEAD' . '--' . self path}.
 	^ commitDiffPairs collect: [ :commitDiffPair |
 		| fileCommit |
 		(fileCommit := PureGitFileCommit new)
@@ -116,7 +118,7 @@ PureGitFile >> logPatch [
 PureGitFile >> logPatchReverse [
 	| commitDiffPairs |
 	commitDiffPairs := self repository queries 
-		logPatch: { '--follow' . '--reverse' . 'HEAD' . '--' . self path}.
+		logPatch: { '--first-parent' . '--reverse' . 'HEAD' . '--' . self path}.
 	^ commitDiffPairs collect: [ :commitDiffPair |
 		| fileCommit |
 		(fileCommit := PureGitFileCommit new)

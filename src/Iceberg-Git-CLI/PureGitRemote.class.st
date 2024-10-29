@@ -1,5 +1,7 @@
 "
 A git remote is a named reference to git server defined by a URL.
+
+Remote branches exist in a remote.
 "
 Class {
 	#name : #PureGitRemote,

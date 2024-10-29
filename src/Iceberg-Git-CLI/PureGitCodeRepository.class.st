@@ -1,5 +1,5 @@
 "
-I model a Pharo Smalltalk code repository where packages are stored in a soure directory in Tonel format
+I model a Pharo Smalltalk code repository where packages are stored in a source directory in Tonel format
 "
 Class {
 	#name : #PureGitCodeRepository,

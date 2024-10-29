@@ -1,3 +1,6 @@
+"
+I am a helper to run git diff and process the resulting output. 
+"
 Class {
 	#name : #PureGitDiffTool,
 	#superclass : #PureGitRepositoryObject,
