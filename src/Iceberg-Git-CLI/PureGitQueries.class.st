@@ -226,7 +226,8 @@ PureGitQueries >> logPatch: args [
 		elements := lines splitOn: [ :line | line = '###' ].
 		commitLines := elements first.
 		diffLines := elements second readStream.
-		diffLines next. "skip empty line"
+		(diffLines atEnd not and: [ diffLines peek isEmpty ])
+			ifTrue: [ diffLines next ].
 		{ 
 			self commitFromLines: commitLines.
 			UnifiedDiffCollection new readFromLines: diffLines
