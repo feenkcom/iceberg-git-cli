@@ -64,8 +64,8 @@ PureGitRepositoryStatistics >> renderDuration: duration [
 { #category : #accessing }
 PureGitRepositoryStatistics >> worktreeDescription [
 	| files directories |
-	files := self repository location allFiles size - (self repository location / '.git') allFiles size.
-	directories := self repository location allDirectories size - (self repository location / '.git') allDirectories size.
+	files := self repository location allFiles size - self repository dotGitDirectory allFiles size.
+	directories := self repository location allDirectories size - self repository dotGitDirectory allDirectories size.
 	^ String streamContents: [ :out |
 		out nextPutAll: (files pluralize: 'file').
 		out nextPutAll: ' in '.
