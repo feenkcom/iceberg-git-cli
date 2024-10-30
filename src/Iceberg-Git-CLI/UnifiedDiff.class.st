@@ -18,7 +18,7 @@ Class {
 
 { #category : #operations }
 UnifiedDiff >> applyTo: input [
-	| lines lineNumber|
+	| lines lineNumber |
 	lines := input lines.
 	lineNumber := 1.
 	^ String streamContents: [ :out |

@@ -53,6 +53,11 @@ PureGitRepository >> diffTool [
 	^ PureGitDiffTool inRepository: self
 ]
 
+{ #category : #accessing }
+PureGitRepository >> dotGitDirectory [
+	^ self location / '.git'
+]
+
 { #category : #private }
 PureGitRepository >> ensureLocation [
 	(location notNil and: [ location exists not ])
@@ -62,8 +67,7 @@ PureGitRepository >> ensureLocation [
 
 { #category : #testing }
 PureGitRepository >> exists [
-	^ exists 
-		or: [ exists := location notNil and: [ (location / '.git') exists ] ]
+	^ exists or: [ exists := location notNil and: [ self dotGitDirectory exists ] ]
 ]
 
 { #category : #testing }
