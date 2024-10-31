@@ -97,6 +97,7 @@ index 475f87b..d7f6539 100644
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedNoContextDiff [
 	<gtExample>
+	<noTest>
 
 	| unifiedDiff output |
 
