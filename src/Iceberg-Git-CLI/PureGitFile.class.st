@@ -34,7 +34,7 @@ PureGitFile >> children [
 	^ #()
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 PureGitFile >> contents [
 	^ self fileReference contents
 ]
@@ -188,4 +188,19 @@ PureGitFile >> status [
 PureGitFile >> unstage [
 	self repository operations unstage: self path.
 	self resetStatus
+]
+
+{ #category : #private }
+PureGitFile >> validateIncrementalHistoryContentsReconstruction [
+	| commitHistory previousContents |
+	commitHistory := self logPatchReverse toArray wait.
+	previousContents := String empty.
+	commitHistory do: [ :extendedFileCommit |
+		| newContents expectedContents |
+		newContents := extendedFileCommit changesToParent applyTo: previousContents.
+		expectedContents := String streamContents: [ :out |
+			extendedFileCommit commit contents 
+				linesDo: [ :line | out nextPutAll: line; cr ] ].
+		self assert: newContents equals: expectedContents.
+		previousContents := newContents ]
 ]
