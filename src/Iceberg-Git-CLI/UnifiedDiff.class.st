@@ -36,6 +36,28 @@ UnifiedDiff >> applyTo: input [
 				lineNumber := lineNumber + 1 ] ]
 ]
 
+{ #category : #operations }
+UnifiedDiff >> applyToLines: lines [
+	| oldLineNumber newLineNumber |
+	oldLineNumber := newLineNumber := 1.
+	^ Array streamContents: [ :out |
+		self changeChunks do: [ :changeChunk | 
+			[ oldLineNumber < changeChunk oldStart ]
+				whileTrue: [
+					out nextPut: (lines at: oldLineNumber).
+					oldLineNumber := oldLineNumber + 1.
+					newLineNumber := newLineNumber + 1 ].
+			changeChunk newContentsLines do: [ :line |
+				out nextPut: line allButFirst ].
+			oldLineNumber := oldLineNumber + changeChunk oldCount.
+			newLineNumber := newLineNumber + changeChunk newCount ].
+		[ oldLineNumber <= lines size ]
+			whileTrue: [
+				out nextPut: (lines at: oldLineNumber).
+				oldLineNumber := oldLineNumber + 1.
+				newLineNumber := newLineNumber + 1 ] ]
+]
+
 { #category : #accessing }
 UnifiedDiff >> changeChunks [
 	^ changeChunks
