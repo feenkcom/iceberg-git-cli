@@ -102,7 +102,7 @@ PureGitFile >> log [
 PureGitFile >> logPatch [
 	| commitDiffPairs |
 	commitDiffPairs := self repository queries 
-		logPatch: { '--first-parent' . 'HEAD' . '--' . self path}.
+		logPatch: { '--first-parent' . '--unified=0' . 'HEAD' . '--' . self path}.
 	^ commitDiffPairs collect: [ :commitDiffPair |
 		| fileCommit |
 		(fileCommit := PureGitFileCommit new)
@@ -118,7 +118,7 @@ PureGitFile >> logPatch [
 PureGitFile >> logPatchReverse [
 	| commitDiffPairs |
 	commitDiffPairs := self repository queries 
-		logPatch: { '--first-parent' . '--reverse' . 'HEAD' . '--' . self path}.
+		logPatch: { '--first-parent' . '--reverse' . '--unified=0' . 'HEAD' . '--' . self path}.
 	^ commitDiffPairs collect: [ :commitDiffPair |
 		| fileCommit |
 		(fileCommit := PureGitFileCommit new)
