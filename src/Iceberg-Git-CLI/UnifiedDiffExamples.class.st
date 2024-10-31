@@ -50,6 +50,26 @@ UnifiedDiffExamples >> exampleFooBarGitUnifiedDiff [
 ]
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleFooBarGitUnifiedDiffNoContextOutput [
+	<gtExample>
+
+	"git diff --unified=0 foo.txt bar.txt"
+
+	^ 'diff --git a/foo.txt b/bar.txt
+index 475f87b..d7f6539 100644
+--- a/foo.txt
++++ b/bar.txt
+@@ -5 +5 @@ D
+-E
++e
+@@ -6,0 +7 @@ F
++x
+@@ -8 +8,0 @@ G
+-H
+'
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedDiffOutput [
 	<gtExample>
 
@@ -72,6 +92,24 @@ index 475f87b..d7f6539 100644
  I
  J
  K'
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleFooBarGitUnifiedNoContextDiff [
+	<gtExample>
+
+	| unifiedDiff output |
+
+	unifiedDiff := UnifiedDiff new
+		readFrom: self exampleFooBarGitUnifiedDiffNoContextOutput readStream.
+
+	self assert: unifiedDiff numberOfChanges equals: 3.
+
+	output := unifiedDiff applyTo: self exampleFooContents.
+
+	self assert: output equals: self exampleBarContents.
+
+	^ unifiedDiff
 ]
 
 { #category : #accessing }
