@@ -19,6 +19,15 @@ PureGitExtendedFileAnalysis >> analyze [
 ]
 
 { #category : #accessing }
+PureGitExtendedFileAnalysis >> authorOfTrackedLine: trackedLine [
+	| firstAppearance |
+	firstAppearance := trackedLine positionsInVersions findFirst: [ :position | position isZero not ].
+	^ firstAppearance isZero
+		ifTrue: [ 'not found' ]
+		ifFalse: [ (self commits at: firstAppearance) author ]
+]
+
+{ #category : #accessing }
 PureGitExtendedFileAnalysis >> commits [
 	^ extendedCommits
 		ifNil: [ extendedCommits := self file logPatchReverse toArray wait ]
@@ -105,7 +114,7 @@ PureGitExtendedFileAnalysis >> printOn: stream [
 	stream nextPut: $)
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 PureGitExtendedFileAnalysis >> versions [
 	^ versions
 ]
