@@ -10,6 +10,54 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #operations }
+PureGitDiffTool class >> gitDiffBetween: originalContents and: changedContents [
+	| temporaryDirectory dummyRepository originalFile changedFile diffTool |
+	temporaryDirectory := FileReference newTempFilePrefix: 'pure-git-diff-tool-' suffix: '-tmp'.
+	dummyRepository := PureGitRepository on: temporaryDirectory.
+	dummyRepository ensureLocation.
+	originalFile := dummyRepository location / 'a.txt'.
+	originalFile writeStreamDo: [ :out | 
+		(ZnNewLineWriterStream on: out) nextPutAll: originalContents ].
+	changedFile := dummyRepository location / 'b.txt'.
+	changedFile writeStreamDo: [ :out | 
+		(ZnNewLineWriterStream on: out) nextPutAll: changedContents ].
+	diffTool := dummyRepository diffTool.
+	diffTool diffArgs: { originalFile basename . changedFile basename }.
+	"when running git diff with 2 files the --exit-code option is automatically activated,
+	so that exit value is 0 for equal files, 1 for different files, and >1 for errors"
+	^ [ diffTool asUnifiedDiff ] 
+		on: GtGitCliCommandError 
+		do: [ :error | 
+			error exitCode = 1 
+				ifTrue: [ error resume ]
+				ifFalse: [ error pass ] ]
+]
+
+{ #category : #operations }
+PureGitDiffTool class >> gitDiffNoContextBetween: originalContents and: changedContents [
+	| temporaryDirectory dummyRepository originalFile changedFile diffTool |
+	temporaryDirectory := FileReference newTempFilePrefix: 'pure-git-diff-tool-' suffix: '-tmp'.
+	dummyRepository := PureGitRepository on: temporaryDirectory.
+	dummyRepository ensureLocation.
+	originalFile := dummyRepository location / 'a.txt'.
+	originalFile writeStreamDo: [ :out | 
+		(ZnNewLineWriterStream on: out) nextPutAll: originalContents ].
+	changedFile := dummyRepository location / 'b.txt'.
+	changedFile writeStreamDo: [ :out | 
+		(ZnNewLineWriterStream on: out) nextPutAll: changedContents ].
+	diffTool := dummyRepository diffTool.
+	diffTool diffArgs: { '--unified=0' . originalFile basename . changedFile basename }.
+	"when running git diff with 2 files the --exit-code option is automatically activated,
+	so that exit value is 0 for equal files, 1 for different files, and >1 for errors"
+	^ [ diffTool asUnifiedDiff ] 
+		on: GtGitCliCommandError 
+		do: [ :error | 
+			error exitCode = 1 
+				ifTrue: [ error resume ]
+				ifFalse: [ error pass ] ]
+]
+
 { #category : #accessing }
 PureGitDiffTool >> asText [
 	^ String streamContents: [ :out |

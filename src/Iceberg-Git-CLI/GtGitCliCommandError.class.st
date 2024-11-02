@@ -1,3 +1,6 @@
+"
+The error thrown by IceGitCliExecutor when something goes wrong.
+"
 Class {
 	#name : #GtGitCliCommandError,
 	#superclass : #GtGitError,
@@ -39,6 +42,11 @@ GtGitCliCommandError >> exitCode [
 { #category : #accessing }
 GtGitCliCommandError >> exitCode: anObject [
 	exitCode := anObject
+]
+
+{ #category : #testing }
+GtGitCliCommandError >> isResumable [
+	^ true
 ]
 
 { #category : #accessing }
