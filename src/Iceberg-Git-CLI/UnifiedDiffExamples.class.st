@@ -23,6 +23,54 @@ L
 ]
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedDiff [
+	<gtExample>
+	<noTets>
+	
+	| unifiedDiff firstDiff output |
+
+	unifiedDiff := PureGitDiffTool 
+			gitDiffBetween: self exampleOneContents 
+			and: self exampleTwoContents.
+
+	self assert: unifiedDiff isEmpty not.
+
+	firstDiff := unifiedDiff firstDiff.
+
+	self assert: firstDiff numberOfChanges equals: 3.
+
+	output := firstDiff applyTo: self exampleOneContents.
+
+	self assert: output equals: self exampleTwoContents.
+
+	^ unifiedDiff
+]
+
+{ #category : #accessing }
+UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedNoContextDiff [
+	<gtExample>
+	<noTets>
+	
+	| unifiedDiff firstDiff output |
+
+	unifiedDiff := PureGitDiffTool 
+			gitDiffNoContextBetween: self exampleOneContents 
+			and: self exampleTwoContents.
+
+	self assert: unifiedDiff isEmpty not.
+
+	firstDiff := unifiedDiff firstDiff.
+
+	self assert: firstDiff numberOfChanges equals: 3.
+
+	output := firstDiff applyTo: self exampleOneContents.
+
+	self assert: output equals: self exampleTwoContents.
+
+	^ unifiedDiff
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedDiff [
 	<gtExample>
 
@@ -97,7 +145,6 @@ index 475f87b..d7f6539 100644
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedNoContextDiff [
 	<gtExample>
-	<noTest>
 
 	| unifiedDiff output |
 
