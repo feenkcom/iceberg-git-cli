@@ -115,6 +115,15 @@ PureGitExtendedFileAnalysis >> printOn: stream [
 ]
 
 { #category : #accessing }
+PureGitExtendedFileAnalysis >> uniqueTrackedLines [
+	| trackedLines |
+	trackedLines := IdentitySet new.
+	self versions do: [ :each |
+		trackedLines addAll: each ].
+	^ trackedLines
+]
+
+{ #category : #accessing }
 PureGitExtendedFileAnalysis >> versions [
 	^ versions
 ]
