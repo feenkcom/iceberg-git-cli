@@ -16,19 +16,39 @@ Class {
 
 { #category : #operations }
 UnifiedDiffChangeChunk >> applyTo: input [
-	| lineNumber newContentsLines |
-	lineNumber := 0.
-	newContentsLines := self newContentsLines.
+	| lines lineNumber |
+	lines := input lines.
+	lineNumber := 1.
 	^ String streamContents: [ :out |
-		input linesDo: [ :line |
-			lineNumber := lineNumber + 1.
-			(lineNumber between: self oldStart and: self oldEnd)
-				ifTrue: [
-					| diffLine |
-					diffLine := newContentsLines at: lineNumber - self oldStart + 1.
-					out next: diffLine size - 1 putAll: diffLine startingAt: 2; cr ]
-				ifFalse: [
-					out nextPutAll: line; cr ] ] ]
+		[ lineNumber < self effectiveOldStart ]
+			whileTrue: [
+				out nextPutAll: (lines at: lineNumber); cr.
+				lineNumber := lineNumber + 1 ].
+		self newContentsLines do: [ :line |
+			out next: line size - 1 putAll: line startingAt: 2; cr ].
+		lineNumber := lineNumber + self oldCount.
+		[ lineNumber <= lines size ]
+			whileTrue: [
+				out nextPutAll: (lines at: lineNumber); cr.
+				lineNumber := lineNumber + 1 ] ]
+]
+
+{ #category : #operations }
+UnifiedDiffChangeChunk >> applyToLines: lines [
+	| lineNumber |
+	lineNumber := 1.
+	^ Array streamContents: [ :out |
+		[ lineNumber < self effectiveOldStart ]
+			whileTrue: [
+				out nextPut: (lines at: lineNumber); cr.
+				lineNumber := lineNumber + 1 ].
+		self newContentsLines do: [ :line |
+			out nextPut: line allButFirst ].
+		lineNumber := lineNumber + self oldCount.
+		[ lineNumber <= lines size ]
+			whileTrue: [
+				out nextPut: (lines at: lineNumber); cr.
+				lineNumber := lineNumber + 1 ] ]
 ]
 
 { #category : #accessing }
@@ -56,6 +76,13 @@ UnifiedDiffChangeChunk >> diffLinesWithPositions [
 		line first = $-
 			ifFalse: [ newPosition := newPosition + 1 ].
 		elements ]
+]
+
+{ #category : #accessing }
+UnifiedDiffChangeChunk >> effectiveOldStart [
+	^ oldCount = 0 
+		ifTrue: [ oldStart + 1 ]
+		ifFalse: [ oldStart ]
 ]
 
 { #category : #initialization }

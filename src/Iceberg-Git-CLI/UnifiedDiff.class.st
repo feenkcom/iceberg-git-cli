@@ -23,7 +23,7 @@ UnifiedDiff >> applyTo: input [
 	lineNumber := 1.
 	^ String streamContents: [ :out |
 		self changeChunks do: [ :changeChunk | 
-			[ lineNumber < changeChunk oldStart ]
+			[ lineNumber < changeChunk effectiveOldStart ]
 				whileTrue: [
 					out nextPutAll: (lines at: lineNumber); cr.
 					lineNumber := lineNumber + 1 ].
@@ -42,7 +42,7 @@ UnifiedDiff >> applyToLines: lines [
 	oldLineNumber := newLineNumber := 1.
 	^ Array streamContents: [ :out |
 		self changeChunks do: [ :changeChunk | 
-			[ oldLineNumber < changeChunk oldStart ]
+			[ oldLineNumber < changeChunk effectiveOldStart ]
 				whileTrue: [
 					out nextPut: (lines at: oldLineNumber).
 					oldLineNumber := oldLineNumber + 1.
