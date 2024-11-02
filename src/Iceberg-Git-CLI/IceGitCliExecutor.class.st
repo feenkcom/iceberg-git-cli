@@ -87,7 +87,7 @@ IceGitCliExecutor >> runGitRawWithArgs: args for: operation [
 		ifFalse: [
 			result := output stderr lines.
 			self logEnded: operation args: args output: result.
-			^ GtGitCliCommandError new
+			GtGitCliCommandError new
 				args: args;
 				stderr: result;
 				exitCode: output status code;
@@ -122,7 +122,7 @@ IceGitCliExecutor >> runGitWithArgs: args for: operation [
 		ifFalse: [
 			lines := output stderr lines.
 			self logEnded: operation args: args output: lines.
-			^ GtGitCliCommandError new
+			GtGitCliCommandError new
 				args: args;
 				stderr: lines;
 				exitCode: output status code;
