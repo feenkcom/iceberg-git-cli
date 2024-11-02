@@ -66,7 +66,7 @@ PureGitExtendedFileAnalysis >> computeVersions [
 								streamContents: [ :out | 
 									commit changesToParent changeChunks
 										do: [ :changeChunk | 
-											[ oldLineNumber < changeChunk oldStart ]
+											[ oldLineNumber < changeChunk effectiveOldStart ]
 												whileTrue: [ line := previous at: oldLineNumber.
 													line positionInVersionAt: rank put: newLineNumber.
 													out nextPut: line.
@@ -112,6 +112,15 @@ PureGitExtendedFileAnalysis >> printOn: stream [
 	stream nextPut: $(.
 	stream nextPutAll: self path.
 	stream nextPut: $)
+]
+
+{ #category : #accessing }
+PureGitExtendedFileAnalysis >> uniqueTrackedLines [
+	| trackedLines |
+	trackedLines := IdentitySet new.
+	self versions do: [ :each |
+		trackedLines addAll: each ].
+	^ trackedLines
 ]
 
 { #category : #accessing }
