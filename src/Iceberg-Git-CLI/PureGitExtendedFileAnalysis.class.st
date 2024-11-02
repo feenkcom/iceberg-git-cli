@@ -66,7 +66,7 @@ PureGitExtendedFileAnalysis >> computeVersions [
 								streamContents: [ :out | 
 									commit changesToParent changeChunks
 										do: [ :changeChunk | 
-											[ oldLineNumber < changeChunk oldStart ]
+											[ oldLineNumber < changeChunk effectiveOldStart ]
 												whileTrue: [ line := previous at: oldLineNumber.
 													line positionInVersionAt: rank put: newLineNumber.
 													out nextPut: line.
