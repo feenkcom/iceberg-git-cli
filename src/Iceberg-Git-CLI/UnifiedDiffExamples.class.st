@@ -23,6 +23,42 @@ L
 ]
 
 { #category : #accessing }
+UnifiedDiffExamples >> exampleComputedGitUnifiedNoContextDiff [
+	<gtExample>
+	<noTets>
+
+	^ #(
+
+		('ABCDEF' 'ABcDeF')
+		('ABCDEF' 'abc')
+		('ABCDEF' 'ABEF')
+		('ABCDEF' 'ABxyEF')
+		('ABCDEF' 'ABxyzEF')
+		('ABCDEF' 'BCDE')
+		('ABCDEF' 'xABCDEFy')
+
+	) collect: [ :spec |
+
+		| original changed unifiedDiff firstDiff patched |
+
+		original := String streamContents: [ :out | spec first do: [ :each | out nextPut: each; cr ] ].
+
+		changed := String streamContents: [ :out | spec second do: [ :each | out nextPut: each; cr ] ].
+
+		unifiedDiff := PureGitDiffTool 
+			gitDiffNoContextBetween: original
+			and: changed.
+
+		firstDiff := unifiedDiff firstDiff.
+
+		patched := firstDiff applyTo: original.
+
+		self assert: patched equals: changed.
+
+		firstDiff ]
+]
+
+{ #category : #accessing }
 UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedDiff [
 	<gtExample>
 	<noTets>
