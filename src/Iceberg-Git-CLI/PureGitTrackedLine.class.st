@@ -11,6 +11,21 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine class >> lineHeight [
+	^ 5
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine class >> versionMargin [
+	^ 2
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine class >> versionWidth [
+	^ 10
+]
+
 { #category : #initialization }
 PureGitTrackedLine >> initializeForNumberOfVersions: count [
 	positionInVersions := Array new: count withAll: 0
