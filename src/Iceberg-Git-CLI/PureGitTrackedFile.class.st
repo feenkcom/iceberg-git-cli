@@ -124,6 +124,11 @@ PureGitTrackedFile >> gtVersionsFor: aView [
 		column: 'Lines count' text: [ :each | each lines size ] width: 50
 ]
 
+{ #category : #'as yet unclassified' }
+PureGitTrackedFile >> maxLinesCount [
+	^ self versions max: [:each | each lines size]
+]
+
 { #category : #accessing }
 PureGitTrackedFile >> path [
 	^ self file path
