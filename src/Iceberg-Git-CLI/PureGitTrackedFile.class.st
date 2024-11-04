@@ -115,6 +115,21 @@ PureGitTrackedFile >> file: aGitFile [
 ]
 
 { #category : #accessing }
+PureGitTrackedFile >> lineSequences [
+	| sequences lines |
+	sequences := OrderedCollection new.
+	lines := self uniqueTrackedLines asOrderedCollection.
+	sequences add: (PureGitTrackedLineSequence new addLine: lines first).
+	lines allButFirst
+		do: [ :each | 
+			(sequences last lines first startVersion = each startVersion
+				and: [ sequences last lines first endVersion = each endVersion ])
+				ifTrue: [ sequences last addLine: each ]
+				ifFalse: [ sequences add: (PureGitTrackedLineSequence new addLine: each) ] ].
+	^ sequences
+]
+
+{ #category : #accessing }
 PureGitTrackedFile >> maxLinesCount [
 	^ self versions max: [:each | each lines size]
 ]
