@@ -14,7 +14,7 @@ Class {
 
 { #category : #accessing }
 PureGitFile >> analyze [
-	^ PureGitExtendedFileAnalysis new
+	^ PureGitTrackedFile new
 		file: self;
 		analyze
 ]
