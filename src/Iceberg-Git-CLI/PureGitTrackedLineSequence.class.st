@@ -21,7 +21,7 @@ PureGitTrackedLineSequence >> endVersion [
 PureGitTrackedLineSequence >> gtDisplayOn: stream [
 	stream
 		nextPutAll: self lines size asString;
-		nextPutAll: ' lines ';
+		nextPutAll: ' lines in ver. ';
 		nextPutAll: self startVersion asString;
 		nextPutAll: '-';
 		nextPutAll: self endVersion asString

@@ -33,8 +33,17 @@ PureGitTrackedLine >> endVersion [
 	self positionsInVersions reverse
 		doWithIndex: [ :each :index | 
 			(end isZero and: each isZero not)
-				ifTrue: [ end := self positionsInVersions size - index ] ].
+				ifTrue: [ end := self positionsInVersions size - index + 1 ] ].
 	^ end
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> gtPositionsInVersionsFor: aView [
+	<gtView>
+	^ aView list 
+		title: 'Positions';
+		priority: 50;
+		items: [ self positionsInVersions ]
 ]
 
 { #category : #initialization }
@@ -50,6 +59,16 @@ PureGitTrackedLine >> line [
 { #category : #accessing }
 PureGitTrackedLine >> line: aString [
 	line := aString
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> positionInEndVersion [ 
+	^ self positionInVersionAt: self endVersion
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> positionInStartVersion [ 
+	^ self positionInVersionAt: self startVersion
 ]
 
 { #category : #accessing }
@@ -75,6 +94,7 @@ PureGitTrackedLine >> printOn: stream [
 		nextPutAll: line;
 		nextPut: $);
 		space;
+		nextPutAll: 'ver. ';
 		nextPutAll: self startVersion asString;
 		nextPutAll: '-';
 		nextPutAll: self endVersion asString
