@@ -131,6 +131,18 @@ PureGitFile >> logPatchReverse [
 ]
 
 { #category : #accessing }
+PureGitFile >> logReverse [
+	| commits |
+	commits := self repository queries
+			log: { '--first-parent' . '--reverse' . 'HEAD' . '--' . self path }.
+	^ commits collect: [ :each | 
+			PureGitFileCommit new
+				copyFrom: each;
+				path: self path;
+				yourself ]
+]
+
+{ #category : #accessing }
 PureGitFile >> parent [
 	^ self repository resolveFileReference: self fileReference parent
 ]
