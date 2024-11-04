@@ -11,19 +11,19 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> lineHeight [
 	^ 5
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> versionMargin [
 	^ 2
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> versionWidth [
-	^ 10
+	^ 40
 ]
 
 { #category : #initialization }
