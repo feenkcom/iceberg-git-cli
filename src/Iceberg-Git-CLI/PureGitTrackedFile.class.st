@@ -33,6 +33,11 @@ PureGitTrackedFile >> commits [
 		ifNil: [ extendedCommits := self file logPatchReverse toArray wait ]
 ]
 
+{ #category : #accessing }
+PureGitTrackedFile >> commits: commitsCollection [
+	extendedCommits := commitsCollection
+]
+
 { #category : #operations }
 PureGitTrackedFile >> computeOwnership [
 	| previous |
@@ -109,7 +114,7 @@ PureGitTrackedFile >> file: aGitFile [
 	file := aGitFile
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 PureGitTrackedFile >> maxLinesCount [
 	^ self versions max: [:each | each lines size]
 ]
@@ -127,6 +132,15 @@ PureGitTrackedFile >> printOn: stream [
 	stream nextPut: $)
 ]
 
+{ #category : #operations }
+PureGitTrackedFile >> selectCommitsSatisfying: block [
+	^ self class new
+		file: self file;
+		versions: (self versions select: [ :each | block value: each commit ]);
+		commits: (self commits select: [ :each | block value: each commit ]);
+		yourself
+]
+
 { #category : #accessing }
 PureGitTrackedFile >> uniqueTrackedLines [
 	| trackedLines |
@@ -139,4 +153,9 @@ PureGitTrackedFile >> uniqueTrackedLines [
 { #category : #accessing }
 PureGitTrackedFile >> versions [
 	^ versions
+]
+
+{ #category : #accessing }
+PureGitTrackedFile >> versions: collectionOfTrackedFileVersions [
+	versions := collectionOfTrackedFileVersions
 ]
