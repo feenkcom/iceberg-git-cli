@@ -85,7 +85,7 @@ PureGitMethodVersions >> repository [
 { #category : #private }
 PureGitMethodVersions >> tonelMethodClassExtension [
 	method isExtension ifTrue: [ ^ '.extension.st' ].
-	method isFromTrait ifTrue: [ ^ '.trait.set' ].
+	method isFromTrait ifTrue: [ ^ '.trait.st' ].
 	^ '.class.st'
 ]
 
