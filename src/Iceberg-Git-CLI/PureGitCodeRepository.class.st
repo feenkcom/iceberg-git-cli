@@ -54,3 +54,8 @@ PureGitCodeRepository >> srcDirectory [
 PureGitCodeRepository >> srcDirectory: aFileReference [
 	srcDirectory := aFileReference
 ]
+
+{ #category : #accessing }
+PureGitCodeRepository >> srcPath [
+	^ srcDirectory basename
+]
