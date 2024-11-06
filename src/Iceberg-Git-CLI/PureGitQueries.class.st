@@ -4,7 +4,7 @@ I run queries on a repository that do not change its state
 Class {
 	#name : #PureGitQueries,
 	#superclass : #PureGitCommandLineInterface,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #queries }

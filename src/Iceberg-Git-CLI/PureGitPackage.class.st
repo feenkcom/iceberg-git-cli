@@ -12,7 +12,7 @@ Class {
 	#classVars : [
 		'LoadedCommits'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Code'
 }
 
 { #category : #accessing }

@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'log'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #private }

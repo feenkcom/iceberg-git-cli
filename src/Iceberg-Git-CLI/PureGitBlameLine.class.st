@@ -11,7 +11,7 @@ Class {
 		'commit',
 		'path'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #accessing }

@@ -14,7 +14,7 @@ Class {
 		'removedLines',
 		'modifiedLines'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #accessing }
@@ -80,17 +80,23 @@ PureGitExtendedFileCommit >> initializeAsFirst [
 
 { #category : #operations }
 PureGitExtendedFileCommit >> initializeFromParent: parent [
-	| authorFraction |
+	| authorFraction correction |
 	self numberOfLines: parent numberOfLines + self numberOfLinesChanged.
 	parent authors keysAndValuesDo: [ :author :fraction |
+		correction := self numberOfLines - self numberOfLinesAdded.
+		self numberOfLines > 0 
+			ifTrue: [ correction := correction / self numberOfLines ].
 		self authors 
 			at: author 
-			put: fraction * (self numberOfLines - self numberOfLinesAdded) / self numberOfLines  ].
+			put: fraction * correction  ].
 	authorFraction := self authors 
 		at: self author ifAbsent: [ 0.0 ].
+	correction := self numberOfLinesAdded.
+	self numberOfLines > 0 
+		ifTrue: [ correction := correction / self numberOfLines ].	
 	self authors
 		at: self author
-		put: authorFraction + (self numberOfLinesAdded / self numberOfLines).
+		put: authorFraction + correction
 ]
 
 { #category : #accessing }

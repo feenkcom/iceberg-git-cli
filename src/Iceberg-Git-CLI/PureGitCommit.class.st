@@ -20,7 +20,7 @@ Class {
 		'parentIds',
 		'treeId'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #comparing }
@@ -90,19 +90,14 @@ PureGitCommit >> fileSystem [
 ]
 
 { #category : #accessing }
-PureGitCommit >> gitHubURL [
+PureGitCommit >> gitHubWebUrl [
 	| branch upstream remote gitUrl |
 	(branch := self repository branch) ifNil: [ ^ nil ].
 	(upstream := branch upstream) ifNil: [ ^ nil ].
 	(remote := upstream remote) ifNil: [ ^ nil ].
 	gitUrl := remote gitUrl.
-	gitUrl isNetworkUrl ifFalse: [ ^ nil ].
-	gitUrl hostname = 'github.com' ifFalse: [ ^ nil ].
-	^ 'https://github.com' asUrl
-		/ gitUrl ownerName
-		/ gitUrl repositoryName
-		/ 'commit'
-		/ self commitId
+	^ gitUrl gitHubWebUrl ifNotNil: [ :gitHubUrl |
+		gitHubUrl / 'commit' / self commitId ]
 ]
 
 { #category : #testing }

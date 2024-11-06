@@ -27,7 +27,7 @@ Class {
 	#instVars : [
 		'url'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #examples }
@@ -81,6 +81,15 @@ PureGitUrl >> fileReference [
 PureGitUrl >> fileUrl [
 	self assert: self isFileUrl.
 	^ ZnUrl fromString: url defaultScheme: #file
+]
+
+{ #category : #accessing }
+PureGitUrl >> gitHubWebUrl [
+	self isNetworkUrl ifFalse: [ ^ nil ].
+	self hostname = 'github.com' ifFalse: [ ^ nil ].
+	^ 'https://github.com' asUrl
+		/ self ownerName
+		/ self repositoryName
 ]
 
 { #category : #accessing }

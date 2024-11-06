@@ -8,22 +8,42 @@ Class {
 		'line',
 		'positionInVersions'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> lineHeight [
 	^ 5
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> versionMargin [
 	^ 2
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #constants }
 PureGitTrackedLine class >> versionWidth [
-	^ 10
+	^ 40
+]
+
+{ #category : #accessing }
+PureGitTrackedLine >> endVersion [
+	| end |
+	end := 0.
+	self positionsInVersions reverse
+		doWithIndex: [ :each :index | 
+			(end isZero and: each isZero not)
+				ifTrue: [ end := self positionsInVersions size - index + 1 ] ].
+	^ end
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> gtPositionsInVersionsFor: aView [
+	<gtView>
+	^ aView list 
+		title: 'Positions';
+		priority: 50;
+		items: [ self positionsInVersions ]
 ]
 
 { #category : #initialization }
@@ -39,6 +59,16 @@ PureGitTrackedLine >> line [
 { #category : #accessing }
 PureGitTrackedLine >> line: aString [
 	line := aString
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> positionInEndVersion [ 
+	^ self positionInVersionAt: self endVersion
+]
+
+{ #category : #'as yet unclassified' }
+PureGitTrackedLine >> positionInStartVersion [ 
+	^ self positionInVersionAt: self startVersion
 ]
 
 { #category : #accessing }
@@ -59,5 +89,22 @@ PureGitTrackedLine >> positionsInVersions [
 { #category : #printing }
 PureGitTrackedLine >> printOn: stream [
 	super printOn: stream.
-	stream nextPut: $(; nextPutAll: line; nextPut: $)
+	stream
+		nextPut: $(;
+		nextPutAll: line;
+		nextPut: $);
+		space;
+		nextPutAll: 'ver. ';
+		nextPutAll: self startVersion asString;
+		nextPutAll: '-';
+		nextPutAll: self endVersion asString
+]
+
+{ #category : #accessing }
+PureGitTrackedLine >> startVersion [
+	| start |
+	start := 0.
+	self positionsInVersions
+		doWithIndex: [ :each :index | (start isZero and: each isZero not) ifTrue: [ start := index ] ].
+	^ start
 ]

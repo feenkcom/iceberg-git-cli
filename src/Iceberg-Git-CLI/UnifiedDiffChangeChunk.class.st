@@ -11,7 +11,7 @@ Class {
 		'newCount',
 		'diffLines'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Diff'
 }
 
 { #category : #operations }

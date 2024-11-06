@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'srcDirectory'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Code'
 }
 
 { #category : #initialization }
@@ -46,6 +46,11 @@ PureGitCodeRepository >> packages [
 ]
 
 { #category : #accessing }
+PureGitCodeRepository >> resolveSrcFilePath: relativePathString [
+	^ self resolveFilePath: self srcPath , '/' , relativePathString
+]
+
+{ #category : #accessing }
 PureGitCodeRepository >> srcDirectory [
 	^ srcDirectory
 ]
@@ -53,4 +58,9 @@ PureGitCodeRepository >> srcDirectory [
 { #category : #initialization }
 PureGitCodeRepository >> srcDirectory: aFileReference [
 	srcDirectory := aFileReference
+]
+
+{ #category : #accessing }
+PureGitCodeRepository >> srcPath [
+	^ srcDirectory basename
 ]

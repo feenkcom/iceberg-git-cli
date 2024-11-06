@@ -4,7 +4,7 @@ I use the git executable to run queries and operations on a repository
 Class {
 	#name : #PureGitCommandLineInterface,
 	#superclass : #PureGitRepositoryObject,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #private }

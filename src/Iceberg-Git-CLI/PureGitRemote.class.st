@@ -10,7 +10,7 @@ Class {
 		'name',
 		'url'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #accessing }
@@ -22,6 +22,11 @@ PureGitRemote >> branches [
 { #category : #operations }
 PureGitRemote >> fetch [
 	self repository operations fetch: { self name }
+]
+
+{ #category : #accessing }
+PureGitRemote >> gitHubWebUrl [
+	^ self gitUrl gitHubWebUrl
 ]
 
 { #category : #accessing }

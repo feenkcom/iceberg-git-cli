@@ -9,7 +9,7 @@ Class {
 		'parents',
 		'labels'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #accessing }

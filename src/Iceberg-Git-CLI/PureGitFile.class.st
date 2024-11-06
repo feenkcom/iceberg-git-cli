@@ -9,7 +9,7 @@ Class {
 		'path',
 		'status'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #accessing }
@@ -128,6 +128,18 @@ PureGitFile >> logPatchReverse [
 			commit: fileCommit;
 			changesToParent: commitDiffPair second firstDiff;
 			yourself ]
+]
+
+{ #category : #accessing }
+PureGitFile >> logReverse [
+	| commits |
+	commits := self repository queries
+			log: { '--first-parent' . '--reverse' . 'HEAD' . '--' . self path }.
+	^ commits collect: [ :each | 
+			PureGitFileCommit new
+				copyFrom: each;
+				path: self path;
+				yourself ]
 ]
 
 { #category : #accessing }

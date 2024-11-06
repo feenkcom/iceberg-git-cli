@@ -9,7 +9,7 @@ Class {
 		'extendedCommits',
 		'versions'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #operations }
@@ -31,6 +31,11 @@ PureGitTrackedFile >> authorOfTrackedLine: trackedLine [
 PureGitTrackedFile >> commits [
 	^ extendedCommits
 		ifNil: [ extendedCommits := self file logPatchReverse toArray wait ]
+]
+
+{ #category : #accessing }
+PureGitTrackedFile >> commits: commitsCollection [
+	extendedCommits := commitsCollection
 ]
 
 { #category : #operations }
@@ -109,22 +114,25 @@ PureGitTrackedFile >> file: aGitFile [
 	file := aGitFile
 ]
 
-{ #category : #'as yet unclassified' }
-PureGitTrackedFile >> gtVersionsFor: aView [
-	<gtView>
-	^ aView columnedList
-		title: 'Versions';
-		items: [ self versions ];
-		column: 'Index' text: [ :each | each versionNumber ] width: 50;
-		column: 'Timestamp' text: [ :each | (ZTimestampFormat fromString: '2001-02-03 16:05') format: each commit timestamp ] width: 110;
-		column: 'Commit' text: [ :each | each commit shortId ] width: 100;
-		column: 'Author' text: [ :each | each commit author ] width: 100;
-		column: 'Comment' text: [ :each | each commit comment firstLineWithEllipsis ];
-		column: 'Delta' text: [ :each | each commit numberOfLinesChangedDescription ] width: 50;
-		column: 'Lines count' text: [ :each | each lines size ] width: 50
+{ #category : #accessing }
+PureGitTrackedFile >> lineSequences [
+	| sequences lines |
+	sequences := OrderedCollection new.
+	lines := self uniqueTrackedLines
+			sorted: [ :a :b | 
+				a startVersion < b startVersion
+					or: [ a startVersion = b startVersion
+							and: [ a positionInStartVersion < b positionInStartVersion ] ] ].
+	sequences add: (PureGitTrackedLineSequence new addLine: lines first).
+	lines allButFirst
+		do: [ :each | 
+			sequences last endVersion = each endVersion
+				ifTrue: [ sequences last addLine: each ]
+				ifFalse: [ sequences add: (PureGitTrackedLineSequence new addLine: each) ] ].
+	^ sequences
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #accessing }
 PureGitTrackedFile >> maxLinesCount [
 	^ self versions max: [:each | each lines size]
 ]
@@ -142,6 +150,15 @@ PureGitTrackedFile >> printOn: stream [
 	stream nextPut: $)
 ]
 
+{ #category : #operations }
+PureGitTrackedFile >> selectCommitsSatisfying: block [
+	^ self class new
+		file: self file;
+		versions: (self versions select: [ :each | block value: each commit ]);
+		commits: (self commits select: [ :each | block value: each commit ]);
+		yourself
+]
+
 { #category : #accessing }
 PureGitTrackedFile >> uniqueTrackedLines [
 	| trackedLines |
@@ -154,4 +171,9 @@ PureGitTrackedFile >> uniqueTrackedLines [
 { #category : #accessing }
 PureGitTrackedFile >> versions [
 	^ versions
+]
+
+{ #category : #accessing }
+PureGitTrackedFile >> versions: collectionOfTrackedFileVersions [
+	versions := collectionOfTrackedFileVersions
 ]

@@ -16,7 +16,7 @@ Class {
 		'originalPath',
 		'statusInWorkTree'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #'initialization ' }
