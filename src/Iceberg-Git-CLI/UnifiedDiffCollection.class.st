@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'diffs'
 	],
-	#category : #'Iceberg-Git-CLI-Pure-Core'
+	#category : #'Iceberg-Git-CLI-Pure-Diff'
 }
 
 { #category : #accessing }

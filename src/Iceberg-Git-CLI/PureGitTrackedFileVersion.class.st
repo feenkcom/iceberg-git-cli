@@ -7,7 +7,7 @@ Class {
 		'commit',
 		'trackedFile'
 	],
-	#category : #'Iceberg-Git-CLI-Pure-Core'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #accessing }

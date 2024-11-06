@@ -8,7 +8,7 @@ Class {
 		'line',
 		'positionInVersions'
 	],
-	#category : #'Iceberg-Git-CLI-Pure-Core'
+	#category : #'Iceberg-Git-CLI-Pure-Analysis'
 }
 
 { #category : #constants }

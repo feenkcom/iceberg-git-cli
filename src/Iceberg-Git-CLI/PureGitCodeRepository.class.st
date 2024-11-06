@@ -7,7 +7,7 @@ Class {
 	#instVars : [
 		'srcDirectory'
 	],
-	#category : #'Iceberg-Git-CLI-Pure-Core'
+	#category : #'Iceberg-Git-CLI-Pure-Code'
 }
 
 { #category : #initialization }
