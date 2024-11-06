@@ -18,7 +18,8 @@ Class {
 	#instVars : [
 		'gitExecutable',
 		'signalClass',
-		'signCommits'
+		'signCommits',
+		'gitExecutableName'
 	],
 	#classVars : [
 		'current'
@@ -34,8 +35,20 @@ IceGitCliPlatform class >> current [
 ]
 
 { #category : #accessing }
+IceGitCliPlatform class >> reset [
+	<gtExample>
+
+	current := nil
+]
+
+{ #category : #accessing }
 IceGitCliPlatform >> config [
 	^ self dummyInstance config
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> defaultGitExecutableName [
+	^ 'git'
 ]
 
 { #category : #operations }
@@ -67,7 +80,7 @@ IceGitCliPlatform >> gitExecPath [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitExecutable [
-	^ gitExecutable
+	^ gitExecutable ifNil: [ gitExecutable := self resolveGitPath pathString ]
 ]
 
 { #category : #accessing }
@@ -76,14 +89,18 @@ IceGitCliPlatform >> gitExecutable: anExecutablePath [
 ]
 
 { #category : #accessing }
-IceGitCliPlatform >> gitVersion [
-	^ self dummyInstance gitVersion
+IceGitCliPlatform >> gitExecutableName [
+	^ gitExecutableName ifNil: [ gitExecutableName := self defaultGitExecutableName ]
 ]
 
-{ #category : #initialization }
-IceGitCliPlatform >> initialize [
-	super initialize.
-	self gitExecutable: 'git'
+{ #category : #accessing }
+IceGitCliPlatform >> gitExecutableName: aNameString [
+	gitExecutableName := aNameString
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> gitVersion [
+	^ self dummyInstance gitVersion
 ]
 
 { #category : #operations }
@@ -108,26 +125,7 @@ IceGitCliPlatform >> repositoryClass [
 
 { #category : #accessing }
 IceGitCliPlatform >> resolveGitPath [
-	| builder output path |
-	builder := GtExternalProcessBuilder new
-			command: (Smalltalk os isWindows ifTrue: [ 'where' ] ifFalse: [ 'which' ]);
-			arg: self gitExecutable.
-	output := builder output.
-	output status isSuccess
-		ifFalse: [ ^ nil ].
-	path := output stdout trimBoth.
-	^ Smalltalk os isWindows
-		ifTrue: [ | lines | 
-			lines := path lines
-					collect: [ :line | line trimBoth asFileReference ]
-					thenSelect: [ :each | #(bat exe) includes: each extension asLowercase ].
-			lines
-				ifEmpty: [ nil ]
-				ifNotEmpty: [ :anArray | anArray first ] ]
-		ifFalse: [
-			path 
-				ifEmpty: [ nil ]
-				ifNotEmpty: [ path asFileReference ] ]
+	^ GtOsSystemInfo current findExecutable: self gitExecutableName
 ]
 
 { #category : #accessing }
@@ -169,7 +167,7 @@ IceGitCliPlatform >> validateGit [
 	gitVersionString := [ self gitVersion ] on: Error do: [ nil ].
 	self 
 		assert: gitVersionString notNil 
-		description: ('{1} not found, please install' format: { self gitExecutable }).
+		description: ('{1} not found, please install' format: { self gitExecutableName }).
 	gitVersion := (Character space split: gitVersionString) third.
 	major := ($. split: gitVersion) first asInteger.
 	minor := ($. split: gitVersion) second asInteger.
