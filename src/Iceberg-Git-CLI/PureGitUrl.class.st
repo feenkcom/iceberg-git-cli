@@ -84,6 +84,15 @@ PureGitUrl >> fileUrl [
 ]
 
 { #category : #accessing }
+PureGitUrl >> gitHubWebUrl [
+	self isNetworkUrl ifFalse: [ ^ nil ].
+	self hostname = 'github.com' ifFalse: [ ^ nil ].
+	^ 'https://github.com' asUrl
+		/ self ownerName
+		/ self repositoryName
+]
+
+{ #category : #accessing }
 PureGitUrl >> groupName [
 	^ self ownerName
 ]
