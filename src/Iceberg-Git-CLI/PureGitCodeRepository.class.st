@@ -46,6 +46,11 @@ PureGitCodeRepository >> packages [
 ]
 
 { #category : #accessing }
+PureGitCodeRepository >> resolveSrcFilePath: relativePathString [
+	^ self resolveFilePath: self srcPath , '/' , relativePathString
+]
+
+{ #category : #accessing }
 PureGitCodeRepository >> srcDirectory [
 	^ srcDirectory
 ]

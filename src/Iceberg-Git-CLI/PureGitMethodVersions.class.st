@@ -26,7 +26,7 @@ PureGitMethodVersions >> computeVersions [
 	className := method origin instanceSide name.
 	selector := method selector.
 	classPath := packageName , '/' , className , self tonelMethodClassExtension.
-	gitFile := repository resolveFilePath: repository srcPath , '/' , classPath.
+	gitFile := self repository resolveSrcFilePath: classPath.
 	snapshots := gitFile logReverse collect: [ :commit | | snapshot commitDefinitions |
 		commitDefinitions := TonelParser parseString: commit contentsByFilesystem.
 		commitDefinitions do: [ :definition |
@@ -45,7 +45,7 @@ PureGitMethodVersions >> computeVersions [
 	previous := nil.
 	^ uniqueDefinitions collect: [ :definition | | diff |
 		diff := GtDiffBuilder 
-			computeDifferencesFrom: (previous ifNil: [ String empty ] ifNotNil: [previous diffSource ])
+			computeDifferencesFrom: (previous ifNil: [ String empty ] ifNotNil: [ previous diffSource ])
 			to: definition diffSource 
 			using: GtSmaCCDiffSplitter forPharo.
 		previous := definition.
