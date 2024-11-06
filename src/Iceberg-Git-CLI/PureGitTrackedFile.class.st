@@ -9,7 +9,7 @@ Class {
 		'extendedCommits',
 		'versions'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #operations }

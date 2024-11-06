@@ -14,7 +14,7 @@ Class {
 		'removedLines',
 		'modifiedLines'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #accessing }

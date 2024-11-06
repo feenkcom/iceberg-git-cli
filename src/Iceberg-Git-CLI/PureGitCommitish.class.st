@@ -4,7 +4,7 @@ I am an abstraction of things that can be considered a commit.
 Class {
 	#name : #PureGitCommitish,
 	#superclass : #PureGitRepositoryObject,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #operations }

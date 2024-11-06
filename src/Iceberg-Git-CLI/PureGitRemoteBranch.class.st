@@ -6,7 +6,7 @@ I exist in a remote.
 Class {
 	#name : #PureGitRemoteBranch,
 	#superclass : #PureGitBranch,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #accessing }

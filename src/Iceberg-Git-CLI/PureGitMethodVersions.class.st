@@ -8,7 +8,7 @@ Class {
 		'method',
 		'versions'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #'instance creation' }

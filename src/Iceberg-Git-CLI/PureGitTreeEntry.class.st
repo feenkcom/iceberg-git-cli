@@ -12,7 +12,7 @@ Class {
 		'mode',
 		'id'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #enumerating }

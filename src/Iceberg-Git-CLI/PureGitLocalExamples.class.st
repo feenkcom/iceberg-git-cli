@@ -5,5 +5,5 @@ Class {
 		'repositoryA',
 		'repositoryB'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }

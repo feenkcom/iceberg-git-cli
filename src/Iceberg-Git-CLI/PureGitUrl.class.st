@@ -27,7 +27,7 @@ Class {
 	#instVars : [
 		'url'
 	],
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #examples }

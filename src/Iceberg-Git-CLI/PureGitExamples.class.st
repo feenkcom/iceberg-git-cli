@@ -1,7 +1,7 @@
 Class {
 	#name : #PureGitExamples,
 	#superclass : #Object,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #examples }

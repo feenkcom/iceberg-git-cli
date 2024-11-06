@@ -4,7 +4,7 @@ I run operations on a repository that change its state
 Class {
 	#name : #PureGitOperations,
 	#superclass : #PureGitCommandLineInterface,
-	#category : #'Iceberg-Git-CLI-Pure'
+	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
 { #category : #private }
