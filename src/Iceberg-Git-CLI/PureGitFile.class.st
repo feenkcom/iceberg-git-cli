@@ -29,6 +29,16 @@ PureGitFile >> blame [
 	^ self repository queries blame: self path
 ]
 
+{ #category : #testing }
+PureGitFile >> canBeRestored [
+	^ self isTracked and: [ self isModifiedInWorkTree ]
+]
+
+{ #category : #testing }
+PureGitFile >> canBeStaged [
+	^ self isTracked not or: [ self isModifiedInWorkTree ]
+]
+
 { #category : #accessing }
 PureGitFile >> children [
 	^ #()
