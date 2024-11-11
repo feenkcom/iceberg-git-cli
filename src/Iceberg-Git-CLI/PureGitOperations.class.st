@@ -12,6 +12,13 @@ PureGitOperations >> announceRepositoryModified [
 	self repository announceRepositoryModified
 ]
 
+{ #category : #accessing }
+PureGitOperations >> async [
+	^ PureGitAsyncOperations new
+		delegate: self;
+		yourself
+]
+
 { #category : #operations }
 PureGitOperations >> checkout: commitish [
 	self runGitWithArgs: { 'checkout' . commitish }.
