@@ -56,7 +56,7 @@ PureGitCommit >> changesToParentDiffArgs [
 
 { #category : #operations }
 PureGitCommit >> checkout [
-	self repository operations checkout: self id
+	^ self repository operations async checkout: self id
 ]
 
 { #category : #accessing }

@@ -49,7 +49,7 @@ PureGitBranch >> hash [
 
 { #category : #operations }
 PureGitBranch >> merge [
-	self repository operations merge: { self name }
+	^ self repository operations async merge: { self name }
 ]
 
 { #category : #accessing }

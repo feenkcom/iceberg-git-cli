@@ -58,7 +58,8 @@ PureGitFile >> creationTime [
 PureGitFile >> delete [
 	self fileReference ensureDelete.
 	"should we also delete empty parent directories as they do not exist in git ?"
-	self repository announceRepositoryModified
+	self repository announceRepositoryModified.
+	^ true
 ]
 
 { #category : #testing }
@@ -180,8 +181,10 @@ PureGitFile >> resetStatus [
 
 { #category : #operations }
 PureGitFile >> restore [
-	self repository operations restore: self path.
-	self resetStatus
+	^ (self repository operations async restore: self path)
+		then: [ :result | 
+			self resetStatus.
+			result ]
 ]
 
 { #category : #accessing }
@@ -191,8 +194,10 @@ PureGitFile >> size [
 
 { #category : #operations }
 PureGitFile >> stage [
-	self repository operations stage: self path.
-	self resetStatus
+	^ (self repository operations async stage: self path)
+		then: [ :result | 
+			self resetStatus.
+			result ]
 ]
 
 { #category : #accessing }
@@ -208,8 +213,10 @@ PureGitFile >> status [
 
 { #category : #operations }
 PureGitFile >> unstage [
-	self repository operations unstage: self path.
-	self resetStatus
+	^ (self repository operations async unstage: self path)
+		then: [ :result | 
+			self resetStatus.
+			result ]
 ]
 
 { #category : #private }

@@ -14,7 +14,7 @@ PureGitLocalBranch >> branchType [
 
 { #category : #operations }
 PureGitLocalBranch >> checkout [
-	self repository operations checkout: self name
+	^ self repository operations async checkout: self name
 ]
 
 { #category : #accessing }
@@ -63,7 +63,7 @@ PureGitLocalBranch >> outgoingCommits [
 
 { #category : #operations }
 PureGitLocalBranch >> push [
-	self repository operations push: { self upstreamRemoteName . self name }
+	^ self repository operations async push: { self upstreamRemoteName . self name }
 ]
 
 { #category : #accessing }
