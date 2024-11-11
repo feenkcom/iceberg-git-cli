@@ -6,7 +6,7 @@ Class {
 	#superclass : #PureGitRepositoryObject,
 	#instVars : [
 		'operation',
-		'args',
+		'arg',
 		'result',
 		'duration'
 	],
@@ -14,13 +14,13 @@ Class {
 }
 
 { #category : #accessing }
-PureGitOperationResult >> args [
-	^ args
+PureGitOperationResult >> arg [
+	^ arg
 ]
 
 { #category : #accessing }
-PureGitOperationResult >> args: aStringCollection [
-	args := aStringCollection
+PureGitOperationResult >> arg: anObject [
+	arg := anObject
 ]
 
 { #category : #accessing }
@@ -30,7 +30,10 @@ PureGitOperationResult >> description [
 			out
 				nextPutAll: 'git ';
 				nextPutAll: (operation last = $: ifTrue: [ operation allButLast ] ifFalse: [ operation ]).
-			args do: [ :each | out space; nextPutAll: each ].
+			arg ifNotNil: [ 
+				arg isString
+					ifTrue: [ out space; nextPutAll: arg ]
+					ifFalse: [ arg do: [ :each | out space; nextPutAll: each ] ] ].
 			duration
 				ifNil: [ out nextPutAll: ' did not yet run' ]
 				ifNotNil: [ | roundedDuration |
@@ -56,8 +59,7 @@ PureGitOperationResult >> duration: aDuration [
 { #category : #initialization }
 PureGitOperationResult >> initialize [
 	super initialize.
-	operation := 'unknown'.
-	args := #()
+	operation := 'unknown'
 ]
 
 { #category : #accessing }

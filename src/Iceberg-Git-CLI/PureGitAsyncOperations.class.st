@@ -12,22 +12,22 @@ Class {
 
 { #category : #operations }
 PureGitAsyncOperations >> checkout: commitish [
-	^ self forwardOperation: #checkout: withArguments: { commitish }
+	^ self forwardOperation: #checkout: withArgument: commitish
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> clone: gitUrl [
-	^ self forwardOperation: #clone: withArguments: { gitUrl }
+	^ self forwardOperation: #clone: withArgument: gitUrl
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> commit: comment [
-	^ self forwardOperation: #commit: withArguments: { comment }
+	^ self forwardOperation: #commit: withArgument: comment
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> createBranch: branchName [
-	^ self forwardOperation: #createBranch: withArguments: { branchName }
+	^ self forwardOperation: #createBranch: withArgument: branchName
 ]
 
 { #category : #accessing }
@@ -42,22 +42,23 @@ PureGitAsyncOperations >> delegate: aPureGitOperations [
 
 { #category : #operations }
 PureGitAsyncOperations >> delete [
-	^ self forwardOperation: #delete withArguments: #()
+	^ self forwardOperation: #delete withArgument: nil
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> fetch: args [
-	^ self forwardOperation: #fetch: withArguments: args
+	^ self forwardOperation: #fetch: withArgument: args
 ]
 
 { #category : #private }
-PureGitAsyncOperations >> forwardOperation: operation withArguments: args [
+PureGitAsyncOperations >> forwardOperation: operation withArgument: arg [
 	^ [ | result timeToRun |
-	timeToRun := [ result := delegate perform: operation withArguments: args ]
-			timeToRun.
+	timeToRun := [ result := arg
+				ifNil: [ delegate perform: operation ]
+				ifNotNil: [ delegate perform: operation with: arg ] ] timeToRun.
 	(PureGitOperationResult inRepository: self delegate repository)
 		operation: operation;
-		args: args;
+		arg: arg;
 		result: result;
 		duration: timeToRun;
 		yourself ] asAsyncPromise
@@ -65,35 +66,35 @@ PureGitAsyncOperations >> forwardOperation: operation withArguments: args [
 
 { #category : #operations }
 PureGitAsyncOperations >> init [
-	^ self forwardOperation: #init withArguments: #()
+	^ self forwardOperation: #init withArgument: nil
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> merge: args [
-	^ self forwardOperation: #merge: withArguments: args
+	^ self forwardOperation: #merge: withArgument: args
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> pull: args [
-	^ self forwardOperation: #pull: withArguments: args
+	^ self forwardOperation: #pull: withArgument: args
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> push: args [
-	^ self forwardOperation: #push: withArguments: args
+	^ self forwardOperation: #push: withArgument: args
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> restore: filePath [
-	^ self forwardOperation: #restore: withArguments: { filePath }
+	^ self forwardOperation: #restore: withArgument: filePath
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> stage: filePath [
-	^ self forwardOperation: #stage: withArguments: { filePath }
+	^ self forwardOperation: #stage: withArgument: filePath
 ]
 
 { #category : #operations }
 PureGitAsyncOperations >> unstage: filePath [
-	^ self forwardOperation: #unstage: withArguments: { filePath }
+	^ self forwardOperation: #unstage: withArgument: filePath
 ]

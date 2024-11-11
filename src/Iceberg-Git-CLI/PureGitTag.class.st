@@ -20,7 +20,7 @@ PureGitTag >> = anObject [
 
 { #category : #operations }
 PureGitTag >> checkout [
-	self repository operations checkout: self name
+	^ self repository operations async checkout: self name
 ]
 
 { #category : #accessing }

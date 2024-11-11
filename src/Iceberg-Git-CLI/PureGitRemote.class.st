@@ -21,7 +21,7 @@ PureGitRemote >> branches [
 
 { #category : #operations }
 PureGitRemote >> fetch [
-	self repository operations fetch: { self name }
+	^ self repository operations async fetch: { self name }
 ]
 
 { #category : #accessing }
@@ -52,12 +52,12 @@ PureGitRemote >> printOn: stream [
 
 { #category : #operations }
 PureGitRemote >> pull [
-	self repository operations pull: { self name }
+	^ self repository operations async pull: { self name }
 ]
 
 { #category : #operations }
 PureGitRemote >> push [
-	self repository operations push: { self name }
+	^ self repository operations async push: { self name }
 ]
 
 { #category : #accessing }
