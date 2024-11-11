@@ -62,8 +62,7 @@ PureGitUrl >> cloneIn: aDirectory [
 	(location exists and: [ location hasChildren ])
 		ifTrue: [ ^ DirectoryIsNotEmpty signalWith: location ].
 	repository := PureGitRepository on: location.
-	repository operations clone: self url.
-	^ repository
+	^ repository operations async clone: self url
 ]
 
 { #category : #operations }
