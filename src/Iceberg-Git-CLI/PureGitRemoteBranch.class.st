@@ -14,6 +14,11 @@ PureGitRemoteBranch >> branchType [
 	^ #remote
 ]
 
+{ #category : #testing }
+PureGitRemoteBranch >> isLocal [
+	^ false
+]
+
 { #category : #accessing }
 PureGitRemoteBranch >> remote [
 	^ self repository queries remotes

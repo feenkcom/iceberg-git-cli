@@ -47,6 +47,16 @@ PureGitBranch >> hash [
 	^ self name hash bitXor: self commitId hash
 ]
 
+{ #category : #testing }
+PureGitBranch >> isLocal [
+	self subclassResponsibility
+]
+
+{ #category : #testing }
+PureGitBranch >> isRemote [
+	^ self isLocal not
+]
+
 { #category : #operations }
 PureGitBranch >> merge [
 	^ self repository operations async merge: { self name }
