@@ -51,6 +51,11 @@ PureGitLocalBranch >> isCurrent [
 				and: [ self name includesSubstring: 'HEAD detached' ] ]
 ]
 
+{ #category : #testing }
+PureGitLocalBranch >> isLocal [
+	^ true
+]
+
 { #category : #accessing }
 PureGitLocalBranch >> outgoingCommits [
 	| upstream spec |
