@@ -25,7 +25,7 @@ L
 { #category : #accessing }
 UnifiedDiffExamples >> exampleComputedGitUnifiedNoContextDiff [
 	<gtExample>
-	<noTets>
+	<noTest>
 
 	^ #(
 
@@ -61,7 +61,7 @@ UnifiedDiffExamples >> exampleComputedGitUnifiedNoContextDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedDiff [
 	<gtExample>
-	<noTets>
+	<noTest>
 	
 	| unifiedDiff firstDiff output |
 
@@ -85,7 +85,7 @@ UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedNoContextDiff [
 	<gtExample>
-	<noTets>
+	<noTest>
 	
 	| unifiedDiff firstDiff output |
 
