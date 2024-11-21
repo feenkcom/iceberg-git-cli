@@ -28,6 +28,11 @@ PureGitTrackedFile >> authorOfTrackedLine: trackedLine [
 ]
 
 { #category : #accessing }
+PureGitTrackedFile >> authors [
+	^ self file authors
+]
+
+{ #category : #accessing }
 PureGitTrackedFile >> commits [
 	^ extendedCommits
 		ifNil: [ extendedCommits := self file logPatchReverse toArray wait ]
@@ -36,6 +41,11 @@ PureGitTrackedFile >> commits [
 { #category : #accessing }
 PureGitTrackedFile >> commits: commitsCollection [
 	extendedCommits := commitsCollection
+]
+
+{ #category : #accessing }
+PureGitTrackedFile >> commitsByAuthor: authorName [
+	^ self commits select: [ :each | each author = authorName ]
 ]
 
 { #category : #operations }
