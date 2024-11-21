@@ -7,7 +7,8 @@ Class {
 	#superclass : #PureGitRepositoryObject,
 	#instVars : [
 		'path',
-		'status'
+		'status',
+		'authors'
 	],
 	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
@@ -17,6 +18,11 @@ PureGitFile >> analyze [
 	^ PureGitTrackedFile new
 		file: self;
 		analyze
+]
+
+{ #category : #accessing }
+PureGitFile >> authors [
+	^ authors ifNil: [ authors := self computeAuthors ]
 ]
 
 { #category : #accessing }
@@ -42,6 +48,24 @@ PureGitFile >> canBeStaged [
 { #category : #accessing }
 PureGitFile >> children [
 	^ #()
+]
+
+{ #category : #private }
+PureGitFile >> computeAuthors [
+	| dictionary colors |
+	dictionary := OrderedDictionary new.
+	colors := BrExplicitIdentityNormalizer new
+			colors: BrGlamorousColors distinctTenLightColors;
+			defaultColor: Color veryLightGray.
+	(self log toArray wait collect: #author) asBag sortedCounts
+		do: [ :association | 
+			| author |
+			(author := PureGitAuthor new)
+				name: association value;
+				numberOfCommits: association key.
+			author color: (colors value: author name).
+			dictionary at: author name put: author ].
+	^ dictionary
 ]
 
 { #category : #accessing }
