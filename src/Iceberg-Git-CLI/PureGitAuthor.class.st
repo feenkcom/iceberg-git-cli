@@ -7,7 +7,8 @@ Class {
 	#instVars : [
 		'name',
 		'numberOfCommits',
-		'color'
+		'color',
+		'contrastColor'
 	],
 	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
@@ -20,6 +21,30 @@ PureGitAuthor >> color [
 { #category : #accessing }
 PureGitAuthor >> color: aColor [
 	color := aColor
+]
+
+{ #category : #accessing }
+PureGitAuthor >> contrastColor [
+	^ contrastColor
+]
+
+{ #category : #accessing }
+PureGitAuthor >> contrastColor: aColor [
+	contrastColor := aColor
+]
+
+{ #category : #accessing }
+PureGitAuthor >> example [
+	<gtExample>
+]
+
+{ #category : #'initialization ' }
+PureGitAuthor >> initialize [
+	super initialize.
+	name := 'Unknown'.
+	numberOfCommits := 0.
+	color := Color veryLightGray.
+	contrastColor := Color black
 ]
 
 { #category : #accessing }

@@ -50,20 +50,32 @@ PureGitFile >> children [
 	^ #()
 ]
 
+{ #category : #accessing }
+PureGitFile >> colorForAuthor: author [
+	^ self authors
+		at: author
+		ifPresent: [ :gitAuthor | gitAuthor color ]
+		ifAbsent: [ Color veryLightGray ]
+]
+
 { #category : #private }
 PureGitFile >> computeAuthors [
-	| dictionary colors |
+	| dictionary colors lightColors strongColors |
 	dictionary := OrderedDictionary new.
+	lightColors := BrGlamorousColors distinctTenLightColors , { Color veryLightGray }.
+	strongColors := BrGlamorousColors distinctTenStrongColors , { Color gray }.
 	colors := BrExplicitIdentityNormalizer new
-			colors: BrGlamorousColors distinctTenLightColors;
-			defaultColor: Color veryLightGray.
+				colors: (1 to: 10);
+				defaultColor: 11.
 	(self log toArray wait collect: #author) asBag sortedCounts
 		do: [ :association | 
-			| author |
+			| author colorIndex |
 			(author := PureGitAuthor new)
 				name: association value;
 				numberOfCommits: association key.
-			author color: (colors value: author name).
+			colorIndex := colors value: author name.
+			author color: (lightColors at: colorIndex).
+			author contrastColor: (strongColors at: colorIndex).
 			dictionary at: author name put: author ].
 	^ dictionary
 ]

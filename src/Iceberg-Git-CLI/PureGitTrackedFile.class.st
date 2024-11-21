@@ -33,6 +33,11 @@ PureGitTrackedFile >> authors [
 ]
 
 { #category : #accessing }
+PureGitTrackedFile >> colorForAuthor: author [
+	^ self file colorForAuthor: author
+]
+
+{ #category : #accessing }
 PureGitTrackedFile >> commits [
 	^ extendedCommits
 		ifNil: [ extendedCommits := self file logPatchReverse toArray wait ]
@@ -112,6 +117,14 @@ PureGitTrackedFile >> computeVersions [
 						versionNumber: rank;
 						lines: previous) ].
 	^ versions
+]
+
+{ #category : #accessing }
+PureGitTrackedFile >> contrastColorForAuthor: author [
+	^ self file authors
+		at: author
+		ifPresent: [ :gitAuthor | gitAuthor contrastColor ]
+		ifAbsent: [ Color gray ]
 ]
 
 { #category : #accessing }
