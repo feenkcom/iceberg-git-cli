@@ -109,6 +109,11 @@ PureGitFile >> fileReference [
 ]
 
 { #category : #testing }
+PureGitFile >> isClean [
+	^ self status isClean
+]
+
+{ #category : #testing }
 PureGitFile >> isDirectory [
 	^ false
 ]
@@ -120,17 +125,17 @@ PureGitFile >> isFile [
 
 { #category : #testing }
 PureGitFile >> isModifiedInWorkTree [
-	^ self status statusInWorkTree = #modified
+	^ self status isModifiedInWorkTree
 ]
 
 { #category : #testing }
 PureGitFile >> isStaged [
-	^ #(added modified removed renamed) includes: self status statusInIndex
+	^ self status isStaged
 ]
 
 { #category : #testing }
 PureGitFile >> isTracked [
-	^ self status statusInIndex ~= #unknown
+	^ self status isTracked
 ]
 
 { #category : #accessing }
