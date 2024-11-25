@@ -67,6 +67,26 @@ PureGitFileStatus >> gitFile [
 	^ self repository resolveFilePath: self path
 ]
 
+{ #category : #testing }
+PureGitFileStatus >> isClean [
+	^ statusInIndex = #unmodified and: [ statusInWorkTree = #unmodified ]
+]
+
+{ #category : #testing }
+PureGitFileStatus >> isModifiedInWorkTree [
+	^ statusInWorkTree = #modified
+]
+
+{ #category : #testing }
+PureGitFileStatus >> isStaged [
+	^ #(added modified removed renamed) includes: statusInIndex
+]
+
+{ #category : #testing }
+PureGitFileStatus >> isTracked [
+	^ statusInIndex ~= #unknown
+]
+
 { #category : #accessing }
 PureGitFileStatus >> originalPath [
 	^ originalPath
