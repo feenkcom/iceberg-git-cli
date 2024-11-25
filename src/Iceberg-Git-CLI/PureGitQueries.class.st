@@ -82,15 +82,19 @@ PureGitQueries >> branch [
 
 { #category : #private }
 PureGitQueries >> commitFromLines: lines [
-	| author timestamp message id parents tree start stop |
+	| author email timestamp committer committerEmail committerTimestamp message id parents tree start stop |
 	id := lines first.
 	author := lines second.
-	timestamp := ZTimestamp fromUnixTime: lines third asInteger.
-	parents := lines fourth 
+	email := lines third.
+	timestamp := ZTimestamp fromUnixTime: lines fourth asInteger.
+	committer := lines fifth.
+	committerEmail := lines sixth.
+	committerTimestamp := ZTimestamp fromUnixTime: lines seventh asInteger.
+	parents := lines eighth
 			ifEmpty: [ #() ] 
 			ifNotEmpty: [ :line | line splitOn: ' ' ].
-	tree := lines fifth.
-	start := 7.
+	tree := lines ninth.
+	start := 10.
 	stop := lines size.
 	[ (lines at: start) isEmpty and: [ start < stop ] ]
 		whileTrue: [ start := start + 1 ].
@@ -100,7 +104,11 @@ PureGitQueries >> commitFromLines: lines [
 	^ (PureGitCommit inRepository: self repository)
 		id: id;
 		author: author;
+		email: email;
 		timestamp: timestamp;
+		committer: committer;
+		committerEmail: committerEmail;
+		committerTimestamp: committerTimestamp;
 		parentIds: parents;
 		treeId: tree;
 		comment: message;
@@ -109,7 +117,17 @@ PureGitQueries >> commitFromLines: lines [
 
 { #category : #private }
 PureGitQueries >> commitLineFormat [
-	^ '%H%n%an%n%at%n%P%n%T%n%n%B'
+	"1 = commit id hash
+	2 = author name
+	3 = author email
+	4 = author timestamp
+	5 = committer name
+	6 = committer email
+	7 = committer timestamp
+	8 = parent id hashes
+	9 = tree id hash
+	10+ = comment lines"
+	^ '%H%n%an%n%ae%n%at%n%cn%n%ce%n%ct%n%P%n%T%n%n%B'
 ]
 
 { #category : #queries }

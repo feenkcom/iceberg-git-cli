@@ -18,7 +18,11 @@ Class {
 		'comment',
 		'timestamp',
 		'parentIds',
-		'treeId'
+		'treeId',
+		'email',
+		'committer',
+		'committerEmail',
+		'committerTimestamp'
 	],
 	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
@@ -80,6 +84,52 @@ PureGitCommit >> commitId [
 ]
 
 { #category : #accessing }
+PureGitCommit >> committer [
+	^ committer
+]
+
+{ #category : #accessing }
+PureGitCommit >> committer: aString [
+	author = aString
+		ifTrue: [ committer := author ]
+		ifFalse: [ committer := aString ]
+]
+
+{ #category : #accessing }
+PureGitCommit >> committerEmail [
+	^ committerEmail
+]
+
+{ #category : #accessing }
+PureGitCommit >> committerEmail: aString [
+	email = aString
+		ifTrue: [ committerEmail := email ]
+		ifFalse: [ committerEmail := aString ]
+]
+
+{ #category : #accessing }
+PureGitCommit >> committerTimestamp [
+	^ committerTimestamp
+]
+
+{ #category : #accessing }
+PureGitCommit >> committerTimestamp: aZTimestamp [
+	timestamp = aZTimestamp
+		ifTrue: [ committerTimestamp := timestamp ]
+		ifFalse: [ committerTimestamp := aZTimestamp ]
+]
+
+{ #category : #accessing }
+PureGitCommit >> email [
+	^ email
+]
+
+{ #category : #accessing }
+PureGitCommit >> email: aString [
+	email := aString
+]
+
+{ #category : #accessing }
 PureGitCommit >> fileSystem [
 	| store fileSystem |
 	store := PureGitCommitFileSystemStore new.
@@ -98,6 +148,11 @@ PureGitCommit >> gitHubWebUrl [
 	gitUrl := remote gitUrl.
 	^ gitUrl gitHubWebUrl ifNotNil: [ :gitHubUrl |
 		gitHubUrl / 'commit' / self commitId ]
+]
+
+{ #category : #testing }
+PureGitCommit >> hasDifferentAuthorAndCommitter [
+	^ author ~= committer
 ]
 
 { #category : #testing }
