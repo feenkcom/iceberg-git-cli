@@ -42,6 +42,16 @@ IceGitCliPlatform class >> reset [
 	current := nil
 ]
 
+{ #category : #private }
+IceGitCliPlatform >> announceChange [
+	self announcer announce: Announcement new
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> announcer [
+	^ announcer ifNil: [ announcer:= Announcer new ]
+]
+
 { #category : #accessing }
 IceGitCliPlatform >> config [
 	^ self dummyInstance config
@@ -54,7 +64,7 @@ IceGitCliPlatform >> defaultGitExecutableName [
 
 { #category : #operations }
 IceGitCliPlatform >> disableLogging [
-	signalClass := nil
+	self signalClass: nil
 ]
 
 { #category : #accessing }
@@ -66,7 +76,12 @@ IceGitCliPlatform >> dummyInstance [
 
 { #category : #operations }
 IceGitCliPlatform >> enabledFullLogging [
-	signalClass := GtGitCliSignal
+	self signalClass: GtGitCliContextStackSignal
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> enabledLogging [
+	self signalClass: GtGitCliSignal
 ]
 
 { #category : #accessing }
@@ -86,7 +101,8 @@ IceGitCliPlatform >> gitExecutable [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitExecutable: anExecutablePath [
-	gitExecutable := anExecutablePath
+	gitExecutable := anExecutablePath.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -96,7 +112,8 @@ IceGitCliPlatform >> gitExecutableName [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitExecutableName: aNameString [
-	gitExecutableName := aNameString
+	gitExecutableName := aNameString.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -106,7 +123,8 @@ IceGitCliPlatform >> gitVersion [
 
 { #category : #operations }
 IceGitCliPlatform >> install [
-	IceRepository repositoryClass: self repositoryClass
+	IceRepository repositoryClass: self repositoryClass.
+	self announceChange
 ]
 
 { #category : #testing }
@@ -136,7 +154,8 @@ IceGitCliPlatform >> signCommits [
 
 { #category : #accessing }
 IceGitCliPlatform >> signCommits: aBoolean [
-	signCommits := aBoolean
+	signCommits := aBoolean.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -146,12 +165,14 @@ IceGitCliPlatform >> signalClass [
 
 { #category : #accessing }
 IceGitCliPlatform >> signalClass: aClass [
-	signalClass := aClass
+	signalClass := aClass.
+	self announceChange
 ]
 
 { #category : #operations }
 IceGitCliPlatform >> uninstall [
-	IceRepository repositoryClass: nil
+	IceRepository repositoryClass: nil.
+	self announceChange
 ]
 
 { #category : #operations }
