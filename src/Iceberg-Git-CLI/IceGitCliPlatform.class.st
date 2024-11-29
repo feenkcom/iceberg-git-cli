@@ -19,7 +19,8 @@ Class {
 		'gitExecutable',
 		'signalClass',
 		'signCommits',
-		'gitExecutableName'
+		'gitExecutableName',
+		'announcer'
 	],
 	#classVars : [
 		'current'
@@ -41,6 +42,16 @@ IceGitCliPlatform class >> reset [
 	current := nil
 ]
 
+{ #category : #private }
+IceGitCliPlatform >> announceChange [
+	self announcer announce: Announcement new
+]
+
+{ #category : #accessing }
+IceGitCliPlatform >> announcer [
+	^ announcer ifNil: [ announcer:= Announcer new ]
+]
+
 { #category : #accessing }
 IceGitCliPlatform >> config [
 	^ self dummyInstance config
@@ -53,7 +64,7 @@ IceGitCliPlatform >> defaultGitExecutableName [
 
 { #category : #operations }
 IceGitCliPlatform >> disableLogging [
-	signalClass := nil
+	self signalClass: nil
 ]
 
 { #category : #accessing }
@@ -65,7 +76,12 @@ IceGitCliPlatform >> dummyInstance [
 
 { #category : #operations }
 IceGitCliPlatform >> enabledFullLogging [
-	signalClass := GtGitCliSignal
+	self signalClass: GtGitCliContextStackSignal
+]
+
+{ #category : #operations }
+IceGitCliPlatform >> enabledLogging [
+	self signalClass: GtGitCliSignal
 ]
 
 { #category : #accessing }
@@ -85,7 +101,8 @@ IceGitCliPlatform >> gitExecutable [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitExecutable: anExecutablePath [
-	gitExecutable := anExecutablePath
+	gitExecutable := anExecutablePath.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -95,7 +112,8 @@ IceGitCliPlatform >> gitExecutableName [
 
 { #category : #accessing }
 IceGitCliPlatform >> gitExecutableName: aNameString [
-	gitExecutableName := aNameString
+	gitExecutableName := aNameString.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -105,7 +123,8 @@ IceGitCliPlatform >> gitVersion [
 
 { #category : #operations }
 IceGitCliPlatform >> install [
-	IceRepository repositoryClass: self repositoryClass
+	IceRepository repositoryClass: self repositoryClass.
+	self announceChange
 ]
 
 { #category : #testing }
@@ -116,6 +135,16 @@ IceGitCliPlatform >> isInstalled [
 { #category : #testing }
 IceGitCliPlatform >> isLoggingEnabled [
 	^ signalClass notNil
+]
+
+{ #category : #testing }
+IceGitCliPlatform >> isValidGit [
+	^ [ self validateGit ] on: Error do: [ false ]
+]
+
+{ #category : #testing }
+IceGitCliPlatform >> isValidGitSetup [
+	^ [ self validateGitSetup ] on: Error do: [ false ]
 ]
 
 { #category : #accessing }
@@ -135,7 +164,8 @@ IceGitCliPlatform >> signCommits [
 
 { #category : #accessing }
 IceGitCliPlatform >> signCommits: aBoolean [
-	signCommits := aBoolean
+	signCommits := aBoolean.
+	self announceChange
 ]
 
 { #category : #accessing }
@@ -145,12 +175,14 @@ IceGitCliPlatform >> signalClass [
 
 { #category : #accessing }
 IceGitCliPlatform >> signalClass: aClass [
-	signalClass := aClass
+	signalClass := aClass.
+	self announceChange
 ]
 
 { #category : #operations }
 IceGitCliPlatform >> uninstall [
-	IceRepository repositoryClass: nil
+	IceRepository repositoryClass: nil.
+	self announceChange
 ]
 
 { #category : #operations }
@@ -191,7 +223,12 @@ IceGitCliPlatform >> validateGitSetup [
 		ifTrue: [
 			self
 				assert: (config includesKey: 'user.signingkey')
-				description: 'git user.signingkey not set' ].
+				description: 'git user.signingkey not set'.
+			"Let's require an explicit value for gpg.format even though 
+			the default is openpgp when not set"
+			self
+				assert: (config includesKey: 'gpg.format')
+				description: 'git gpg.format not set to one of ssh|x509|openpgp' ].
 	^ true
 ]
 
