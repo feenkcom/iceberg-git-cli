@@ -19,7 +19,8 @@ Class {
 		'gitExecutable',
 		'signalClass',
 		'signCommits',
-		'gitExecutableName'
+		'gitExecutableName',
+		'announcer'
 	],
 	#classVars : [
 		'current'
@@ -191,7 +192,12 @@ IceGitCliPlatform >> validateGitSetup [
 		ifTrue: [
 			self
 				assert: (config includesKey: 'user.signingkey')
-				description: 'git user.signingkey not set' ].
+				description: 'git user.signingkey not set'.
+			"Let's require an explicit value for gpg.format even though 
+			the default is openpgp when not set"
+			self
+				assert: (config includesKey: 'gpg.format')
+				description: 'git gpg.format not set to one of ssh|x509|openpgp' ].
 	^ true
 ]
 
