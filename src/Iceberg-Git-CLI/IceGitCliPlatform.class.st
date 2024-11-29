@@ -137,6 +137,16 @@ IceGitCliPlatform >> isLoggingEnabled [
 	^ signalClass notNil
 ]
 
+{ #category : #testing }
+IceGitCliPlatform >> isValidGit [
+	^ [ self validateGit ] on: Error do: [ false ]
+]
+
+{ #category : #testing }
+IceGitCliPlatform >> isValidGitSetup [
+	^ [ self validateGitSetup ] on: Error do: [ false ]
+]
+
 { #category : #accessing }
 IceGitCliPlatform >> repositoryClass [
 	^ IceGitCliRepository
