@@ -69,3 +69,8 @@ PureGitTrackedFileLineVersion >> printOn: aStream [
 		nextPutAll: self commit shortId;
 		nextPut: $)
 ]
+
+{ #category : #accessing }
+PureGitTrackedFileLineVersion >> trackedFile [
+	^ self file trackedFile
+]
