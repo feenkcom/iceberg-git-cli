@@ -104,6 +104,11 @@ PureGitFile >> exists [
 ]
 
 { #category : #accessing }
+PureGitFile >> file [
+	^ self
+]
+
+{ #category : #accessing }
 PureGitFile >> fileReference [
 	^ self repository location / self path
 ]

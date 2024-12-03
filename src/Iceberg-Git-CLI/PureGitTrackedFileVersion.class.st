@@ -1,3 +1,7 @@
+"
+I model a tracked file at a specific version/commit within the context of its full history.
+I hold the file's contents as tracked lines at that specific point in time/version/commit.
+"
 Class {
 	#name : #PureGitTrackedFileVersion,
 	#superclass : #Object,
