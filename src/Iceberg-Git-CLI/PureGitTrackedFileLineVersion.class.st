@@ -13,6 +13,11 @@ Class {
 
 { #category : #printing }
 PureGitTrackedFileLineVersion >> commit [
+	^ self extendedCommit commit
+]
+
+{ #category : #printing }
+PureGitTrackedFileLineVersion >> extendedCommit [
 	^ self file commit
 ]
 
