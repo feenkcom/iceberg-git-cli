@@ -30,7 +30,8 @@ IceGitCliRepository class >> fromLibGitRepository: existingRepository [
 			name: existingRepository name.
 	existingRepository isMissing ifTrue: [ ^ newRepository ].
 	newRepository workingCopy
-		referenceCommit: (newRepository commitFromGitCommit: existingRepository workingCopy referenceCommit id).
+		referenceCommit: (newRepository
+				commitFromGitCommit: existingRepository workingCopy referenceCommit id).
 	newRepository workingCopy initializePackagesFromRepository.
 	^ newRepository
 ]
@@ -163,12 +164,6 @@ and the original repository''s url is {3}.'
 { #category : #accessing }
 IceGitCliRepository >> clearCaches [
 	head := nil.
-]
-
-{ #category : #accessing }
-IceGitCliRepository >> clearCommitMap [
-	"Mainly for profiling. Should not normally need to be cleared"
-	commitMap := Dictionary new.
 ]
 
 { #category : #actions }
