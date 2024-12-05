@@ -186,7 +186,7 @@ GtIceRepositorySwitcher >> register [
 		detect: [ :each | each name = self projectName ]
 		ifFound: [ :existingRepository | 
 			existingRepository forget.
-			"existingRepository gtRelease" ].
+			existingRepository gtRelease ].
 
 	self iceRepository register
 ]
