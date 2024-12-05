@@ -179,17 +179,14 @@ GtIceRepositorySwitcher >> register [
 	"Register the created repository with the system.
 	The logic here allows switching, replacing an existing repository"
 	
-	| index |
 	self iceRepository 
 		ifNil: [ self error: 'Repository not yet created, use #loadAndCreate, #cloneAndCreate or #named:' ].
-	index := IceRepository registry 
-				findFirst: [ :each | each name = self projectName ].
-	index isZero
-		ifTrue: [ self iceRepository register ]
-		ifFalse: [ 
-			IceRepository registry at: index put: self iceRepository.
-			Iceberg announcer 
-				announce: (IceRepositoryCreated repository: self iceRepository). ]
+
+	IceRepository registry 
+		detect: [ :each | each name = self projectName ]
+		ifFound: [ :existingRepository | existingRepository forget ].
+
+	self iceRepository register
 ]
 
 { #category : #accessing }
