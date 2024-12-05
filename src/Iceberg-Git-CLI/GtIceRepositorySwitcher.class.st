@@ -44,42 +44,12 @@ Class {
 
 { #category : #operations }
 GtIceRepositorySwitcher class >> revertAll [
-	"Script to revert all existing repositories in the image to the old Libgit2 FFI implementation.
-	This script does not use me, I am a tool to manipulate repositories individually.
-	Notes: also defunct repositories are reverted."
-	
-	| repositories |
-	IceRepository repositoryClass: IceLibgitRepository.
-	repositories := IceRepository registry
-		collect: [ :each | IceLibgitRepository fromGitCliRepository: each ].
-	IceRepository registry
-		removeAll;
-		addAll: repositories
+	^ GitCliEnabler new revertAll
 ]
 
 { #category : #operations }
 GtIceRepositorySwitcher class >> switchAll [
-	"Script to switch all existing repositories in the image to the new Libgit-CLI implementation.
-	This script does not use me, I am a tool to manipulate repositories individually.
-	Notes: also defunct repositories are switched."
-	
-	| platform repositories |
-
-	platform := IceGitCliPlatform current.
-
-	"throw an assertion failure when no suitable git is found"
-	platform validateGit.
-	"throw an assertion failure when git is not properly configured"
-	platform validateGitSetup.
-
-	platform install.
-
-	repositories := IceRepository registry
-		collect: [ :each | IceGitCliRepository fromLibGitRepository: each ].
-
-	IceRepository registry
-		removeAll;
-		addAll: repositories
+	^ GitCliEnabler new switchAll
 ]
 
 { #category : #operations }
