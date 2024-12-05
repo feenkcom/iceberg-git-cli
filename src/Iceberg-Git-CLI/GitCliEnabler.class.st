@@ -58,3 +58,8 @@ GitCliEnabler >> switchAll [
 
 	self announceRepositoryRegistryModified
 ]
+
+{ #category : #operations }
+GitCliEnabler >> switchRepositoryImplementation: repository [
+	^ GtIceRepositorySwitcher new switch: repository name
+]
