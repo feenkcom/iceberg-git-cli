@@ -26,7 +26,10 @@ GitCliEnabler >> revertAll [
 	repositories := IceRepository registry
 		collect: [ :repository | 
 			repository isGitCliRepository
-				ifTrue: [ IceLibgitRepository fromGitCliRepository: repository ]
+				ifTrue: [ | newRepository |
+					newRepository := IceLibgitRepository fromGitCliRepository: repository.
+					"repository gtRelease."
+					newRepository ]
 				ifFalse: [ repository ] ].
 
 	IceRepository registry
@@ -56,7 +59,10 @@ GitCliEnabler >> switchAll [
 		collect: [ :repository | 
 			repository isGitCliRepository
 				ifTrue: [ repository ]
-				ifFalse: [ IceGitCliRepository fromLibGitRepository: repository ] ].
+				ifFalse: [ | newRepository |
+					newRepository := IceGitCliRepository fromLibGitRepository: repository.
+					"repository gtRelease."
+					newRepository ] ].
 
 	IceRepository registry
 		removeAll;
