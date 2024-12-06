@@ -1,3 +1,16 @@
+"
+I am a tool to enable the git cli implementation and to switch or restore all existing repositories' implementation.
+
+I do a number of validations before enabling git cli, some assertions might fail.
+
+You need the git command line executable installed, accessible, configured and working.
+
+I rely on {{gtClass:IceGitCliPlatform}} for configuration details.
+
+{{gtExample:GitCliEnabler>>#example|previewExpanded=true|previewHeight=500}}
+
+{{gtExample:IceGitCliPlatform class>>#current|previewExpanded=true|previewHeight=500}}
+"
 Class {
 	#name : #GitCliEnabler,
 	#superclass : #Object,
