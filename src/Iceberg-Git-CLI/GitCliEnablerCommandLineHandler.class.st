@@ -49,5 +49,8 @@ GitCliEnablerCommandLineHandler >> activate [
 
 { #category : #actions }
 GitCliEnablerCommandLineHandler >> enableGitCli [
-	GitCliEnabler new switchAll
+	GitCliEnabler new switchAll.
+	self stdout
+		nextPutAll: 'git cli enabled successfully';
+		lf
 ]
