@@ -159,5 +159,7 @@ GitCliCommitFileReader >> terminate [
 	stdin
 		ifNotNil: [ stdin release.
 			stdin := nil ].
-	watchDog ifNotNil: [ watchDog terminate ]
+	watchDog
+		ifNotNil: [ watchDog terminate.
+			watchDog := nil ]
 ]

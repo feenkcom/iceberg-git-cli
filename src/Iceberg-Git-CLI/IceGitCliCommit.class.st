@@ -47,6 +47,7 @@ IceGitCliCommit >> project [
 
 { #category : #'accessing - file' }
 IceGitCliCommit >> resetFileSystem [
+	filesystem ifNotNil: [ filesystem store finalize ].
 	filesystem := nil
 ]
 
