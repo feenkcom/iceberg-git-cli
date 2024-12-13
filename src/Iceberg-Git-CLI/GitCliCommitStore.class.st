@@ -116,7 +116,9 @@ GitCliCommitStore >> entryFromNode: node path: path for: aFileSystem [
 
 { #category : #finalization }
 GitCliCommitStore >> finalize [
-	gitFileReader ifNotNil: [ :reader | reader terminate ].
+	gitFileReader
+		ifNotNil: [ gitFileReader terminate.
+			gitFileReader := nil ].
 	super finalize
 ]
 
