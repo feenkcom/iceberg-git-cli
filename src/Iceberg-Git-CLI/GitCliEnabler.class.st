@@ -22,6 +22,12 @@ GitCliEnabler >> announceRepositoryRegistryModified [
 	Iceberg announcer announce: IceRepositoryRegistryModified
 ]
 
+{ #category : #testing }
+GitCliEnabler >> areAllRepositoriesSwitched [
+	<gtExample>
+	^ IceRepository registry allSatisfy: [ :each | each isGitCliRepository ]
+]
+
 { #category : #accessing }
 GitCliEnabler >> example [
 	<gtExample>
