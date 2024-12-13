@@ -39,6 +39,7 @@ GitCliEnablerCommandLineHandler >> activate [
 
 	(self hasOption: 'save')
 		ifTrue: [
+			3 timesRepeat: [ Smalltalk garbageCollect ].
 			^ Smalltalk
 				snapshot: true
 				andQuit: (self hasOption: 'no-quit') not ].
