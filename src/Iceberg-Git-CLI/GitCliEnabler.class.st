@@ -75,7 +75,8 @@ GitCliEnabler >> switchAll [
 				ifFalse: [ | newRepository |
 					newRepository := IceGitCliRepository fromLibGitRepository: repository.
 					repository gtRelease.
-					newRepository headCommit resetFileSystem.
+					newRepository headCommit isNoCommit
+						ifFalse: [ newRepository headCommit resetFileSystem ].
 					newRepository ] ].
 
 	IceRepository registry
