@@ -33,6 +33,21 @@ GitCliEnabler >> example [
 	<gtExample>
 ]
 
+{ #category : #testing }
+GitCliEnabler >> isValidGit [
+	"Check if `git` can be found and has a recent enough version.
+	Also check git configuration/setup."
+
+	<gtExample>
+	^ self platform isValidGit and: [ self platform isValidGitSetup ]
+]
+
+{ #category : #accessing }
+GitCliEnabler >> platform [
+	<gtExample>
+	^ IceGitCliPlatform current
+]
+
 { #category : #operations }
 GitCliEnabler >> revertAll [
 	"Revert all existing repositories in the image to the old Libgit2 FFI implementation.
@@ -63,16 +78,14 @@ GitCliEnabler >> switchAll [
 	"Switch all existing repositories in the image to the new Libgit-CLI implementation.
 	Note: also defunct repositories are switched."
 
-	| platform repositories |
-
-	platform := IceGitCliPlatform current.
+	| repositories |
 
 	"throw an assertion failure when no suitable git is found"
-	platform validateGit.
+	self platform validateGit.
 	"throw an assertion failure when git is not properly configured"
-	platform validateGitSetup.
-
-	platform install.
+	self platform validateGitSetup.
+	
+	self platform install.
 
 	repositories := IceRepository registry
 		collect: [ :repository | 
@@ -90,6 +103,11 @@ GitCliEnabler >> switchAll [
 		addAll: repositories.
 
 	self announceRepositoryRegistryModified
+]
+
+{ #category : #operations }
+GitCliEnabler >> switchAllIfValidGit [
+	self isValidGit ifTrue: [ self switchAll ]
 ]
 
 { #category : #operations }

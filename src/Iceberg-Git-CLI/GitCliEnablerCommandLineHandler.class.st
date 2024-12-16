@@ -39,6 +39,7 @@ GitCliEnablerCommandLineHandler >> activate [
 
 	(self hasOption: 'save')
 		ifTrue: [
+			self logStdout: 'saving image'.
 			3 timesRepeat: [ Smalltalk garbageCollect ].
 			^ Smalltalk
 				snapshot: true
@@ -50,8 +51,12 @@ GitCliEnablerCommandLineHandler >> activate [
 
 { #category : #actions }
 GitCliEnablerCommandLineHandler >> enableGitCli [
+	self logStdout: 'running enable git cli...'.
 	GitCliEnabler new switchAll.
-	self stdout
-		nextPutAll: 'git cli enabled successfully';
-		lf
+	self logStdout: 'git cli enabled successfully'
+]
+
+{ #category : #printing }
+GitCliEnablerCommandLineHandler >> logStdout: message [
+	self stdout nextPutAll: message; lf
 ]
