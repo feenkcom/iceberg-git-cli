@@ -39,8 +39,13 @@ GitCliEnabler >> isValidGit [
 	Also check git configuration/setup."
 
 	<gtExample>
-	^ IceGitCliPlatform current isValidGit
-		and: [ IceGitCliPlatform current isValidGitSetup ]
+	^ self platform isValidGit and: [ self platform isValidGitSetup ]
+]
+
+{ #category : #accessing }
+GitCliEnabler >> platform [
+	<gtExample>
+	^ IceGitCliPlatform current
 ]
 
 { #category : #operations }
@@ -73,16 +78,14 @@ GitCliEnabler >> switchAll [
 	"Switch all existing repositories in the image to the new Libgit-CLI implementation.
 	Note: also defunct repositories are switched."
 
-	| platform repositories |
-
-	platform := IceGitCliPlatform current.
+	| repositories |
 
 	"throw an assertion failure when no suitable git is found"
-	platform validateGit.
+	self platform validateGit.
 	"throw an assertion failure when git is not properly configured"
-	platform validateGitSetup.
-
-	platform install.
+	self platform validateGitSetup.
+	
+	self platform install.
 
 	repositories := IceRepository registry
 		collect: [ :repository | 
