@@ -33,6 +33,16 @@ GitCliEnabler >> example [
 	<gtExample>
 ]
 
+{ #category : #testing }
+GitCliEnabler >> isValidGit [
+	"Check if `git` can be found and has a recent enough version.
+	Also check git configuration/setup."
+
+	<gtExample>
+	^ IceGitCliPlatform current isValidGit
+		and: [ IceGitCliPlatform current isValidGitSetup ]
+]
+
 { #category : #operations }
 GitCliEnabler >> revertAll [
 	"Revert all existing repositories in the image to the old Libgit2 FFI implementation.
@@ -90,6 +100,11 @@ GitCliEnabler >> switchAll [
 		addAll: repositories.
 
 	self announceRepositoryRegistryModified
+]
+
+{ #category : #operations }
+GitCliEnabler >> switchAllIfValidGit [
+	self isValidGit ifTrue: [ self switchAll ]
 ]
 
 { #category : #operations }
