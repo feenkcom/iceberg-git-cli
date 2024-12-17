@@ -33,7 +33,7 @@ IceGitCliIndex >> commitWithMessage: message andParents: parentCommits [
 	indexTreeId := repository writeTreeAndReturnOid.
 	commitId := repository
 			writeCommit: indexTreeId
-			message: message withUnixLineEndings utf8Encoded asString
+			message: message withUnixLineEndings
 			parents: parentCommits
 			updateReference: repository head name
 			author: signature
