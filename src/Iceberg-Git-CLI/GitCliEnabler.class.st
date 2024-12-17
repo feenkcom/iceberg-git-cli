@@ -114,3 +114,18 @@ GitCliEnabler >> switchAllIfValidGit [
 GitCliEnabler >> switchRepositoryImplementation: repository [
 	^ GtIceRepositorySwitcher new switch: repository name
 ]
+
+{ #category : #operations }
+GitCliEnabler >> writeStartupFile [
+	"Write out a script that will be picked up by StartupPreferencesLoader in the image directory.
+	In it, we enable commit signing (this is optional) and switch over all repositories to git cli.
+	Once the image is saved in this state, these actions become a no op."
+	
+	FileSystem workingDirectory / StartupPreferencesLoader startupScriptName
+		writeStreamDo: [ :out | 
+			(ZnCrPortableWriteStream on: out)
+				nextPutAll: 'IceGitCliPlatform current signCommits: true.
+GitCliEnabler new switchAll.
+(''{1} startup.st loaded & executed successfully'' format: { ZTimestamp now }) crTrace.
+' ]
+]
