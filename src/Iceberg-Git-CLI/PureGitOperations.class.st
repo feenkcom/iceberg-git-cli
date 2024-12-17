@@ -37,7 +37,7 @@ PureGitOperations >> commit: comment [
 	args := OrderedCollection with: 'commit'.
 	IceGitCliPlatform current signCommits
 		ifTrue: [ args add: '-S' ].
-	args add: '-m'; add: comment.
+	args add: '-m'; add: comment withUnixLineEndings.
 	self runGitWithArgs: args.
 	self announceRepositoryModified
 ]
