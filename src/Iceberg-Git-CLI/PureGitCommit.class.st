@@ -140,6 +140,22 @@ PureGitCommit >> fileSystem [
 ]
 
 { #category : #accessing }
+PureGitCommit >> gitHubData [
+	| gitUrl |
+	self gitHubWebUrl ifNil: [ ^ Dictionary new ].
+	gitUrl := self repository branch upstream remote gitUrl.
+	^ ZnClient new
+		forJsonREST;
+		beOneShot;
+		url: 'https://api.github.com/repos/';
+		addPathSegment: gitUrl ownerName;
+		addPathSegment: gitUrl projectName;
+		addPathSegment: 'commits';
+		addPathSegment: self commitId;
+		get
+]
+
+{ #category : #accessing }
 PureGitCommit >> gitHubWebUrl [
 	| branch upstream remote gitUrl |
 	(branch := self repository branch) ifNil: [ ^ nil ].
