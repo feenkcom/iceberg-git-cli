@@ -38,19 +38,19 @@ PureGitSystemListener >> announcer [
 { #category : #private }
 PureGitSystemListener >> handleClassChange: aClassAnnouncement [
 	aClassAnnouncement packagesAffected do: [ :each |
-		self announcePackageModified: each name ]
+		each ifNotNil: [ self announcePackageModified: each name ] ]
 ]
 
 { #category : #private }
 PureGitSystemListener >> handleMethodChange: aMethodAnnouncement [
 	aMethodAnnouncement packagesAffected do: [ :each |
-		self announcePackageModified: each name ]
+		each ifNotNil: [ self announcePackageModified: each name ] ]
 ]
 
 { #category : #private }
 PureGitSystemListener >> handlePackageChange: aClassTagAnnouncement [
 	aClassTagAnnouncement packagesAffected do: [ :each |
-		self announcePackageModified: each name ]
+		each ifNotNil: [ self announcePackageModified: each name ] ]
 ]
 
 { #category : #private }
