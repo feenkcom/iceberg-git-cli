@@ -50,9 +50,21 @@ PureGitPackage class >> setLoadedCommitFor: packageName to: commitId [
 	self loadedCommits at: packageName put: commitId
 ]
 
+{ #category : #private }
+PureGitPackage >> handlePackageModified: aPureGitPackageModified [
+	self name = aPureGitPackageModified name
+		ifTrue: [ self repository announceRepositoryModified ]
+]
+
 { #category : #operations }
 PureGitPackage >> incomingChanges [
 	^ self reader version changes
+]
+
+{ #category : #initialization }
+PureGitPackage >> initialize [
+	super initialize.
+	self subscribeToSystemAnnouncements
 ]
 
 { #category : #testing }
@@ -136,6 +148,14 @@ PureGitPackage >> setLoadedCommit [
 { #category : #accessing }
 PureGitPackage >> srcDirectory [
 	^ self repository srcDirectory
+]
+
+{ #category : #private }
+PureGitPackage >> subscribeToSystemAnnouncements [
+	PureGitSystemListener current announcer weak
+		when: PureGitPackageModified
+		send: #handlePackageModified:
+		to: self
 ]
 
 { #category : #private }
