@@ -10,6 +10,12 @@ Class {
 	#category : #'Iceberg-Git-CLI-Pure-Core'
 }
 
+{ #category : #printing }
+PureGitRepositoryModified >> printOn: aStream [
+	super printOn: aStream.
+	aStream nextPut: $(; print: self repository; nextPut: $) 
+]
+
 { #category : #accessing }
 PureGitRepositoryModified >> repository [
 	^ repository
