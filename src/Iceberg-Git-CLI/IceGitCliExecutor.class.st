@@ -45,6 +45,15 @@ IceGitCliExecutor >> isLoggingEnabled [
 ]
 
 { #category : #logging }
+IceGitCliExecutor >> log: operation do: block [
+	| result |
+	self logStarted: operation args: #().
+	result := block value.
+	self logEnded: operation args: #() output: #().
+	^ result
+]
+
+{ #category : #logging }
 IceGitCliExecutor >> logEnded: operation args: args output: output [
 	self isLoggingEnabled
 		ifTrue: [ (IceGitCliPlatform current signalClass args: args output: output)
