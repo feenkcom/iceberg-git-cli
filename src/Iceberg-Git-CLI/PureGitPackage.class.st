@@ -58,7 +58,10 @@ PureGitPackage >> handlePackageModified: aPureGitPackageModified [
 
 { #category : #operations }
 PureGitPackage >> incomingChanges [
-	^ self reader version changes
+	^ IceGitCliPlatform current executor
+		repository: self repository;
+		log: #incomingChanges 
+			do: [ self reader version changes ]
 ]
 
 { #category : #initialization }
@@ -112,8 +115,10 @@ PureGitPackage >> name: aString [
 
 { #category : #operations }
 PureGitPackage >> outgoingChanges [
-	^ self mcPackage snapshot 
-		patchRelativeToBase: self reader snapshot
+	^ IceGitCliPlatform current executor
+		repository: self repository;
+		log: #outgoingChanges
+			do: [ self mcPackage snapshot patchRelativeToBase: self reader snapshot ]
 ]
 
 { #category : #printing }
