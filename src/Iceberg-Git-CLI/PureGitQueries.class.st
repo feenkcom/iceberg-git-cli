@@ -10,24 +10,27 @@ Class {
 { #category : #queries }
 PureGitQueries >> allAnnotatedCommits [
 	| commitsMap annotatedCommits |
-	annotatedCommits := self allCommits toArray wait collect: [ :each |
-		PureGitAnnotatedCommit new
-			commit: each;
-			yourself ].
-	commitsMap := Dictionary new: annotatedCommits size.
-	annotatedCommits do: [ :each | 
-		commitsMap at: each id put: each ].
-	annotatedCommits do: [ :annotatedCommit |
-		annotatedCommit parents: (annotatedCommit parentIds collect: [ :id | commitsMap at: id ]) ].
-	self tags toArray wait do: [ :tag |
-		commitsMap 
-			at: tag commitId 
-			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: tag name ] ].
-	self allBranches do: [ :branch |
-		commitsMap 
-			at: branch commitId 
-			ifPresent: [ :annotatedCommit | annotatedCommit addLabel: branch name ] ].
-	^ annotatedCommits
+	^ self executor
+		log: #allAnnotatedCommits 
+		do: [
+			annotatedCommits := self allCommits toArray wait collect: [ :each |
+				PureGitAnnotatedCommit new
+					commit: each;
+					yourself ].
+			commitsMap := Dictionary new: annotatedCommits size.
+			annotatedCommits do: [ :each | 
+				commitsMap at: each id put: each ].
+			annotatedCommits do: [ :annotatedCommit |
+				annotatedCommit parents: (annotatedCommit parentIds collect: [ :id | commitsMap at: id ]) ].
+			self tags toArray wait do: [ :tag |
+				commitsMap 
+					at: tag commitId 
+					ifPresent: [ :annotatedCommit | annotatedCommit addLabel: tag name ] ].
+			self allBranches do: [ :branch |
+				commitsMap 
+					at: branch commitId 
+					ifPresent: [ :annotatedCommit | annotatedCommit addLabel: branch name ] ].
+			annotatedCommits ]
 ]
 
 { #category : #convenience }
