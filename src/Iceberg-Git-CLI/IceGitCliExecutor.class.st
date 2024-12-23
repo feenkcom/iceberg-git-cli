@@ -47,10 +47,15 @@ IceGitCliExecutor >> isLoggingEnabled [
 { #category : #logging }
 IceGitCliExecutor >> log: operation do: block [
 	| result |
-	self logStarted: operation args: #().
+	self logStarted: operation.
 	result := block value.
-	self logEnded: operation args: #() output: #().
+	self logEnded: operation.
 	^ result
+]
+
+{ #category : #logging }
+IceGitCliExecutor >> logEnded: operation [
+	self logEnded: operation args: #() output: #()
 ]
 
 { #category : #logging }
@@ -61,6 +66,11 @@ IceGitCliExecutor >> logEnded: operation args: args output: output [
 				repository: self repository;
 				markAsEndSignal;
 				emit ]
+]
+
+{ #category : #logging }
+IceGitCliExecutor >> logStarted: operation [
+	self logStarted: operation args: #()
 ]
 
 { #category : #logging }
