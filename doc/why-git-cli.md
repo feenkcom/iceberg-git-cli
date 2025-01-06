@@ -34,7 +34,7 @@ Though git is often very fast, some operations do take more time. When using mos
 
 ## Special setups
 
-By using the git CLI we can fall back on git being usable outside GT before we use it from within GT. In other words: if it works fine on the command line, we can work with it as well. This is especially important in special setups like enterprise contexts. At the moment, the GT side does not do anything special regarding authentication or authorisation: the requirement being that git works without user interaction like entering passwords. Typically SSH keys are used through a credential helper like ssh-agent.
+By using git CLI we can fall back on git being usable outside GT before we use it from within GT. In other words: if it works fine on the command line, we can work with it as well. This is especially important in special setups like enterprise contexts. At the moment, the GT side does not do anything special regarding authentication or authorisation: the requirement being that git works unattended, without any user interaction like passwords prompts. There are several ways to accomplish this, the most common one being SSH keys used with a credential helper like ssh-agent, but in principle any solution should work.
 
 
 ## Future proofing
