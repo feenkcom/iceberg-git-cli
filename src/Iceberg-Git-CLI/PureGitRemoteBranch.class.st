@@ -14,6 +14,11 @@ PureGitRemoteBranch >> branchType [
 	^ #remote
 ]
 
+{ #category : #operations }
+PureGitRemoteBranch >> checkout [
+	^ self repository operations async checkout: self shortName
+]
+
 { #category : #testing }
 PureGitRemoteBranch >> isLocal [
 	^ false
