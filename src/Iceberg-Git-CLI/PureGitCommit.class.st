@@ -141,18 +141,31 @@ PureGitCommit >> fileSystem [
 
 { #category : #accessing }
 PureGitCommit >> gitHubData [
-	| gitUrl |
+	| gitUrl client |
 	self gitHubWebUrl ifNil: [ ^ Dictionary new ].
 	gitUrl := self repository branch upstream remote gitUrl.
-	^ ZnClient new
+	(client := ZnClient new)
 		forJsonREST;
 		beOneShot;
 		url: 'https://api.github.com/repos/';
 		addPathSegment: gitUrl ownerName;
 		addPathSegment: gitUrl projectName;
 		addPathSegment: 'commits';
-		addPathSegment: self commitId;
-		get
+		addPathSegment: self commitId.
+	^ (client get; isSuccess)
+		ifTrue: [ client contents ]
+		ifFalse: [
+			(client isNotFound and: [ GtGitHubTokenHolder hasToken ])
+				ifTrue: [
+					"try once more assuming a private repository"
+					client setBearerAuthentication: GtGitHubTokenHolder token.
+					client get ].
+			client isSuccess
+				ifTrue: [ client contents ]
+				ifFalse: [ NeoJSONObject new 
+					atPath: #(commit verification reason) 
+						put: ('cannot access {1}' format: { client request uri });
+					yourself ] ]
 ]
 
 { #category : #accessing }
