@@ -50,6 +50,16 @@ PureGitPackage class >> setLoadedCommitFor: packageName to: commitId [
 	self loadedCommits at: packageName put: commitId
 ]
 
+{ #category : #operations }
+PureGitPackage >> applyIncomingChanges [
+	| loader |
+	loader := MCPackageLoader new.
+	self incomingChanges applyTo: loader.
+	loader load.
+	self setLoadedCommit.
+	self repository announceRepositoryModified
+]
+
 { #category : #private }
 PureGitPackage >> handlePackageModified: aPureGitPackageModified [
 	self name = aPureGitPackageModified name
