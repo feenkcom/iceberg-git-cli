@@ -10,10 +10,27 @@ Class {
 		'name'
 	],
 	#classVars : [
-		'LoadedCommits'
+		'LoadedCommits',
+		'SharedAnnouncer'
 	],
 	#category : #'Iceberg-Git-CLI-Pure-Code'
 }
+
+{ #category : #accessing }
+PureGitPackage class >> announceChange [
+	self announcer announce: Announcement new
+]
+
+{ #category : #accessing }
+PureGitPackage class >> announcer [
+	^ SharedAnnouncer ifNil: [ SharedAnnouncer := Announcer new ]
+]
+
+{ #category : #accessing }
+PureGitPackage class >> clearLoadedCommitFor: packageName [
+	self loadedCommits removeKey: packageName.
+	self announceChange
+]
 
 { #category : #accessing }
 PureGitPackage class >> historyRecordLoadedCommitFor: packageName [
@@ -32,10 +49,10 @@ PureGitPackage class >> loadedCommitFor: packageName [
 	self loadedCommits at: packageName ifPresent: [ :commitId | ^ commitId ].
 
 	(self icebergLoadedCommitFor: packageName)
-		ifNotNil: [ :commitId | ^ self loadedCommits at: packageName put: commitId ].
+		ifNotNil: [ :commitId | ^ self setLoadedCommitFor: packageName to: commitId ].
 
 	(self historyRecordLoadedCommitFor: packageName)
-		ifNotNil: [ :commitId | ^ self loadedCommits at: packageName put: commitId ].
+		ifNotNil: [ :commitId | ^ self setLoadedCommitFor: packageName to: commitId ].
 
 	^ nil
 ]
@@ -47,7 +64,8 @@ PureGitPackage class >> loadedCommits [
 
 { #category : #accessing }
 PureGitPackage class >> setLoadedCommitFor: packageName to: commitId [
-	self loadedCommits at: packageName put: commitId
+	self loadedCommits at: packageName put: commitId.
+	self announceChange
 ]
 
 { #category : #operations }
