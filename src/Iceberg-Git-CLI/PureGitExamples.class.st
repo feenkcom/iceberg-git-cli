@@ -7,6 +7,6 @@ Class {
 { #category : #examples }
 PureGitExamples >> currentIceGitCliPlatform [
 	<gtExample>
-
+	<return: #IceGitCliPlatform>
 	^ IceGitCliPlatform current
 ]
