@@ -36,6 +36,8 @@ PureGitAuthor >> contrastColor: aColor [
 { #category : #accessing }
 PureGitAuthor >> example [
 	<gtExample>
+	<return: #PureGitAuthor>
+	
 ]
 
 { #category : #'initialization ' }

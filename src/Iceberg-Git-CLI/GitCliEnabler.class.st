@@ -25,12 +25,15 @@ GitCliEnabler >> announceRepositoryRegistryModified [
 { #category : #testing }
 GitCliEnabler >> areAllRepositoriesSwitched [
 	<gtExample>
+	<return: #True>
 	^ IceRepository registry allSatisfy: [ :each | each isGitCliRepository ]
 ]
 
 { #category : #accessing }
 GitCliEnabler >> example [
 	<gtExample>
+	<return: #GitCliEnabler>
+	
 ]
 
 { #category : #testing }
@@ -39,12 +42,14 @@ GitCliEnabler >> isValidGit [
 	Also check git configuration/setup."
 
 	<gtExample>
+	<return: #True>
 	^ self platform isValidGit and: [ self platform isValidGitSetup ]
 ]
 
 { #category : #accessing }
 GitCliEnabler >> platform [
 	<gtExample>
+	<return: #IceGitCliPlatform>
 	^ IceGitCliPlatform current
 ]
 

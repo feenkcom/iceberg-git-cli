@@ -7,6 +7,7 @@ Class {
 { #category : #accessing }
 UnifiedDiffExamples >> exampleBarContents [
 	<gtExample>
+	<return: #ByteString>
 	^ 'A
 B
 C
@@ -109,22 +110,23 @@ UnifiedDiffExamples >> exampleComputedOneTwoGitUnifiedNoContextDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedDiff [
 	<gtExample>
-
+	<return: #UnifiedDiff>
 	| unifiedDiff changeChunk output |
-
 	unifiedDiff := UnifiedDiff new
-		readFrom: self exampleFooBarGitUnifiedDiffOutput readStream.
+			readFrom: self exampleFooBarGitUnifiedDiffOutput readStream.
 
 	changeChunk := unifiedDiff changeChunks first.
 
-	self 
-		assert: changeChunk oldContents 
-		equals: ((self exampleFooContents lines copyFrom: changeChunk oldStart to: changeChunk oldEnd)
-			flatCollect: [ :each | each , String cr ] as: String).
+	self
+		assert: changeChunk oldContents
+		equals: ((self exampleFooContents lines
+				copyFrom: changeChunk oldStart
+				to: changeChunk oldEnd) flatCollect: [ :each | each , String cr ] as: String).
 	self
 		assert: changeChunk newContents
-		equals: ((self exampleBarContents lines copyFrom: changeChunk newStart to: changeChunk newEnd)
-			flatCollect: [ :each | each , String cr ] as: String).
+		equals: ((self exampleBarContents lines
+				copyFrom: changeChunk newStart
+				to: changeChunk newEnd) flatCollect: [ :each | each , String cr ] as: String).
 
 	output := changeChunk applyTo: self exampleFooContents.
 
@@ -135,10 +137,10 @@ UnifiedDiffExamples >> exampleFooBarGitUnifiedDiff [
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedDiffNoContextOutput [
-	<gtExample>
-
 	"git diff --unified=0 foo.txt bar.txt"
 
+	<gtExample>
+	<return: #ByteString>
 	^ 'diff --git a/foo.txt b/bar.txt
 index 475f87b..d7f6539 100644
 --- a/foo.txt
@@ -155,10 +157,10 @@ index 475f87b..d7f6539 100644
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedDiffOutput [
-	<gtExample>
-
 	"git diff foo.txt bar.txt"
 
+	<gtExample>
+	<return: #ByteString>
 	^ 'diff --git a/foo.txt b/bar.txt
 index 475f87b..d7f6539 100644
 --- a/foo.txt
@@ -181,11 +183,10 @@ index 475f87b..d7f6539 100644
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooBarGitUnifiedNoContextDiff [
 	<gtExample>
-
+	<return: #UnifiedDiff>
 	| unifiedDiff output |
-
 	unifiedDiff := UnifiedDiff new
-		readFrom: self exampleFooBarGitUnifiedDiffNoContextOutput readStream.
+			readFrom: self exampleFooBarGitUnifiedDiffNoContextOutput readStream.
 
 	self assert: unifiedDiff numberOfChanges equals: 3.
 
@@ -199,6 +200,7 @@ UnifiedDiffExamples >> exampleFooBarGitUnifiedNoContextDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleFooContents [
 	<gtExample>
+	<return: #ByteString>
 	^ 'A
 B
 C
@@ -217,13 +219,14 @@ L
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiff [
 	<gtExample>
-	^ UnifiedDiff new
-		readFrom: self exampleGitUnifiedDiffOutput readStream
+	<return: #UnifiedDiff>
+	^ UnifiedDiff new readFrom: self exampleGitUnifiedDiffOutput readStream
 ]
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffByLine [
 	<gtExample>
+	<return: #UnifiedDiff>
 	^ UnifiedDiff new
 		readFromLines: self exampleGitUnifiedDiffOutput lines readStream
 ]
@@ -231,6 +234,7 @@ UnifiedDiffExamples >> exampleGitUnifiedDiffByLine [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffCollection [
 	<gtExample>
+	<return: #UnifiedDiffCollection>
 	^ UnifiedDiffCollection new
 		readFrom: self exampleGitUnifiedDiffCollectionOutput readStream
 ]
@@ -238,6 +242,7 @@ UnifiedDiffExamples >> exampleGitUnifiedDiffCollection [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffCollectionByLine [
 	<gtExample>
+	<return: #UnifiedDiffCollection>
 	^ UnifiedDiffCollection new
 		readFromLines: self exampleGitUnifiedDiffCollectionOutput lines readStream
 ]
@@ -245,6 +250,7 @@ UnifiedDiffExamples >> exampleGitUnifiedDiffCollectionByLine [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffCollectionOutput [
 	<gtExample>
+	<return: #ByteString>
 	^ 'diff --git doc/NOTES.md doc/NOTES.md
 index 3590a1b..b84738f 100644
 --- doc/NOTES.md
@@ -273,6 +279,7 @@ index 0000000..bd9dbf5
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGitUnifiedDiffOutput [
 	<gtExample>
+	<return: #ByteString>
 	^ 'diff --git a/file.txt b/file.txt
 index a413be2..dc81f09 100644
 --- a/file.txt
@@ -316,6 +323,7 @@ index a413be2..dc81f09 100644
 { #category : #accessing }
 UnifiedDiffExamples >> exampleGtDiff [
 	<gtExample>
+	<return: #GtCompositeDiffChange>
 	^ GtDiffBuilder
 		computeDifferencesFrom: self exampleOriginalContents
 		to: self exampleNewContents
@@ -325,6 +333,7 @@ UnifiedDiffExamples >> exampleGtDiff [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleNewContents [
 	<gtExample>
+	<return: #ByteString>
 	^ 'This is an important
 notice! It should
 therefore be located at
@@ -360,16 +369,19 @@ to this document.
 { #category : #accessing }
 UnifiedDiffExamples >> exampleOneContents [
 	<gtExample>
-	^ ($A to: $Z) flatCollect: [ :each | String with: each with: Character cr ] as: String
+	<return: #ByteString>
+	^ ($A to: $Z)
+		flatCollect: [ :each | String with: each with: Character cr ]
+		as: String
 ]
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleOneTwoGitUnifiedDiff [
 	<gtExample>
-	
+	<return: #UnifiedDiff>
 	| unifiedDiff output |
 	unifiedDiff := UnifiedDiff new
-		readFromLines: self exampleOneTwoGitUnifiedDiffOutput lines readStream.
+			readFromLines: self exampleOneTwoGitUnifiedDiffOutput lines readStream.
 
 	output := unifiedDiff applyTo: self exampleOneContents.
 
@@ -380,10 +392,10 @@ UnifiedDiffExamples >> exampleOneTwoGitUnifiedDiff [
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleOneTwoGitUnifiedDiffOutput [
-	<gtExample>
-
 	"git diff foo.txt bar.txt"
 
+	<gtExample>
+	<return: #ByteString>
 	^ 'diff --git a/foo.txt b/bar.txt
 index a6f1d23..c5f54f4 100644
 --- a/foo.txt
@@ -419,6 +431,7 @@ index a6f1d23..c5f54f4 100644
 { #category : #accessing }
 UnifiedDiffExamples >> exampleOriginalContents [
 	<gtExample>
+	<return: #ByteString>
 	^ 'This part of the
 document has stayed the
 same from version to
@@ -449,13 +462,14 @@ be added after it.
 { #category : #accessing }
 UnifiedDiffExamples >> exampleStandardUnifiedDiff [
 	<gtExample>
-	^ UnifiedDiff new
-		readFrom: self exampleStandardUnifiedDiffOutput readStream
+	<return: #UnifiedDiff>
+	^ UnifiedDiff new readFrom: self exampleStandardUnifiedDiffOutput readStream
 ]
 
 { #category : #accessing }
 UnifiedDiffExamples >> exampleStandardUnifiedDiffOutput [
 	<gtExample>
+	<return: #ByteString>
 	^ '--- original.txt	2024-09-20 11:15:06
 +++ new.txt	2024-09-20 11:15:21
 @@ -1,3 +1,9 @@
@@ -497,13 +511,13 @@ UnifiedDiffExamples >> exampleStandardUnifiedDiffOutput [
 { #category : #accessing }
 UnifiedDiffExamples >> exampleTwoContents [
 	<gtExample>
+	<return: #ByteString>
 	| alphabet |
-	alphabet := ($A to: $Z) asOrderedCollection.
-	"modify: $E -> $e"
-	alphabet at: 5 put: $e.
-	"delete: $U"
-	alphabet removeAt: 21.
-	"add: $x after $L"
+	alphabet := ($A to: $Z) asOrderedCollection.	"modify: $E -> $e"
+	alphabet at: 5 put: $e.	"delete: $U"
+	alphabet removeAt: 21.	"add: $x after $L"
 	alphabet add: $x afterIndex: 12.
-	^ alphabet flatCollect: [ :each | String with: each with: Character cr ] as: String
+	^ alphabet
+		flatCollect: [ :each | String with: each with: Character cr ]
+		as: String
 ]
