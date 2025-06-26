@@ -26,7 +26,7 @@ GitCliCommitStore class >> register: anObject [
 
 { #category : #accessing }
 GitCliCommitStore class >> registry [
-	^Registry ifNil: [Registry := WeakRegistry new]
+	^Registry ifNil: [  Registry := FinalizationRegistry new]
 ]
 
 { #category : #accessing }
