@@ -31,8 +31,6 @@ GitCliFiletreeLog >> collectVersionsFrom: aCollection method: aMethod path: aPat
 
 { #category : #'as yet unclassified' }
 GitCliFiletreeLog >> definitionFor: aMethod path: aPath commit: aCommit [
-	<gtPharoPatch: #Pharo>
-	
 	^ ((IceGitCliFiletreeLogReader fileName: aPath on: aCommit)
 		package: aMethod package mcPackage;
 		packageDirectory: (self repository directoryPathStringForPackage: aMethod package);
@@ -41,7 +39,8 @@ GitCliFiletreeLog >> definitionFor: aMethod path: aPath commit: aCommit [
 			each isMethodDefinition
 				and: [ each selector = aMethod selector
 						and: [ each method isClassSide = aMethod isClassSide ] ] ]
-		ifNone: [  "not found, return 'NULL' object: compare will fail anyway"MCMethodDefinition
+		ifNone: [ 
+		MCMethodDefinition
 				className: aMethod origin name
 				selector: aMethod selector
 				category: #''
