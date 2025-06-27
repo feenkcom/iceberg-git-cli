@@ -507,7 +507,7 @@ IceGitCliRepository >> log [
 { #category : #accessing }
 IceGitCliRepository >> logClass [
 	^ (self properties at: #format) == #filetree
-		ifTrue: [ IceLibgitFiletreeLog ]
+		ifTrue: [ GitCliFiletreeLog ]
 		ifFalse: [ GitCliTonelLog ]
 ]
 

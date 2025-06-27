@@ -28,3 +28,22 @@ GitCliFiletreeLog >> collectVersionsFrom: aCollection method: aMethod path: aPat
 
 	^ history reversed
 ]
+
+{ #category : #'as yet unclassified' }
+GitCliFiletreeLog >> definitionFor: aMethod path: aPath commit: aCommit [
+	^ ((IceGitCliFiletreeLogReader fileName: aPath on: aCommit)
+		package: aMethod package mcPackage;
+		packageDirectory: (self repository directoryPathStringForPackage: aMethod package);
+		definitions)
+		detect: [ :each | 
+			each isMethodDefinition
+				and: [ each selector = aMethod selector
+						and: [ each method isClassSide = aMethod isClassSide ] ] ]
+		ifNone: [ 
+		MCMethodDefinition
+				className: aMethod origin name
+				selector: aMethod selector
+				category: #''
+				timeStamp: nil
+				source: '' ]
+]

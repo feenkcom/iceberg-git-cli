@@ -140,6 +140,11 @@ GitCliCommitStore >> handleClass [
 ]
 
 { #category : #accessing }
+GitCliCommitStore >> isCaseSensitive [
+	^true
+]
+
+{ #category : #accessing }
 GitCliCommitStore >> nodeAt: anAbsolutePath ifPresent: aPresentBlock ifAbsent: anAbsentBlock [
 	anAbsolutePath isRoot 
 		ifTrue: [ ^ aPresentBlock value: self rootEntry ].
