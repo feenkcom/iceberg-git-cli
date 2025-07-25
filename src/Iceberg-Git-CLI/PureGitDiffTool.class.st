@@ -102,8 +102,8 @@ PureGitDiffTool >> diffSummary [
 		Array 
 			with: (Integer readFrom: elements first ifFail: [ 0 ])
 			with: (Integer readFrom: elements second ifFail: [ 0 ]) ].
-	additionsCount := numstat sum: #first.
-	deletionsCount := numstat sum: #second.
+	additionsCount := numstat sumNumbers: #first.
+	deletionsCount := numstat sumNumbers: #second.
 	^ '{1} with {2} and {3}.' format: {
 		filesChangedCount pluralize: 'changed file'. 
 		additionsCount pluralize: 'addition'.

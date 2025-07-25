@@ -58,12 +58,12 @@ UnifiedDiffCollection >> numberOfChanges [
 
 { #category : #accessing }
 UnifiedDiffCollection >> numberOfLinesAdded [
-	^ self diffs sum: [ :each | each numberOfLinesAdded ]
+	^ self diffs sumNumbers: [ :each | each numberOfLinesAdded ]
 ]
 
 { #category : #accessing }
 UnifiedDiffCollection >> numberOfLinesRemoved [
-	^ self diffs sum: [ :each | each numberOfLinesRemoved ]
+	^ self diffs sumNumbers: [ :each | each numberOfLinesRemoved ]
 ]
 
 { #category : #printing }
