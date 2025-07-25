@@ -124,22 +124,22 @@ UnifiedDiff >> numberOfChanges [
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesAdded [
-	^ self changeChunks sum: [ :each | each numberOfLinesAdded ]
+	^ self changeChunks sumNumbers: [ :each | each numberOfLinesAdded ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesChanged [
-	^ self changeChunks sum: [ :each | each numberOfLinesChanged ]
+	^ self changeChunks sumNumbers: [ :each | each numberOfLinesChanged ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesModified [
-	^ self changeChunks sum: [ :each | each numberOfLinesModified ]
+	^ self changeChunks sumNumbers: [ :each | each numberOfLinesModified ]
 ]
 
 { #category : #accessing }
 UnifiedDiff >> numberOfLinesRemoved [
-	^ self changeChunks sum: [ :each | each numberOfLinesRemoved ]
+	^ self changeChunks sumNumbers: [ :each | each numberOfLinesRemoved ]
 ]
 
 { #category : #accessing }
