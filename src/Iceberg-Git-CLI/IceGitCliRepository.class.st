@@ -387,12 +387,14 @@ IceGitCliRepository >> handleLibgitError: aBlock [
 
 	| sender exceptions |
 	sender := thisContext sender method.
-	exceptions := { IceAbstractProject>>#packages }.
+	exceptions := { 
+		IceAbstractProject>>#packages.
+		IceAbstractProject >> #packageNames. }.
 
 	(exceptions includes: sender) 
 		ifFalse: [ IceGitCliCallsLibgitFFI signal ].
 
-	aBlock value
+	aBlock value.
 ]
 
 { #category : #'API - accessing' }
