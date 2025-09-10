@@ -387,10 +387,10 @@ IceGitCliRepository >> handleLibgitError: aBlock [
 
 	| sender exceptions |
 	sender := thisContext sender method.
-	exceptions := self forPharo12: 
+	exceptions := self forPharo12AndNewer: 
 			[ { IceAbstractProject>>#packages.
 			IceAbstractProject >> #packageNames. } ] 
-		forPharo11AndPharo10: 
+		forPharo11: 
 			[ { IceAbstractProject>>#packages. } ].
 
 	(exceptions includes: sender) 
