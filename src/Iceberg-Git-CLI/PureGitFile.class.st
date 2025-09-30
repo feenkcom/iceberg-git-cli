@@ -35,6 +35,11 @@ PureGitFile >> blame [
 	^ self repository queries blame: self path
 ]
 
+
+{ #category : #accessing }
+PureGitFile >> extension [
+	^ ($. split: self basename) last
+]
 { #category : #testing }
 PureGitFile >> canBeRestored [
 	^ self isTracked and: [ self isModifiedInWorkTree ]
