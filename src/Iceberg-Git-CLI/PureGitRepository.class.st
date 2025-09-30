@@ -18,6 +18,25 @@ Class {
 }
 
 { #category : #'instance creation' }
+PureGitRepository class >> forFile: aFileReference [
+	"Answer the receiver holding the supplied file, or nil if the file isn't in git version control.
+	This will search up to and excluding the root directory, even if it crosses a file system."
+	| fileReference currentDir |
+
+	fileReference := aFileReference asFileReference.
+	(fileReference isDirectory and: [ (fileReference / '.git') isDirectory ]) ifTrue:
+		[ self on: fileReference ].
+
+	currentDir := fileReference isDirectory
+		ifTrue: [ fileReference ]
+		ifFalse: [ fileReference parent ].
+	[ currentDir isRoot ] whileFalse:
+		[ (currentDir / '.git') isDirectory ifTrue: [ ^ self on: currentDir ].
+		currentDir := currentDir parent ].
+	^ nil
+]
+
+{ #category : #'instance creation' }
 PureGitRepository class >> on: aFileReference [
 	^ self new
 		location: aFileReference;
