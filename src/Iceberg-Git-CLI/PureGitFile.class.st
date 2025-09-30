@@ -104,6 +104,11 @@ PureGitFile >> exists [
 ]
 
 { #category : #accessing }
+PureGitFile >> extension [
+	^ ($. split: self basename) last
+]
+
+{ #category : #accessing }
 PureGitFile >> file [
 	^ self
 ]
