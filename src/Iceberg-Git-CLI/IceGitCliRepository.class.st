@@ -837,6 +837,15 @@ IceGitCliRepository >> setHead: aGtIceGitLocalBranch [
 	head := nil
 ]
 
+{ #category : #'API - remotes' }
+IceGitCliRepository >> setOriginTo: url [
+	self
+		runGitWithArgs: {'remote'.
+				'set-url'.
+				'origin'.
+				url} asOrderedCollection
+]
+
 { #category : #private }
 IceGitCliRepository >> statusEnumFrom: statusChar [
 	| flagMap |
