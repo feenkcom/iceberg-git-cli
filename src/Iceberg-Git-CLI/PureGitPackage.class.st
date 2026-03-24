@@ -100,7 +100,7 @@ PureGitPackage >> initialize [
 
 { #category : #testing }
 PureGitPackage >> isLoaded [
-	^ RPackageOrganizer default includesPackageNamed: self name
+	^ self packageOrganizer includesPackageNamed: self name
 ]
 
 { #category : #testing }
@@ -157,7 +157,7 @@ PureGitPackage >> printOn: stream [
 
 { #category : #accessing }
 PureGitPackage >> rPackage [
-	^ RPackageOrganizer default packageNamed:  self name
+	^ self packageOrganizer packageNamed:  self name
 ]
 
 { #category : #private }
