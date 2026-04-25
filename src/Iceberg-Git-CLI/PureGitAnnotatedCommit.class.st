@@ -39,6 +39,15 @@ PureGitAnnotatedCommit >> commit: anObject [
 	commit := anObject
 ]
 
+{ #category : #views }
+PureGitAnnotatedCommit >> gtCommitChangesFor: aView [
+	<gtView>
+	^ aView forward
+		title: 'Commit changes';
+		object: [ commit ];
+		view: #gtChangesFor:
+]
+
 { #category : #accessing }
 PureGitAnnotatedCommit >> id [
 	^ commit id
