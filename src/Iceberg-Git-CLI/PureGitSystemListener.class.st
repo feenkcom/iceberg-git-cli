@@ -81,7 +81,7 @@ PureGitSystemListener >> registerSystemAnnouncements [
 		when: MethodAnnouncement
 			send: #handleMethodChange:
 			to: self;
-		when: ClassTagAnnouncement
+		when: PackageTagAnnouncement
 			send: #handlePackageChange:
 			to: self;
 		when: MCVersionLoaderStopped
