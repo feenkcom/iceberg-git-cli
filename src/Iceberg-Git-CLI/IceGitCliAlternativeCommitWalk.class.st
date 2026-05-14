@@ -7,6 +7,11 @@ Class {
 	#category : #'Iceberg-Git-CLI-Core'
 }
 
+{ #category : #'initialize-release' }
+IceGitCliAlternativeCommitWalk >> close [
+	"The cli utilities don't leave files open, so nothing to do"
+]
+
 { #category : #accessing }
 IceGitCliAlternativeCommitWalk >> commitStream [
 	^ self commits asAsyncStream
