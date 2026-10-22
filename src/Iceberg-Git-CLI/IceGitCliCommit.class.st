@@ -41,6 +41,17 @@ IceGitCliCommit >> numberOfParents [
 ]
 
 { #category : #accessing }
+IceGitCliCommit >> packageNames [
+	"Do not cache an empty answer: it is almost always the result of a transient state of the commit file system, and caching it makes every package look new in diffs until the image is restarted."
+
+	| cache names |
+	cache := self repository commitsInPackageCache.
+	names := cache at: self ifAbsentPut: [ self fetchPackageNames ].
+	names isEmpty ifTrue: [ cache removeKey: self ifAbsent: [ nil ] ].
+	^ names
+]
+
+{ #category : #accessing }
 IceGitCliCommit >> project [
 	^project ifNil: [project := super project]
 ]
