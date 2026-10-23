@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'commit',
 		'entries',
-		'gitFileReader'
+		'gitFileReader',
+		'entriesMutex'
 	],
 	#classVars : [
 		'Registry'
@@ -91,17 +92,11 @@ GitCliCommitStore >> delimiter [
 
 { #category : #accessing }
 GitCliCommitStore >> entries [
-	| entryList lines |
+	"Answer all tree entries of the commit. The dictionary is published only when it is complete, so concurrent callers never see a partially built (empty) tree."
+
 	entries ifNotNil: [ ^ entries ].
-	entries := Dictionary new.
-	lines := commit repository runGitWithArgs: {
-		'ls-tree'.
-		'-rt'.
-		'--format=%(objectmode) %(objecttype) %(objectname) %(objectsize)%x09%(path)'.
-		self treeIdFromCommit }.
-	entryList := lines collect: [ :each | GitCliFileEntry fromLine: each ].
-	entryList do: [ :each | entries at: (self basenameFromEntry: each) put: each ].
-	^ entries
+	entriesMutex ifNil: [ ^ self fetchEntries ].
+	^ entriesMutex critical: [ entries ifNil: [ entries := self fetchEntries ] ]
 ]
 
 { #category : #accessing }
@@ -112,6 +107,21 @@ GitCliCommitStore >> entryByPath: aString ifAbsent: aBlock [
 { #category : #accessing }
 GitCliCommitStore >> entryFromNode: node path: path for: aFileSystem [
 	^ aFileSystem referenceTo: path / node path
+]
+
+{ #category : #private }
+GitCliCommitStore >> fetchEntries [
+	| newEntries lines |
+	newEntries := Dictionary new.
+	lines := commit repository runGitWithArgs: {
+		'ls-tree'.
+		'-rt'.
+		'--format=%(objectmode) %(objecttype) %(objectname) %(objectsize)%x09%(path)'.
+		self treeIdFromCommit }.
+	lines do: [ :each | | entry |
+		entry := GitCliFileEntry fromLine: each.
+		newEntries at: (self basenameFromEntry: entry) put: entry ].
+	^ newEntries
 ]
 
 { #category : #finalization }
@@ -137,6 +147,12 @@ GitCliCommitStore >> gitFileReader [
 { #category : #accessing }
 GitCliCommitStore >> handleClass [
 	^ GitCliFileHandle
+]
+
+{ #category : #initialization }
+GitCliCommitStore >> initialize [
+	super initialize.
+	entriesMutex := Mutex new
 ]
 
 { #category : #accessing }
