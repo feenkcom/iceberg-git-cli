@@ -80,7 +80,8 @@ PureGitPackage >> applyIncomingChanges [
 
 { #category : #private }
 PureGitPackage >> handlePackageModified: aPureGitPackageModified [
-	self name = aPureGitPackageModified name
+	"My name is a directory name (a String), the announced name is the name of the Pharo package (a Symbol)"
+	(self name sameContentAs: aPureGitPackageModified name)
 		ifTrue: [ self repository announceRepositoryModified ]
 ]
 
